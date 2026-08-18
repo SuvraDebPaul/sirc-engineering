@@ -1,7 +1,7 @@
 import { randomUUID } from "node:crypto";
 import { hashPassword } from "better-auth/crypto";
 
-import { prisma } from "@/lib/prisma";
+import { prisma } from "@/lib/db/prisma";
 
 /**
  * Creates the one admin account.
@@ -48,6 +48,9 @@ async function main() {
         userId,
         accountId: userId,
         providerId: "credential",
+        // Must match Better Auth's own createLocalAccountIssuer("credential")
+        // exactly, or sign-in's account lookup silently never matches.
+        issuer: "local:credential",
         password: hash,
       },
     }),

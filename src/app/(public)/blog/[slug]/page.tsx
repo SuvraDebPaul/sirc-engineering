@@ -4,13 +4,17 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Clock, MessagesSquare, User } from "lucide-react";
 
-import { BlogSidebar } from "@/components/blog/blog-sidebar";
-import { CommentForm } from "@/components/blog/comment-form";
+import { BlogSidebar } from "@/features/content/components/blog-sidebar";
+import { CommentForm } from "@/features/content/components/comment-form";
 import { Container } from "@/components/layout/container";
 import { PageHeader } from "@/components/shared/page-header";
 import { Button } from "@/components/ui/button";
 import { formatDate } from "@/lib/format";
-import { getPostDetail, getPosts, getRelatedPosts } from "@/lib/api";
+import {
+  getPostDetail,
+  getPosts,
+  getRelatedPosts,
+} from "@/features/content/services/content";
 
 export async function generateStaticParams() {
   const posts = await getPosts();

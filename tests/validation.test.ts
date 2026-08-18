@@ -1,10 +1,10 @@
 import { test, describe } from "node:test";
 import assert from "node:assert/strict";
 
-import { discountPercent, resolvePriceDisplay } from "@/lib/product";
-import { validateQuoteRequest } from "@/lib/rfq";
-import { validateCheckout } from "@/lib/checkout";
-import type { Product } from "@/types";
+import { discountPercent, resolvePriceDisplay } from "@/features/catalog/services/product";
+import { validateQuoteRequest } from "@/features/enquiries/services/rfq";
+import { validateCheckout } from "@/features/cart/services/checkout";
+import type { Product } from "@/features/catalog/types";
 
 /**
  * Pricing display rules and the server-side validators.

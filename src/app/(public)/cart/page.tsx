@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 
-import { CartContents } from "@/components/cart/cart-contents";
+import { CartContents } from "@/features/cart/components/cart-contents";
 import { Container } from "@/components/layout/container";
 import { PageHeader } from "@/components/shared/page-header";
 

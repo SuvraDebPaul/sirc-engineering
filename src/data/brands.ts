@@ -1,4 +1,4 @@
-import type { Brand } from "@/types";
+import type { Brand } from "@/features/catalog/types";
 
 /**
  * Demo brand logos for the trust strip.

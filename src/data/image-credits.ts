@@ -1,4 +1,4 @@
-import type { ImageCredit } from "@/types";
+import type { ImageCredit } from "@/features/content/types";
 
 /**
  * Image attribution.

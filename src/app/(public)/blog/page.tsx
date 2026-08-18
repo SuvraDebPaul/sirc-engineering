@@ -3,12 +3,12 @@ import Image from "next/image";
 import Link from "next/link";
 import { Clock, User } from "lucide-react";
 
-import { BlogSidebar } from "@/components/blog/blog-sidebar";
+import { BlogSidebar } from "@/features/content/components/blog-sidebar";
 import { Container } from "@/components/layout/container";
 import { PageHeader } from "@/components/shared/page-header";
 import { Button } from "@/components/ui/button";
 import { formatDate } from "@/lib/format";
-import { getPosts } from "@/lib/api";
+import { getPosts } from "@/features/content/services/content";
 
 export const metadata: Metadata = {
   title: "From the laboratory",

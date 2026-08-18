@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 
 import { Container } from "@/components/layout/container";
-import { CatalogBrowser } from "@/components/product/catalog-browser";
+import { CatalogBrowser } from "@/features/catalog/components/catalog-browser";
 import { PageHeader } from "@/components/shared/page-header";
-import { getProducts } from "@/lib/api";
+import { getProducts } from "@/features/catalog/services";
 
 export const metadata: Metadata = {
   title: "Products",

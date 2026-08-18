@@ -14,8 +14,11 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
-import { getServiceDetail, getServices } from "@/lib/api";
-import { ENQUIRY_TYPES } from "@/lib/rfq";
+import {
+  getServiceDetail,
+  getServices,
+} from "@/features/content/services/content";
+import { ENQUIRY_TYPES } from "@/features/enquiries/services/rfq";
 
 export async function generateStaticParams() {
   const services = await getServices();

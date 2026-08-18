@@ -3,10 +3,10 @@ import Link from "next/link";
 import { Search } from "lucide-react";
 
 import { Container } from "@/components/layout/container";
-import { CatalogBrowser } from "@/components/product/catalog-browser";
+import { CatalogBrowser } from "@/features/catalog/components/catalog-browser";
 import { PageHeader } from "@/components/shared/page-header";
 import { WhatsAppButton } from "@/components/shared/whatsapp-button";
-import { getProducts } from "@/lib/api";
+import { getProducts } from "@/features/catalog/services";
 
 export const metadata: Metadata = {
   title: "Search",

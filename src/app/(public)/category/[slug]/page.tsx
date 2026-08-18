@@ -3,10 +3,15 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { Container } from "@/components/layout/container";
-import { CatalogBrowser } from "@/components/product/catalog-browser";
+import { CatalogBrowser } from "@/features/catalog/components/catalog-browser";
 import { Icon } from "@/components/shared/icon";
 import { PageHeader } from "@/components/shared/page-header";
-import { getCategories, getCategoryBySlug, getCategoryCounts, getProductsByCategory } from "@/lib/api";
+import {
+  getCategories,
+  getCategoryBySlug,
+  getCategoryCounts,
+  getProductsByCategory,
+} from "@/features/catalog/services";
 
 /**
  * Category listing.

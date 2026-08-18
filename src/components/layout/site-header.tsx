@@ -1,13 +1,16 @@
 import Link from "next/link";
-import { FileText, LogIn, Mail, Phone } from "lucide-react";
+import { FileText, Mail, Phone } from "lucide-react";
 
-import { CartControls } from "@/components/cart/cart-drawer";
+import { CartControls } from "@/features/cart/components/cart-drawer";
 import { Container } from "@/components/layout/container";
 import Logo from "@/components/layout/logo";
 import { MobileNav } from "@/components/layout/mobile-nav";
 import { Button } from "@/components/ui/button";
 import { contactInfo, mainNav, utilityNav } from "@/config/site";
-import { getCategories, getProducts } from "@/lib/api";
+import {
+  getCategories,
+  getProducts,
+} from "@/features/catalog/services";
 
 /**
  * Site header — two rows.
@@ -58,32 +61,29 @@ export async function SiteHeader() {
             </a>
           </div>
 
-          <div className="flex shrink-0 items-center gap-4">
-            <nav aria-label="Secondary" className="hidden sm:block">
-              <ul className="flex items-center gap-4">
-                {utilityNav.map((item) => (
-                  <li key={item.href}>
-                    <Link
-                      href={item.href}
-                      className="whitespace-nowrap text-muted-foreground transition-colors hover:text-primary"
-                    >
-                      {item.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </nav>
-
-            <span aria-hidden="true" className="hidden h-3.5 w-px bg-border sm:block" />
-
-            <Link
-              href="/login"
-              className="flex items-center gap-1.5 font-medium text-muted-foreground transition-colors hover:text-primary"
-            >
-              <LogIn className="size-3.5 shrink-0" aria-hidden="true" />
-              Login
-            </Link>
-          </div>
+          {/*
+            No customer "Login" link. This used to point at a placeholder
+            account page; that page is gone now that /admin/login is a real
+            staff-only sign-in. Pointing a public nav link at it would be
+            wrong twice over — customers have no accounts to log into, and it
+            would advertise the admin entrance to every visitor. Bring a
+            customer-facing login back here only when there's a real
+            customer-account system for it to lead to.
+          */}
+          <nav aria-label="Secondary" className="hidden shrink-0 sm:block">
+            <ul className="flex items-center gap-4">
+              {utilityNav.map((item) => (
+                <li key={item.href}>
+                  <Link
+                    href={item.href}
+                    className="whitespace-nowrap text-muted-foreground transition-colors hover:text-primary"
+                  >
+                    {item.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
         </Container>
       </div>
 

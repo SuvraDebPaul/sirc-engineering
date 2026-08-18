@@ -6,7 +6,10 @@ import { Container } from "@/components/layout/container";
 import { CtaPanel } from "@/components/shared/cta-panel";
 import { PageHeader } from "@/components/shared/page-header";
 import { Button } from "@/components/ui/button";
-import { getBrandCounts, getBrands } from "@/lib/api";
+import {
+  getBrandCounts,
+  getBrands,
+} from "@/features/catalog/services";
 
 export const metadata: Metadata = {
   title: "Brands",

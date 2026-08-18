@@ -4,10 +4,14 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { Container } from "@/components/layout/container";
-import { CatalogBrowser } from "@/components/product/catalog-browser";
+import { CatalogBrowser } from "@/features/catalog/components/catalog-browser";
 import { PageHeader } from "@/components/shared/page-header";
 import { Button } from "@/components/ui/button";
-import { getBrandById, getBrands, getProductsByBrand } from "@/lib/api";
+import {
+  getBrandById,
+  getBrands,
+  getProductsByBrand,
+} from "@/features/catalog/services";
 
 export async function generateStaticParams() {
   const brands = await getBrands();

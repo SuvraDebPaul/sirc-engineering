@@ -11,9 +11,9 @@ import {
   priceBuckets,
   sortProducts,
   toggleValue,
-} from "@/lib/catalog";
-import { STOCK_LABEL } from "@/lib/product";
-import type { Product } from "@/types";
+} from "@/features/catalog/services/catalog";
+import { STOCK_LABEL } from "@/features/catalog/services/product";
+import type { Product } from "@/features/catalog/types";
 
 /**
  * Catalogue filtering, sorting and faceting.

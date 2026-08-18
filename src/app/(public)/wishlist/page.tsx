@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 
-import { WishlistContents } from "@/components/cart/wishlist-contents";
+import { WishlistContents } from "@/features/cart/components/wishlist-contents";
 import { Container } from "@/components/layout/container";
 import { PageHeader } from "@/components/shared/page-header";
-import { getProducts } from "@/lib/api";
+import { getProducts } from "@/features/catalog/services";
 
 export const metadata: Metadata = {
   title: "Wishlist",

@@ -1,28 +1,30 @@
-import { BrandSlider } from "@/components/home/brand-slider";
-import { BrandWall } from "@/components/home/brand-wall";
-import { CategoryCarousel } from "@/components/home/category-carousel";
-import { FeaturedRows } from "@/components/home/featured-rows";
-import { HeroCarousel } from "@/components/home/hero-carousel";
-import { LatestPosts } from "@/components/home/latest-posts";
-import { PromoBanner } from "@/components/home/promo-banner";
-import { ServicesBand } from "@/components/home/services-band";
-import { Testimonial } from "@/components/home/testimonial";
-import { TrendingProducts } from "@/components/home/trending-products";
-import { TrustStrip } from "@/components/home/trust-strip";
+import { BrandSlider } from "@/features/home/components/brand-slider";
+import { BrandWall } from "@/features/home/components/brand-wall";
+import { CategoryCarousel } from "@/features/home/components/category-carousel";
+import { FeaturedRows } from "@/features/home/components/featured-rows";
+import { HeroCarousel } from "@/features/home/components/hero-carousel";
+import { LatestPosts } from "@/features/home/components/latest-posts";
+import { PromoBanner } from "@/features/home/components/promo-banner";
+import { ServicesBand } from "@/features/home/components/services-band";
+import { Testimonial } from "@/features/home/components/testimonial";
+import { TrendingProducts } from "@/features/home/components/trending-products";
+import { TrustStrip } from "@/features/home/components/trust-strip";
 import { Container } from "@/components/layout/container";
 import { siteConfig } from "@/config/site";
-import FeaturedProducts from "@/components/home/featured-products";
+import FeaturedProducts from "@/features/home/components/featured-products";
 import {
   getBrands,
   getCategories,
+  getProducts,
+} from "@/features/catalog/services";
+import {
   getFeatures,
   getHeroSlides,
   getLatestPosts,
-  getProducts,
   getPromotions,
   getServices,
   getTestimonials,
-} from "@/lib/api";
+} from "@/features/content/services/content";
 
 /**
  * Home page.

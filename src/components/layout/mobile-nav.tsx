@@ -21,7 +21,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { contactInfo, type NavItem } from "@/config/site";
-import type { Category } from "@/types";
+import type { Category } from "@/features/catalog/types";
 
 /**
  * Mobile navigation drawer.

@@ -10,8 +10,8 @@ import {
   deliveryCost,
   isAddable,
   resolveLines,
-} from "@/lib/cart";
-import type { Product } from "@/types";
+} from "@/features/cart/services/cart";
+import type { Product } from "@/features/catalog/types";
 
 /**
  * Cart arithmetic.

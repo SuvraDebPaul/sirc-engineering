@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Clock, Mail, MapPin, Phone } from "lucide-react";
 
-import { ContactForm } from "@/components/contact/contact-form";
+import { ContactForm } from "@/features/enquiries/components/contact-form";
 import { Container } from "@/components/layout/container";
 import { PageHeader } from "@/components/shared/page-header";
 import { contactInfo } from "@/config/site";

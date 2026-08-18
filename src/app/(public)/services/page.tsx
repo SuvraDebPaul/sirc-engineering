@@ -8,7 +8,7 @@ import { CtaPanel } from "@/components/shared/cta-panel";
 import { Icon } from "@/components/shared/icon";
 import { PageHeader } from "@/components/shared/page-header";
 import { Button } from "@/components/ui/button";
-import { getServices } from "@/lib/api";
+import { getServices } from "@/features/content/services/content";
 
 export const metadata: Metadata = {
   title: "Services",

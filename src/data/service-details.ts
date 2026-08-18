@@ -1,4 +1,4 @@
-import type { ServiceHighlight } from "@/types";
+import type { ServiceHighlight } from "@/features/content/types";
 
 import { SERVICES } from "./content";
 

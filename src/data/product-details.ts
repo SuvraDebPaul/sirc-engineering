@@ -1,5 +1,5 @@
-import type { Product } from "@/types/product";
-import type { ProductDetail, ProductImage, ProductReview } from "@/types/product-detail";
+import type { Product } from "@/features/catalog/types/product";
+import type { ProductDetail, ProductImage, ProductReview } from "@/features/catalog/types/product-detail";
 
 import { PRODUCTS } from "./products";
 

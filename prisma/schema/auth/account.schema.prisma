@@ -2,6 +2,13 @@ model Account {
   id                    String    @id
   accountId             String
   providerId            String
+  // Required by Better Auth's internal account schema (z.string(), not
+  // nullish) — missing here because the CLI that generated this file
+  // (@better-auth/cli@1.4.21) predates this field, which the installed
+  // better-auth@1.7.0 core library actually expects. For the credential
+  // provider this is always "local:<providerId>" — see
+  // createLocalAccountIssuer in @better-auth/core.
+  issuer                String
   userId                String
   user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   accessToken           String?

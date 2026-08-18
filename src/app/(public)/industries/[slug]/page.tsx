@@ -5,7 +5,7 @@ import { notFound } from "next/navigation";
 import { ArrowRight, Check } from "lucide-react";
 
 import { Container } from "@/components/layout/container";
-import { ProductCarouselSection } from "@/components/product/product-carousel-section";
+import { ProductCarouselSection } from "@/features/catalog/components/product-carousel-section";
 import { Icon } from "@/components/shared/icon";
 import { PageHeader } from "@/components/shared/page-header";
 import { WhatsAppButton } from "@/components/shared/whatsapp-button";
@@ -15,7 +15,7 @@ import {
   getIndustryBySlug,
   getIndustryProducts,
   getIndustryServices,
-} from "@/lib/api";
+} from "@/features/content/services/content";
 
 export async function generateStaticParams() {
   const industries = await getIndustries();

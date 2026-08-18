@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 
 import { Container } from "@/components/layout/container";
-import { QuoteRequestForm } from "@/components/rfq/quote-request-form";
-import { RfqSidebar } from "@/components/rfq/rfq-sidebar";
+import { QuoteRequestForm } from "@/features/enquiries/components/quote-request-form";
+import { RfqSidebar } from "@/features/enquiries/components/rfq-sidebar";
 import { PageHeader } from "@/components/shared/page-header";
-import { ENQUIRY_TYPES } from "@/lib/rfq";
+import { ENQUIRY_TYPES } from "@/features/enquiries/services/rfq";
 
 export const metadata: Metadata = {
   title: "Request a quotation",

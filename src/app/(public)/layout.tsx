@@ -1,8 +1,8 @@
-import { CartProvider } from "@/components/cart/cart-provider";
+import { CartProvider } from "@/features/cart/components/cart-provider";
 import { Footer } from "@/components/layout/site-footer";
 import { SiteHeader } from "@/components/layout/site-header";
 import { WhatsAppButton } from "@/components/shared/whatsapp-button";
-import { getProducts } from "@/lib/api";
+import { getProducts } from "@/features/catalog/services";
 
 /**
  * Public site shell.

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 
-import { CheckoutForm } from "@/components/cart/checkout-form";
+import { CheckoutForm } from "@/features/cart/components/checkout-form";
 import { Container } from "@/components/layout/container";
 import { PageHeader } from "@/components/shared/page-header";
 

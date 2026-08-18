@@ -1,4 +1,10 @@
-import type { Feature, Post, Promotion, ServiceHighlight, Testimonial } from "@/types";
+import type {
+  Feature,
+  Post,
+  Promotion,
+  ServiceHighlight,
+  Testimonial,
+} from "@/features/content/types";
 
 /**
  * Marketing content for the home page.

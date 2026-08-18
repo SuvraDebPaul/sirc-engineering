@@ -9,7 +9,7 @@ import { Icon } from "@/components/shared/icon";
 import { PageHeader } from "@/components/shared/page-header";
 import { WhatsAppButton } from "@/components/shared/whatsapp-button";
 import { Button } from "@/components/ui/button";
-import { getIndustries } from "@/lib/api";
+import { getIndustries } from "@/features/content/services/content";
 
 export const metadata: Metadata = {
   title: "Industries we serve",

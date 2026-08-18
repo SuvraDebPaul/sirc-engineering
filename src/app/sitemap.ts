@@ -4,11 +4,13 @@ import { siteConfig } from "@/config/site";
 import {
   getBrands,
   getCategories,
+  getProducts,
+} from "@/features/catalog/services";
+import {
   getIndustries,
   getPosts,
-  getProducts,
   getServices,
-} from "@/lib/api";
+} from "@/features/content/services/content";
 
 /**
  * Sitemap.

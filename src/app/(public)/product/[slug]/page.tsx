@@ -4,25 +4,32 @@ import { notFound } from "next/navigation";
 import { CalendarClock, PackageCheck, ShieldCheck, Truck } from "lucide-react";
 
 import { Container } from "@/components/layout/container";
-import { ProductAssurance } from "@/components/product/product-assurance";
-import { ProductBuyBox } from "@/components/product/product-buy-box";
-import { ProductCarouselSection } from "@/components/product/product-carousel-section";
-import { ProductDescription } from "@/components/product/product-description";
-import { ProductDocuments } from "@/components/product/product-documents";
-import { ProductGallery } from "@/components/product/product-gallery";
-import { ProductQuestions } from "@/components/product/product-questions";
-import { ProductSpecs, ProductShipping } from "@/components/product/product-info-panels";
-import { ProductReviews } from "@/components/product/product-reviews";
-import { ProductTabs } from "@/components/product/product-tabs";
-import { StarRating } from "@/components/product/star-rating";
-import { StickyBuyBar } from "@/components/product/sticky-buy-bar";
+import { ProductAssurance } from "@/features/catalog/components/product-assurance";
+import { ProductBuyBox } from "@/features/catalog/components/product-buy-box";
+import { ProductCarouselSection } from "@/features/catalog/components/product-carousel-section";
+import { ProductDescription } from "@/features/catalog/components/product-description";
+import { ProductDocuments } from "@/features/catalog/components/product-documents";
+import { ProductGallery } from "@/features/catalog/components/product-gallery";
+import { ProductQuestions } from "@/features/catalog/components/product-questions";
+import { ProductSpecs, ProductShipping } from "@/features/catalog/components/product-info-panels";
+import { ProductReviews } from "@/features/catalog/components/product-reviews";
+import { ProductTabs } from "@/features/catalog/components/product-tabs";
+import { StarRating } from "@/features/catalog/components/star-rating";
+import { StickyBuyBar } from "@/features/catalog/components/sticky-buy-bar";
 import { Breadcrumbs } from "@/components/shared/breadcrumbs";
-import { getProductDetail, getProducts, getRelatedProducts } from "@/lib/api";
-import { complementaryProducts } from "@/lib/complements";
+import {
+  getProductDetail,
+  getProducts,
+  getRelatedProducts,
+} from "@/features/catalog/services";
+import { complementaryProducts } from "@/features/catalog/services/complements";
 import { formatBDT } from "@/lib/format";
-import { STOCK_LABEL, discountPercent, resolvePriceDisplay } from "@/lib/product";
+import { STOCK_LABEL, discountPercent, resolvePriceDisplay } from "@/features/catalog/services/product";
 import { cn } from "@/lib/utils";
-import type { PriceDisplay, StockStatus } from "@/types";
+import type {
+  PriceDisplay,
+  StockStatus,
+} from "@/features/catalog/types";
 
 /** Anchors the sticky bar: it appears once this element scrolls out of view. */
 const BUY_BOX_ID = "buy-box";
