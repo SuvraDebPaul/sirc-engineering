@@ -16,6 +16,7 @@ import {
   getIndustryProducts,
   getIndustryServices,
 } from "@/features/content/services/content";
+import { getSiteSettings } from "@/features/settings/services/settings";
 
 export async function generateStaticParams() {
   const industries = await getIndustries();
@@ -49,9 +50,10 @@ export default async function IndustryPage({ params }: PageProps<"/industries/[s
 
   if (!industry) notFound();
 
-  const [products, services] = await Promise.all([
+  const [products, services, settings] = await Promise.all([
     getIndustryProducts(industry),
     getIndustryServices(industry),
+    getSiteSettings(),
   ]);
 
   return (
@@ -157,6 +159,7 @@ export default async function IndustryPage({ params }: PageProps<"/industries/[s
               </Button>
 
               <WhatsAppButton
+                whatsapp={settings.whatsapp}
                 className="mt-3 w-full"
                 label="Ask on WhatsApp"
                 message={`Hello, I work in ${industry.name} and would like to discuss measurement and calibration.`}

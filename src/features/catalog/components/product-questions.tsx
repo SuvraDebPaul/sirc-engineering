@@ -29,9 +29,11 @@ import { emptyQuestionState } from "@/features/enquiries/services/questions";
 export function ProductQuestions({
   productName,
   model,
+  whatsapp,
 }: {
   productName: string;
   model: string;
+  whatsapp: string;
 }) {
   const [state, formAction, isPending] = useActionState(askProductQuestion, emptyQuestionState);
   const summaryRef = useRef<HTMLDivElement>(null);
@@ -57,6 +59,7 @@ export function ProductQuestions({
         <div className="mt-5">
           <p className="text-sm font-medium">Need an answer today?</p>
           <WhatsAppButton
+            whatsapp={whatsapp}
             className="mt-3"
             label="Ask on WhatsApp"
             message={`Hello, I have a question about the ${productName} (${model}).`}

@@ -23,6 +23,7 @@ import {
   getRelatedProducts,
 } from "@/features/catalog/services";
 import { complementaryProducts } from "@/features/catalog/services/complements";
+import { getSiteSettings } from "@/features/settings/services/settings";
 import { formatBDT } from "@/lib/format";
 import { STOCK_LABEL, discountPercent, resolvePriceDisplay } from "@/features/catalog/services/product";
 import { cn } from "@/lib/utils";
@@ -90,7 +91,7 @@ const priceLabel = (price: PriceDisplay): string => {
 
 export default async function ProductPage({ params }: PageProps<"/product/[slug]">) {
   const { slug } = await params;
-  const result = await getProductDetail(slug);
+  const [result, settings] = await Promise.all([getProductDetail(slug), getSiteSettings()]);
 
   if (!result) notFound();
 
@@ -232,6 +233,7 @@ export default async function ProductPage({ params }: PageProps<"/product/[slug]
               documents={detail.documents}
               productName={product.name}
               model={product.modelNumber}
+              whatsapp={settings.whatsapp}
             />
           </div>
         </div>
@@ -264,7 +266,11 @@ export default async function ProductPage({ params }: PageProps<"/product/[slug]
         </div>
 
         <div className="mt-16 border-t pt-12">
-          <ProductQuestions productName={product.name} model={product.modelNumber} />
+          <ProductQuestions
+            productName={product.name}
+            model={product.modelNumber}
+            whatsapp={settings.whatsapp}
+          />
         </div>
 
         <div className="mt-20 space-y-16">

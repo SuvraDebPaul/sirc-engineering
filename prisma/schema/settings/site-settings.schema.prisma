@@ -1,0 +1,25 @@
+/// Sitewide identity and contact details editable from the admin panel.
+///
+/// Singleton row, always at id "singleton" — there is exactly one site, so
+/// this is read with `findUnique` and written with `upsert`, never a list.
+///
+/// `socialLinks` is a JSON array rather than a child table: it is a short,
+/// always-edited-as-a-whole list, and a relational table would add a join
+/// for something that never needs its own query.
+model SiteSettings {
+  id               String   @id @default("singleton")
+  name             String
+  shortDescription String
+  description      String
+  logoUrl          String?
+  phone            String
+  whatsapp         String
+  email            String
+  address          String
+  hours            String
+  /// Array of { label, href, icon }.
+  socialLinks      Json     @default("[]")
+  updatedAt        DateTime @updatedAt
+
+  @@map("site_settings")
+}

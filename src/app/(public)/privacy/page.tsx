@@ -4,7 +4,7 @@ import { AlertTriangle } from "lucide-react";
 
 import { Container } from "@/components/layout/container";
 import { PageHeader } from "@/components/shared/page-header";
-import { contactInfo, siteConfig } from "@/config/site";
+import { getSiteSettings } from "@/features/settings/services/settings";
 
 export const metadata: Metadata = {
   title: "Privacy policy",
@@ -31,11 +31,17 @@ export const metadata: Metadata = {
  *
  * If any of that changes, this page must change with it.
  */
-const SECTIONS: { heading: string; paragraphs: string[] }[] = [
+function buildSections(settings: {
+  name: string;
+  address: string;
+  email: string;
+  phone: string;
+}): { heading: string; paragraphs: string[] }[] {
+  return [
   {
     heading: "Who we are",
     paragraphs: [
-      `This site is operated by ${siteConfig.name}, ${contactInfo.address}. If you have any question about how your information is handled, contact us at ${contactInfo.email} or ${contactInfo.phone}.`,
+      `This site is operated by ${settings.name}, ${settings.address}. If you have any question about how your information is handled, contact us at ${settings.email} or ${settings.phone}.`,
     ],
   },
   {
@@ -87,9 +93,13 @@ const SECTIONS: { heading: string; paragraphs: string[] }[] = [
       "If we add anything that changes what is collected — analytics, a payment processor, a newsletter — this page will be updated before that change goes live, not after.",
     ],
   },
-];
+  ];
+}
 
-export default function PrivacyPage() {
+export default async function PrivacyPage() {
+  const settings = await getSiteSettings();
+  const SECTIONS = buildSections(settings);
+
   return (
     <>
       <PageHeader

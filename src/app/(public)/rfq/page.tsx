@@ -5,6 +5,7 @@ import { QuoteRequestForm } from "@/features/enquiries/components/quote-request-
 import { RfqSidebar } from "@/features/enquiries/components/rfq-sidebar";
 import { PageHeader } from "@/components/shared/page-header";
 import { ENQUIRY_TYPES } from "@/features/enquiries/services/rfq";
+import { getSiteSettings } from "@/features/settings/services/settings";
 
 export const metadata: Metadata = {
   title: "Request a quotation",
@@ -34,6 +35,7 @@ export default async function RfqPage({ searchParams }: PageProps<"/rfq">) {
 
   const sku = (rawSku ?? "").trim().slice(0, MAX_SKU_LENGTH);
   const enquiryType = ENQUIRY_TYPES.find((entry) => entry.value === rawType)?.value ?? "purchase";
+  const settings = await getSiteSettings();
 
   return (
     <>
@@ -45,7 +47,7 @@ export default async function RfqPage({ searchParams }: PageProps<"/rfq">) {
 
       <Container className="pb-20">
         <div className="grid gap-8 lg:grid-cols-[1fr_20rem] lg:gap-10">
-          <QuoteRequestForm defaultSku={sku} defaultEnquiryType={enquiryType} />
+          <QuoteRequestForm defaultSku={sku} defaultEnquiryType={enquiryType} phone={settings.phone} />
           <RfqSidebar />
         </div>
       </Container>

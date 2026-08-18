@@ -1,10 +1,10 @@
 model User {
-  id            String    @id
+  id            String    @id @default(uuid())
   name          String
   email         String
   emailVerified Boolean   @default(false)
   image         String?
-  role          String    @default("admin")
+  role          String    @default("customer")
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
   sessions      Session[]

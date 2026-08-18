@@ -1,4 +1,6 @@
 import { headers } from "next/headers";
+import Link from "next/link";
+import { Settings } from "lucide-react";
 
 import { auth } from "@/lib/db/auth";
 import { SignOutButton } from "@/features/admin/components/sign-out-button";
@@ -18,9 +20,21 @@ export default async function AdminDashboardPage() {
         <SignOutButton />
       </div>
 
-      <p className="mt-8 text-sm text-muted-foreground">
-        This is a placeholder — the real dashboard (products, categories,
-        orders, content) comes next.
+      <Link
+        href="/admin/settings"
+        className="mt-8 flex items-center gap-3 rounded-xl border p-4 transition-colors hover:bg-muted/50"
+      >
+        <Settings className="size-5 text-primary" aria-hidden="true" />
+        <span>
+          <span className="block text-sm font-medium">Site settings</span>
+          <span className="block text-sm text-muted-foreground">
+            Logo, contact details and social links
+          </span>
+        </span>
+      </Link>
+
+      <p className="mt-6 text-sm text-muted-foreground">
+        More sections — products, categories, orders, content — come next.
       </p>
     </div>
   );

@@ -1,6 +1,6 @@
 import { Clock, Mail, MapPin, Phone } from "lucide-react";
 
-import { contactInfo } from "@/config/site";
+import { getSiteSettings } from "@/features/settings/services/settings";
 
 /**
  * Support column beside the form.
@@ -26,7 +26,9 @@ const STEPS = [
   },
 ];
 
-export function RfqSidebar() {
+export async function RfqSidebar() {
+  const contactInfo = await getSiteSettings();
+
   return (
     <aside className="space-y-5" aria-label="How this works">
       <section className="rounded-2xl border bg-card p-6">

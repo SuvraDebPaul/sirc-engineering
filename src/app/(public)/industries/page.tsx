@@ -10,6 +10,7 @@ import { PageHeader } from "@/components/shared/page-header";
 import { WhatsAppButton } from "@/components/shared/whatsapp-button";
 import { Button } from "@/components/ui/button";
 import { getIndustries } from "@/features/content/services/content";
+import { getSiteSettings } from "@/features/settings/services/settings";
 
 export const metadata: Metadata = {
   title: "Industries we serve",
@@ -26,7 +27,7 @@ export const metadata: Metadata = {
  * config for weeks without existing.
  */
 export default async function IndustriesPage() {
-  const industries = await getIndustries();
+  const [industries, settings] = await Promise.all([getIndustries(), getSiteSettings()]);
 
   return (
     <>
@@ -93,6 +94,7 @@ export default async function IndustriesPage() {
               </Button>
 
               <WhatsAppButton
+                whatsapp={settings.whatsapp}
                 label="Ask on WhatsApp"
                 message="Hello, I would like to discuss measurement and calibration for our plant."
               />

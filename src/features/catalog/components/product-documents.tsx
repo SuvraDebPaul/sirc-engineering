@@ -28,10 +28,12 @@ export function ProductDocuments({
   documents,
   productName,
   model,
+  whatsapp,
 }: {
   documents: ProductDocument[];
   productName: string;
   model: string;
+  whatsapp: string;
 }) {
   if (documents.length === 0) return null;
 
@@ -85,6 +87,7 @@ export function ProductDocuments({
         </p>
 
         <WhatsAppButton
+          whatsapp={whatsapp}
           className="mt-3 w-full"
           label="Ask an engineer on WhatsApp"
           message={`Hello, I have a question about the ${productName} (${model}).`}

@@ -6,11 +6,12 @@ import { Container } from "@/components/layout/container";
 import Logo from "@/components/layout/logo";
 import { MobileNav } from "@/components/layout/mobile-nav";
 import { Button } from "@/components/ui/button";
-import { contactInfo, mainNav, utilityNav } from "@/config/site";
+import { mainNav, utilityNav } from "@/config/site";
 import {
   getCategories,
   getProducts,
 } from "@/features/catalog/services";
+import { getSiteSettings } from "@/features/settings/services/settings";
 
 /**
  * Site header — two rows.
@@ -29,7 +30,11 @@ import {
  * chrome any more.
  */
 export async function SiteHeader() {
-  const [categories, products] = await Promise.all([getCategories(), getProducts()]);
+  const [categories, products, settings] = await Promise.all([
+    getCategories(),
+    getProducts(),
+    getSiteSettings(),
+  ]);
 
   // Counts tell the mobile drawer which categories actually hold stock, so an
   // empty one is visibly marked rather than discovered by tapping it.
@@ -45,19 +50,19 @@ export async function SiteHeader() {
         <Container className="flex h-10 items-center justify-between gap-4">
           <div className="flex min-w-0 items-center gap-4">
             <a
-              href={`tel:${contactInfo.phone}`}
+              href={`tel:${settings.phone}`}
               className="flex items-center gap-1.5 text-muted-foreground transition-colors hover:text-primary"
             >
               <Phone className="size-3.5 shrink-0" aria-hidden="true" />
-              <span className="truncate">{contactInfo.phone}</span>
+              <span className="truncate">{settings.phone}</span>
             </a>
 
             <a
-              href={`mailto:${contactInfo.email}`}
+              href={`mailto:${settings.email}`}
               className="hidden items-center gap-1.5 text-muted-foreground transition-colors hover:text-primary sm:flex"
             >
               <Mail className="size-3.5 shrink-0" aria-hidden="true" />
-              <span className="truncate">{contactInfo.email}</span>
+              <span className="truncate">{settings.email}</span>
             </a>
           </div>
 
@@ -90,7 +95,7 @@ export async function SiteHeader() {
       {/* Row 2 — masthead and main navigation, sticky */}
       <div className="sticky top-0 z-40 border-b bg-background/95 backdrop-blur">
         <Container className="flex items-center gap-6 py-3">
-          <Logo className="h-12 w-auto shrink-0" />
+          <Logo src={settings.logoUrl ?? undefined} className="h-12 w-auto shrink-0" />
 
           <nav aria-label="Main" className="hidden min-w-0 lg:block">
             <ul className="flex items-center gap-1">
@@ -128,7 +133,13 @@ export async function SiteHeader() {
             </Button>
 
             <div className="lg:hidden">
-              <MobileNav nav={mainNav} categories={categories} counts={counts} />
+              <MobileNav
+                nav={mainNav}
+                categories={categories}
+                counts={counts}
+                phone={settings.phone}
+                logoUrl={settings.logoUrl ?? undefined}
+              />
             </div>
           </div>
         </Container>

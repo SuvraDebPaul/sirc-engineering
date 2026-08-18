@@ -20,7 +20,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { contactInfo, type NavItem } from "@/config/site";
+import type { NavItem } from "@/config/site";
 import type { Category } from "@/features/catalog/types";
 
 /**
@@ -38,10 +38,14 @@ export function MobileNav({
   nav,
   categories,
   counts,
+  phone,
+  logoUrl,
 }: {
   nav: NavItem[];
   categories: Category[];
   counts: Record<string, number>;
+  phone: string;
+  logoUrl?: string;
 }) {
   const [open, setOpen] = useState(false);
 
@@ -59,7 +63,7 @@ export function MobileNav({
       <SheetContent className="w-[88vw] overflow-y-auto sm:max-w-sm">
         <SheetHeader>
           <SheetTitle className="text-left">
-            <Logo className="h-12" />
+            <Logo src={logoUrl} className="h-12" />
           </SheetTitle>
         </SheetHeader>
 
@@ -134,9 +138,9 @@ export function MobileNav({
             </Button>
 
             <Button asChild variant="outline" size="lg">
-              <a href={`tel:${contactInfo.phone}`}>
+              <a href={`tel:${phone}`}>
                 <Phone className="size-4" aria-hidden="true" />
-                {contactInfo.phone}
+                {phone}
               </a>
             </Button>
           </div>

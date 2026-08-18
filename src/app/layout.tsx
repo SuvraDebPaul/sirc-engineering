@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Instrument_Serif, Inter } from "next/font/google";
 
 import { siteConfig } from "@/config/site";
+import { getSiteSettings } from "@/features/settings/services/settings";
 import { cn } from "@/lib/utils";
 
 import "./globals.css";
@@ -25,22 +26,34 @@ const instrumentSerif = Instrument_Serif({
   display: "swap",
 });
 
-export const metadata: Metadata = {
-  metadataBase: new URL(siteConfig.url),
-  title: {
-    default: `${siteConfig.name} — ${siteConfig.shortDescription}`,
-    template: `%s · ${siteConfig.name}`,
-  },
-  description: siteConfig.description,
-  openGraph: {
-    type: "website",
-    locale: siteConfig.locale,
-    siteName: siteConfig.name,
-    title: `${siteConfig.name} — ${siteConfig.shortDescription}`,
-    description: siteConfig.description,
-  },
-  robots: { index: true, follow: true },
-};
+/**
+ * Title, description and OpenGraph tags come from the DB-backed site settings
+ * — `metadataBase`/`locale` stay in `config/site.ts`, since those are
+ * deployment concerns (which URL, which locale) rather than editable content.
+ * A static `metadata` export can't read the database, so this is
+ * `generateMetadata` instead — it runs per request, same as any Server
+ * Component.
+ */
+export async function generateMetadata(): Promise<Metadata> {
+  const settings = await getSiteSettings();
+
+  return {
+    metadataBase: new URL(siteConfig.url),
+    title: {
+      default: `${settings.name} — ${settings.shortDescription}`,
+      template: `%s · ${settings.name}`,
+    },
+    description: settings.description,
+    openGraph: {
+      type: "website",
+      locale: siteConfig.locale,
+      siteName: settings.name,
+      title: `${settings.name} — ${settings.shortDescription}`,
+      description: settings.description,
+    },
+    robots: { index: true, follow: true },
+  };
+}
 
 export const viewport: Viewport = {
   themeColor: [

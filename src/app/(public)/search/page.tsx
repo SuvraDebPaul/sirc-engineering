@@ -7,6 +7,7 @@ import { CatalogBrowser } from "@/features/catalog/components/catalog-browser";
 import { PageHeader } from "@/components/shared/page-header";
 import { WhatsAppButton } from "@/components/shared/whatsapp-button";
 import { getProducts } from "@/features/catalog/services";
+import { getSiteSettings } from "@/features/settings/services/settings";
 
 export const metadata: Metadata = {
   title: "Search",
@@ -33,7 +34,7 @@ const POPULAR = ["Fluke", "Megger", "insulation", "thermal", "calibrator", "clam
 
 export default async function SearchPage({ searchParams }: PageProps<"/search">) {
   const params = await searchParams;
-  const products = await getProducts();
+  const [products, settings] = await Promise.all([getProducts(), getSiteSettings()]);
 
   const raw = Array.isArray(params.q) ? params.q[0] : params.q;
   const query = (raw ?? "").trim();
@@ -114,6 +115,7 @@ export default async function SearchPage({ searchParams }: PageProps<"/search">)
 
             <div className="mt-6 flex justify-center">
               <WhatsAppButton
+                whatsapp={settings.whatsapp}
                 message="Hello, I am looking for an instrument and would like some help."
                 label="Ask us on WhatsApp"
               />

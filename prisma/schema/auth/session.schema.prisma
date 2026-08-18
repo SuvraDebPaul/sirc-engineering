@@ -1,5 +1,5 @@
 model Session {
-  id        String   @id
+  id        String   @id @default(uuid())
   expiresAt DateTime
   token     String
   createdAt DateTime @default(now())

@@ -3,6 +3,7 @@ import { Footer } from "@/components/layout/site-footer";
 import { SiteHeader } from "@/components/layout/site-header";
 import { WhatsAppButton } from "@/components/shared/whatsapp-button";
 import { getProducts } from "@/features/catalog/services";
+import { getSiteSettings } from "@/features/settings/services/settings";
 
 /**
  * Public site shell.
@@ -19,7 +20,7 @@ import { getProducts } from "@/features/catalog/services";
 export default async function PublicLayout({ children }: LayoutProps<"/">) {
   // The catalogue is handed to the cart so stored lines always resolve against
   // current prices rather than whatever they cost when they were added.
-  const products = await getProducts();
+  const [products, settings] = await Promise.all([getProducts(), getSiteSettings()]);
 
   return (
     <CartProvider products={products}>
@@ -30,6 +31,7 @@ export default async function PublicLayout({ children }: LayoutProps<"/">) {
       {/* One tap to a human, on every page. In this market it converts better
           than any form — and it is a plain link, so it costs nothing. */}
       <WhatsAppButton
+        whatsapp={settings.whatsapp}
         variant="floating"
         message="Hello, I have a question about your instruments and services."
       />

@@ -10,7 +10,7 @@ import { Testimonial } from "@/features/home/components/testimonial";
 import { TrendingProducts } from "@/features/home/components/trending-products";
 import { TrustStrip } from "@/features/home/components/trust-strip";
 import { Container } from "@/components/layout/container";
-import { siteConfig } from "@/config/site";
+import { getSiteSettings } from "@/features/settings/services/settings";
 import FeaturedProducts from "@/features/home/components/featured-products";
 import {
   getBrands,
@@ -39,7 +39,7 @@ import {
  * category carousel, product tabs and card actions ship JavaScript.
  */
 export default async function HomePage() {
-  const [brands, categories, features, heroSlides, posts, products, promotions, services, testimonials] =
+  const [brands, categories, features, heroSlides, posts, products, promotions, services, testimonials, settings] =
     await Promise.all([
       getBrands(),
       getCategories(),
@@ -50,6 +50,7 @@ export default async function HomePage() {
       getPromotions(),
       getServices(),
       getTestimonials(),
+      getSiteSettings(),
     ]);
 
   const promo = (id: string) => promotions.find((item) => item.id === id);
@@ -71,7 +72,7 @@ export default async function HomePage() {
         heading into a design that does not want one.
       */}
       <h1 className="sr-only">
-        {siteConfig.name} — {siteConfig.shortDescription}
+        {settings.name} — {settings.shortDescription}
       </h1>
 
       <Container>

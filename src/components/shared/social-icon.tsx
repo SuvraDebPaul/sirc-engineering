@@ -20,6 +20,9 @@ const PATHS: Record<string, string> = {
     "M23.499 6.203a3.008 3.008 0 0 0-2.089-2.089c-1.87-.501-9.4-.501-9.4-.501s-7.509-.01-9.399.501a3.008 3.008 0 0 0-2.088 2.09A31.258 31.258 0 0 0 0 12.001a31.26 31.26 0 0 0 .523 5.798 3.008 3.008 0 0 0 2.088 2.088c1.868.502 9.399.502 9.399.502s7.509 0 9.4-.502a3.008 3.008 0 0 0 2.089-2.088A31.24 31.24 0 0 0 24 12.001a31.24 31.24 0 0 0-.501-5.798zM9.609 15.601V8.401l6.264 3.6z",
 };
 
+/** The glyphs this component can actually draw — for building icon pickers elsewhere. */
+export const SOCIAL_ICON_NAMES = Object.keys(PATHS) as (keyof typeof PATHS)[];
+
 export function SocialIcon({ name, className }: { name: string; className?: string }) {
   const path = PATHS[name];
   if (!path) return null;

@@ -10,7 +10,6 @@ import { FormField } from "@/components/ui/form-field";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { ENQUIRY_TYPES, emptyFormState } from "@/features/enquiries/services/rfq";
-import { contactInfo } from "@/config/site";
 
 /**
  * Quotation request form.
@@ -32,9 +31,11 @@ import { contactInfo } from "@/config/site";
 export function QuoteRequestForm({
   defaultSku = "",
   defaultEnquiryType = "purchase",
+  phone,
 }: {
   defaultSku?: string;
   defaultEnquiryType?: string;
+  phone: string;
 }) {
   const [state, formAction, isPending] = useActionState(submitQuoteRequest, emptyFormState);
   const summaryRef = useRef<HTMLDivElement>(null);
@@ -66,8 +67,8 @@ export function QuoteRequestForm({
 
         <p className="mt-4 text-sm text-muted-foreground">
           Need it sooner? Call{" "}
-          <a href={`tel:${contactInfo.phone}`} className="font-medium text-primary hover:underline">
-            {contactInfo.phone}
+          <a href={`tel:${phone}`} className="font-medium text-primary hover:underline">
+            {phone}
           </a>{" "}
           and quote your reference.
         </p>

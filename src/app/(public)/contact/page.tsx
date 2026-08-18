@@ -4,7 +4,7 @@ import { Clock, Mail, MapPin, Phone } from "lucide-react";
 import { ContactForm } from "@/features/enquiries/components/contact-form";
 import { Container } from "@/components/layout/container";
 import { PageHeader } from "@/components/shared/page-header";
-import { contactInfo } from "@/config/site";
+import { getSiteSettings } from "@/features/settings/services/settings";
 
 export const metadata: Metadata = {
   title: "Contact us",
@@ -18,25 +18,23 @@ export const metadata: Metadata = {
  * The map is an OpenStreetMap embed rather than Google Maps: no API key, no
  * billing account, and it does not drop advertising cookies on a page the
  * visitor only opened to find a phone number. It is centred on Dhaka rather
- * than dropping a pin, because the street address in the config is still a
- * placeholder — a marker on a made-up building is worse than no marker.
- *
- * ⚠️ The phone number, email and address all come from `config/site.ts` and
- * are placeholders. They must be replaced before launch; this page is where
- * their being wrong would cost the most.
+ * than dropping a pin — an admin-entered address has no coordinates to plot,
+ * so a marker on a guessed building would be worse than no marker.
  */
-const TILES = [
-  { icon: MapPin, label: "Visit us", value: contactInfo.address },
-  { icon: Phone, label: "Call us", value: contactInfo.phone, href: `tel:${contactInfo.phone}` },
-  { icon: Mail, label: "Mail us", value: contactInfo.email, href: `mailto:${contactInfo.email}` },
-  { icon: Clock, label: "Open hours", value: contactInfo.hours },
-];
-
 /** Dhaka, wide enough that it reads as "the city" rather than "this building". */
 const MAP_SRC =
   "https://www.openstreetmap.org/export/embed.html?bbox=90.33%2C23.70%2C90.46%2C23.82&layer=mapnik";
 
-export default function ContactPage() {
+export default async function ContactPage() {
+  const settings = await getSiteSettings();
+
+  const TILES = [
+    { icon: MapPin, label: "Visit us", value: settings.address },
+    { icon: Phone, label: "Call us", value: settings.phone, href: `tel:${settings.phone}` },
+    { icon: Mail, label: "Mail us", value: settings.email, href: `mailto:${settings.email}` },
+    { icon: Clock, label: "Open hours", value: settings.hours },
+  ];
+
   return (
     <>
       <PageHeader
@@ -57,7 +55,7 @@ export default function ContactPage() {
             />
           </div>
 
-          <ContactForm />
+          <ContactForm phone={settings.phone} />
         </div>
 
         <ul className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">

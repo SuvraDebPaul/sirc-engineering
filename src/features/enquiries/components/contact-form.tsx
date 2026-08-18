@@ -9,7 +9,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { FormField } from "@/components/ui/form-field";
 import { Textarea } from "@/components/ui/textarea";
-import { contactInfo } from "@/config/site";
 
 /**
  * "Get in touch with us" — the panel beside the map in the reference design.
@@ -18,7 +17,7 @@ import { contactInfo } from "@/config/site";
  * posts without JavaScript, server-side validation, values echoed back on
  * failure, and an error summary that takes focus on every failed attempt.
  */
-export function ContactForm() {
+export function ContactForm({ phone }: { phone: string }) {
   const [state, formAction, isPending] = useActionState(submitContact, emptyContactState);
   const summaryRef = useRef<HTMLDivElement>(null);
 
@@ -41,8 +40,8 @@ export function ContactForm() {
 
         <p className="mt-4 text-sm text-muted-foreground">
           Need us sooner? Call{" "}
-          <a href={`tel:${contactInfo.phone}`} className="font-medium text-primary hover:underline">
-            {contactInfo.phone}
+          <a href={`tel:${phone}`} className="font-medium text-primary hover:underline">
+            {phone}
           </a>
           .
         </p>

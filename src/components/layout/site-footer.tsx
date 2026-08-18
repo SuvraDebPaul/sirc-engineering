@@ -5,7 +5,8 @@ import { Container } from "@/components/layout/container";
 import Logo from "@/components/layout/logo";
 import { SocialIcon } from "@/components/shared/social-icon";
 import { Button } from "@/components/ui/button";
-import { contactInfo, footerNav, siteConfig, socialLinks } from "@/config/site";
+import { footerNav } from "@/config/site";
+import { getSiteSettings } from "@/features/settings/services/settings";
 
 /**
  * Site footer.
@@ -23,22 +24,23 @@ import { contactInfo, footerNav, siteConfig, socialLinks } from "@/config/site";
  * The year is computed at render. A hardcoded one silently goes stale, which
  * is exactly what happened to the block this replaces.
  */
-export function Footer() {
+export async function Footer() {
   const year = new Date().getFullYear();
+  const settings = await getSiteSettings();
 
   return (
     <footer className="mt-20 border-t bg-muted/30">
       <Container className="py-14">
         <div className="grid gap-10 lg:grid-cols-[1.4fr_repeat(3,1fr)_1.3fr]">
           <div>
-            <Logo className="h-14 w-auto" />
+            <Logo src={settings.logoUrl ?? undefined} className="h-14 w-auto" />
 
             <p className="mt-4 max-w-xs text-sm leading-relaxed text-muted-foreground">
-              {siteConfig.description}
+              {settings.description}
             </p>
 
             <ul className="mt-5 flex items-center gap-2">
-              {socialLinks.map((social) => (
+              {settings.socialLinks.map((social) => (
                 <li key={social.label}>
                   <a
                     href={social.href}
@@ -91,10 +93,10 @@ export function Footer() {
                   aria-hidden="true"
                 />
                 <a
-                  href={`tel:${contactInfo.phone}`}
+                  href={`tel:${settings.phone}`}
                   className="hover:text-primary"
                 >
-                  {contactInfo.phone}
+                  {settings.phone}
                 </a>
               </li>
 
@@ -105,10 +107,10 @@ export function Footer() {
                   aria-hidden="true"
                 />
                 <a
-                  href={`mailto:${contactInfo.email}`}
+                  href={`mailto:${settings.email}`}
                   className="break-all hover:text-primary"
                 >
-                  {contactInfo.email}
+                  {settings.email}
                 </a>
               </li>
 
@@ -119,7 +121,7 @@ export function Footer() {
                   aria-hidden="true"
                 />
                 <span className="text-muted-foreground">
-                  {contactInfo.address}
+                  {settings.address}
                 </span>
               </li>
 
@@ -130,7 +132,7 @@ export function Footer() {
                   aria-hidden="true"
                 />
                 <span className="text-muted-foreground">
-                  {contactInfo.hours}
+                  {settings.hours}
                 </span>
               </li>
             </ul>
@@ -146,10 +148,10 @@ export function Footer() {
 
         <div className="mt-12 flex flex-col items-center justify-between gap-3 border-t pt-6 text-xs text-muted-foreground sm:flex-row">
           <p>
-            © {year} {siteConfig.name}. All rights reserved.
+            © {year} {settings.name}. All rights reserved.
           </p>
 
-          <p>{siteConfig.shortDescription}</p>
+          <p>{settings.shortDescription}</p>
         </div>
       </Container>
     </footer>
