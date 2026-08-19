@@ -6,6 +6,7 @@ import { redirect } from "next/navigation";
 import { roleRedirectPath } from "../services/role-redirect";
 import { APIError } from "better-auth";
 import { z } from "zod";
+import { logUnexpectedError } from "../services/log-unexpected-error";
 
 export interface LoginResult {
   errors?: Partial<Record<"email" | "password" | "form", string>>;
@@ -19,13 +20,16 @@ export async function login(data: LoginInput): Promise<LoginResult | void> {
     };
   }
 
+  let redirectTo: string;
   try {
     const { user } = await auth.api.signInEmail({ body: result.data });
-    redirect(roleRedirectPath(user.role));
+    redirectTo = roleRedirectPath(user.role);
   } catch (error) {
     if (error instanceof APIError) {
       return { errors: { form: "Incorrect email or password." } };
     }
-    throw error;
+    return { errors: { form: logUnexpectedError("login", error) } };
   }
+
+  redirect(redirectTo);
 }

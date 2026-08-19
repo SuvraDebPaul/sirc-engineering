@@ -1,9 +1,10 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { AlertCircle, Loader2 } from "lucide-react";
+import { AlertCircle, Eye, EyeOff, Loader2 } from "lucide-react";
 
 import {
   registerSchema,
@@ -16,6 +17,8 @@ import { Input } from "@/components/ui/input";
 import { FormField } from "@/components/ui/form-field";
 
 export function RegisterForm() {
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const {
     register: registerField,
     handleSubmit,
@@ -84,12 +87,28 @@ export function RegisterForm() {
           error={errors.password?.message}
         >
           {(props) => (
-            <Input
-              {...props}
-              type="password"
-              autoComplete="new-password"
-              {...registerField("password")}
-            />
+            <div className="relative">
+              <Input
+                {...props}
+                type={showPassword ? "text" : "password"}
+                autoComplete="new-password"
+                className="pr-10"
+                {...registerField("password")}
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword((v) => !v)}
+                tabIndex={-1}
+                className="absolute inset-y-0 right-0 flex items-center px-3 text-muted-foreground hover:text-foreground"
+                aria-label={showPassword ? "Hide password" : "Show password"}
+              >
+                {showPassword ? (
+                  <EyeOff className="size-4" aria-hidden="true" />
+                ) : (
+                  <Eye className="size-4" aria-hidden="true" />
+                )}
+              </button>
+            </div>
           )}
         </FormField>
 
@@ -100,12 +119,28 @@ export function RegisterForm() {
           error={errors.confirmPassword?.message}
         >
           {(props) => (
-            <Input
-              {...props}
-              type="password"
-              autoComplete="new-password"
-              {...registerField("confirmPassword")}
-            />
+            <div className="relative">
+              <Input
+                {...props}
+                type={showConfirmPassword ? "text" : "password"}
+                autoComplete="new-password"
+                className="pr-10"
+                {...registerField("confirmPassword")}
+              />
+              <button
+                type="button"
+                onClick={() => setShowConfirmPassword((v) => !v)}
+                tabIndex={-1}
+                className="absolute inset-y-0 right-0 flex items-center px-3 text-muted-foreground hover:text-foreground"
+                aria-label={showConfirmPassword ? "Hide password" : "Show password"}
+              >
+                {showConfirmPassword ? (
+                  <EyeOff className="size-4" aria-hidden="true" />
+                ) : (
+                  <Eye className="size-4" aria-hidden="true" />
+                )}
+              </button>
+            </div>
           )}
         </FormField>
 

@@ -1,11 +1,16 @@
 "use server";
 
-import { auth } from "@/lib/db/auth";
-import { RegisterInput, registerSchema } from "../schemas/register.schema";
-import { firstFieldErrors } from "@/features/auth/schemas/format-zod-errors";
 import { redirect } from "next/navigation";
-import { roleRedirectPath } from "../services/role-redirect";
 import { APIError } from "better-auth";
+
+import { auth } from "@/lib/db/auth";
+import {
+  registerSchema,
+  type RegisterInput,
+} from "@/features/auth/schemas/register.schema";
+import { firstFieldErrors } from "@/features/auth/schemas/format-zod-errors";
+import { roleRedirectPath } from "@/features/auth/services/role-redirect";
+import { logUnexpectedError } from "@/features/auth/services/log-unexpected-error";
 import { z } from "zod";
 
 export interface RegisterResult {
@@ -23,6 +28,8 @@ export async function register(
       errors: firstFieldErrors(z.flattenError(result.error).fieldErrors),
     };
   }
+
+  let redirectTo: string;
   try {
     const { user } = await auth.api.signUpEmail({
       body: {
@@ -31,11 +38,20 @@ export async function register(
         password: result.data.password,
       },
     });
-    redirect(roleRedirectPath(user.role));
+    redirectTo = user.emailVerified
+      ? roleRedirectPath(user.role)
+      : "/verify-email";
   } catch (error) {
-    if (error instanceof APIError) {
-      return { errors: { form: "Something went wrong. Please try again" } };
+    if (
+      error instanceof APIError &&
+      error.body?.code === "USER_ALREADY_EXISTS_USE_ANOTHER_EMAIL"
+    ) {
+      return {
+        errors: { email: "An account with this email already exists." },
+      };
     }
-    throw error;
+    return { errors: { form: logUnexpectedError("register", error) } };
   }
+
+  redirect(redirectTo);
 }
