@@ -1,7 +1,5 @@
-import { deliverEnquiry } from "@/features/enquiries/services/enquiry-delivery";
-
 /**
- * Article comments.
+ * Article comments — shape and validation.
  *
  * A submitted comment is validated, given a reference, and stored as an
  * `Enquiry` row — visible to staff at `/admin/enquiries` — with the business
@@ -12,6 +10,10 @@ import { deliverEnquiry } from "@/features/enquiries/services/enquiry-delivery";
  * quietly shipped by accident. Publishing is a separate, unbuilt feature —
  * whatever that turns out to be, it must moderate before publishing: an
  * unmoderated comment form on a public site is a spam target within days.
+ *
+ * ⚠️ This module is imported by `CommentForm`, a Client Component — same
+ * boundary rule as `rfq.ts`: nothing server-only here. `deliverComment`
+ * lives in `submit-comment.ts` instead.
  */
 export interface CommentInput {
   postSlug: string;
@@ -61,9 +63,3 @@ export const validateComment = (
   if (Object.keys(errors).length > 0) return { ok: false, errors };
   return { ok: true, data: { postSlug, name, email, body } };
 };
-
-/** Hands off to the shared seam, which stores it for moderation and never auto-publishes. */
-export async function deliverComment(comment: CommentInput): Promise<void> {
-  const { postSlug, name, email, body } = comment;
-  await deliverEnquiry("comment", { name, email, message: body, details: { postSlug } });
-}

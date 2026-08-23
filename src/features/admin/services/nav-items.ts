@@ -11,6 +11,7 @@ import {
   Package,
   Quote,
   Settings,
+  ShieldUser,
   ShoppingCart,
   Sparkles,
   Users,
@@ -69,6 +70,9 @@ export const ADMIN_NAV: AdminNavSection[] = [
   },
   {
     title: "Configuration",
-    items: [{ label: "Settings", href: "/admin/settings", icon: Settings }],
+    items: [
+      { label: "Team", href: "/admin/team", icon: ShieldUser },
+      { label: "Settings", href: "/admin/settings", icon: Settings },
+    ],
   },
 ];

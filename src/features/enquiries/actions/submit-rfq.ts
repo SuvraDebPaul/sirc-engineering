@@ -1,10 +1,10 @@
 "use server";
 
 import {
-  deliverQuoteRequest,
   validateQuoteRequest,
   type QuoteFormState,
 } from "@/features/enquiries/services/rfq";
+import { deliverEnquiry } from "@/features/enquiries/services/enquiry-delivery";
 import { checkRateLimit, getClientIp, rateLimitMessage } from "@/lib/rate-limit";
 
 /**
@@ -75,7 +75,8 @@ export async function submitQuoteRequest(
   }
 
   try {
-    const reference = await deliverQuoteRequest(result.data);
+    const { name, email, phone, message, ...details } = result.data;
+    const reference = await deliverEnquiry("quotation", { name, email, phone, message, details });
     return { status: "success", errors: {}, values: {}, reference };
   } catch {
     // The customer must not be told "sent" when it was not. Give them the

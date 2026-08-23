@@ -1,7 +1,5 @@
-import { deliverEnquiry } from "@/features/enquiries/services/enquiry-delivery";
-
 /**
- * Quotation requests — shape, validation and delivery.
+ * Quotation requests — shape and validation.
  *
  * Validation is hand-written rather than pulled from a schema library. It is
  * nine fields with obvious rules, and a validator small enough to read in one
@@ -11,6 +9,14 @@ import { deliverEnquiry } from "@/features/enquiries/services/enquiry-delivery";
  * The rules run on the **server**, in the action. Client-side `required`
  * attributes are a convenience that a disabled-JavaScript browser, a script
  * error or a direct POST all bypass, so nothing here trusts them.
+ *
+ * ⚠️ This module is imported by `QuoteRequestForm`, a Client Component — it
+ * must never import anything that touches Prisma or another server-only
+ * dependency, or that dependency gets bundled for the browser (Node's `net`/
+ * `tls`, which Prisma's driver needs, don't exist there, and the production
+ * build fails outright rather than just warning). `deliverQuoteRequest`
+ * lives in `submit-rfq.ts` instead, which only the "use server" action
+ * imports.
  */
 
 export const ENQUIRY_TYPES = [
@@ -153,10 +159,3 @@ export const validateQuoteRequest = (formData: FormData): ValidationResult => {
     },
   };
 };
-
-
-/** Hand a validated request to the shared delivery seam. */
-export async function deliverQuoteRequest(request: QuoteRequest): Promise<string> {
-  const { name, email, phone, message, ...details } = request;
-  return deliverEnquiry("quotation", { name, email, phone, message, details });
-}

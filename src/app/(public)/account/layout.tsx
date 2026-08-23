@@ -3,7 +3,7 @@ import { LayoutDashboard, Heart, MapPin, Package } from "lucide-react";
 
 import { Container } from "@/components/layout/container";
 import { PageHeader } from "@/components/shared/page-header";
-import { SignOutButton } from "@/features/account/components/sign-out-button";
+import { AccountMenu } from "@/features/account/components/account-menu";
 import { requireSession } from "@/lib/require-session";
 
 const NAV = [
@@ -25,7 +25,15 @@ export default async function AccountLayout({ children }: LayoutProps<"/account"
       />
 
       <Container className="grid gap-8 pb-20 lg:grid-cols-[14rem_1fr]">
-        <aside className="space-y-1">
+        <aside className="space-y-4">
+          <div className="flex items-center gap-2.5 rounded-lg border p-3">
+            <AccountMenu name={session.user.name} email={session.user.email} />
+            <span className="min-w-0">
+              <span className="block truncate text-sm font-medium">{session.user.name}</span>
+              <span className="block truncate text-xs text-muted-foreground">{session.user.email}</span>
+            </span>
+          </div>
+
           <nav className="space-y-1">
             {NAV.map(({ href, label, icon: Icon }) => (
               <Link
@@ -38,10 +46,6 @@ export default async function AccountLayout({ children }: LayoutProps<"/account"
               </Link>
             ))}
           </nav>
-
-          <div className="pt-2">
-            <SignOutButton />
-          </div>
         </aside>
 
         <div className="min-w-0">{children}</div>

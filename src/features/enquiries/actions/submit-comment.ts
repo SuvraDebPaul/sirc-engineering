@@ -1,10 +1,10 @@
 "use server";
 
 import {
-  deliverComment,
   validateComment,
   type CommentFormState,
 } from "@/features/enquiries/services/comments";
+import { deliverEnquiry } from "@/features/enquiries/services/enquiry-delivery";
 import { checkRateLimit, getClientIp, rateLimitMessage } from "@/lib/rate-limit";
 
 const ECHOED = ["name", "email", "body"];
@@ -51,7 +51,8 @@ export async function submitComment(
   }
 
   try {
-    await deliverComment(result.data);
+    const { postSlug, name, email, body } = result.data;
+    await deliverEnquiry("comment", { name, email, message: body, details: { postSlug } });
     return { status: "success", errors: {}, values: {} };
   } catch {
     return {

@@ -2,35 +2,17 @@ import Link from "next/link";
 import { headers } from "next/headers";
 import { FileText, Mail, Phone, User } from "lucide-react";
 
+import { AccountMenu } from "@/features/account/components/account-menu";
 import { CartControls } from "@/features/cart/components/cart-drawer";
 import { Container } from "@/components/layout/container";
 import Logo from "@/components/layout/logo";
 import { MobileNav } from "@/components/layout/mobile-nav";
 import { Button } from "@/components/ui/button";
-import { mainNav, utilityNav } from "@/config/site";
-import {
-  getCategories,
-  getProducts,
-} from "@/features/catalog/services";
+import { mainNav } from "@/config/site";
+import { getCategories, getProducts } from "@/features/catalog/services";
 import { getSiteSettings } from "@/features/settings/services/settings";
 import { auth } from "@/lib/db/auth";
 
-/**
- * Site header — two rows.
- *
- * Row one is the utility strip: how to reach us on the left, secondary links
- * and sign-in on the right. Row two is the masthead and the main navigation,
- * which sticks to the top on scroll — pure CSS, no scroll listener.
- *
- * A server component. The only client pieces are the cart controls and the
- * mobile drawer, both of which genuinely need interaction state.
- *
- * The catalogue search and the "shop by categories" mega menu were both
- * removed at the client's request. Categories remain reachable from the mobile
- * drawer, the footer and the category facet on `/products`; the `?q=`
- * parameter still works and is still tested, it simply has no control in the
- * chrome any more.
- */
 export async function SiteHeader() {
   const [categories, products, settings, session] = await Promise.all([
     getCategories(),
@@ -71,24 +53,21 @@ export async function SiteHeader() {
 
           <nav aria-label="Secondary" className="hidden shrink-0 sm:block">
             <ul className="flex items-center gap-4">
-              {utilityNav.map((item) => (
-                <li key={item.href}>
-                  <Link
-                    href={item.href}
-                    className="whitespace-nowrap text-muted-foreground transition-colors hover:text-primary"
-                  >
-                    {item.label}
-                  </Link>
-                </li>
-              ))}
               <li>
-                <Link
-                  href={session ? "/account" : "/login"}
-                  className="flex items-center gap-1.5 whitespace-nowrap text-muted-foreground transition-colors hover:text-primary"
-                >
-                  <User className="size-3.5 shrink-0" aria-hidden="true" />
-                  {session ? "My account" : "Sign in"}
-                </Link>
+                {session ? (
+                  <AccountMenu
+                    name={session.user.name}
+                    email={session.user.email}
+                  />
+                ) : (
+                  <Link
+                    href={"/login"}
+                    className="flex items-center gap-1.5 whitespace-nowrap text-muted-foreground transition-colors hover:text-primary"
+                  >
+                    <User className="size-3.5 shrink-0" aria-hidden="true" />
+                    Sign in
+                  </Link>
+                )}
               </li>
             </ul>
           </nav>
@@ -98,7 +77,10 @@ export async function SiteHeader() {
       {/* Row 2 — masthead and main navigation, sticky */}
       <div className="sticky top-0 z-40 border-b bg-background/95 backdrop-blur">
         <Container className="flex items-center gap-6 py-3">
-          <Logo src={settings.logoUrl ?? undefined} className="h-12 w-auto shrink-0" />
+          <Logo
+            src={settings.logoUrl ?? undefined}
+            className="h-12 w-auto shrink-0"
+          />
 
           <nav aria-label="Main" className="hidden min-w-0 lg:block">
             <ul className="flex items-center gap-1">

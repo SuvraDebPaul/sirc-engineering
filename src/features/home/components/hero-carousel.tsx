@@ -12,25 +12,6 @@ import { useReducedMotion } from "@/hooks/use-reduced-motion";
 import { cn } from "@/lib/utils";
 import type { Promotion } from "@/features/content/types";
 
-/**
- * Hero carousel.
- *
- * Uses Embla directly rather than the shadcn `Carousel` wrapper because this
- * needs autoplay, dot indicators and slide-aware state — wrapping the wrapper
- * would cost more than it saves.
- *
- * Three things a rotating hero usually gets wrong, handled here:
- *
- *  - **Autoplay is disabled when the user asks for reduced motion.** A banner
- *    that moves on its own is the clearest case for honouring that setting.
- *  - **Autoplay stops on interaction and on hover**, so it never yanks a slide
- *    away from someone reading it.
- *  - **Only the first slide's image is `priority`.** Marking all three would
- *    make the browser fetch two large images nobody has seen yet and delay LCP.
- *
- * Every slide renders in the DOM regardless of JS, so the copy and links are
- * present for crawlers and if hydration never happens.
- */
 export function HeroCarousel({ slides }: { slides: Promotion[] }) {
   const reducedMotion = useReducedMotion();
 
