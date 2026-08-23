@@ -1,14 +1,18 @@
 model User {
-  id            String    @id @default(uuid())
+  id            String         @id @default(uuid())
   name          String
   email         String
-  emailVerified Boolean   @default(false)
+  emailVerified Boolean        @default(false)
   image         String?
-  role          String    @default("customer")
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  role          String         @default("customer")
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
   sessions      Session[]
   accounts      Account[]
+  orders        Order[]
+  reviews       Review[]
+  addresses     Address[]
+  wishlistItems WishlistItem[]
 
   @@unique([email])
   @@map("user")

@@ -1,0 +1,24 @@
+model Industry {
+  id       String @id @default(uuid())
+  slug     String @unique
+  name     String
+  icon     String
+  imageUrl String
+  /// One line for the card.
+  summary  String
+
+  /// string[] — intro paragraphs
+  intro         Json @default("[]")
+  /// { title: string, body: string }[] — what this sector has to measure
+  needs         Json @default("[]")
+  /// string[] — Category.name values, matched at read time rather than a
+  /// real relation, same as the product's own `categoryName` string.
+  categoryNames Json @default("[]")
+  /// string[] — Service.slug values this sector buys most
+  serviceSlugs  Json @default("[]")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("industries")
+}

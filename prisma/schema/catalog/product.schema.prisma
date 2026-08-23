@@ -1,0 +1,90 @@
+model Product {
+  id          String  @id @default(uuid())
+  name        String
+  slug        String  @unique
+  description String
+  modelNumber String
+  imageUrl    String?
+
+  categoryId      String
+  category        Category @relation(fields: [categoryId], references: [id])
+  brandId         String
+  brand           Brand    @relation(fields: [brandId], references: [id])
+  /**
+   * Secondary tag shown after the middot, e.g. "Calibration" — free text, not its own table.
+   */
+  subCategoryName String?
+
+  /**
+   * "NEW" | "TRENDING" | "LOW_STOCK" | "CLEARANCE" | null
+   */
+  badge String?
+
+  /**
+   * All prices in poisha (smallest unit) — same convention as the rest of the app.
+   */
+  retailPrice    Int?
+  compareAtPrice Int?
+  /**
+   * Set when the product has variants spanning a price range.
+   */
+  priceMin       Int?
+  priceMax       Int?
+
+  /**
+   * "IN_STOCK" | "LOW_STOCK" | "MADE_TO_ORDER" | "OUT_OF_STOCK"
+   */
+  stockStatus String  @default("IN_STOCK")
+  isQuoteOnly Boolean @default(false)
+
+  /**
+   * Denormalized cache of the Review rows below — recomputed by the review
+   * service on every submission, never edited directly.
+   */
+  rating      Float?
+  reviewCount Int    @default(0)
+
+  /**
+   * string[]
+   */
+  overview       Json              @default("[]")
+  /**
+   * string[]
+   */
+  highlights     Json              @default("[]")
+  /**
+   * { title, body }[]
+   */
+  sections       Json              @default("[]")
+  /**
+   * { label, value }[]
+   */
+  specs          Json              @default("[]")
+  /**
+   * { url, caption }[]
+   */
+  images         Json              @default("[]")
+  /**
+   * { title, kind, url, sizeLabel }[]
+   */
+  documents      Json              @default("[]")
+  /**
+   * string[]
+   */
+  shipping       Json              @default("[]")
+  leadTimeDays   Int               @default(5)
+  warrantyMonths Int               @default(12)
+  orderItems     OrderItem[]
+  reviews        Review[]
+  wishlistedBy   WishlistItem[]
+  questions      ProductQuestion[]
+  bundledWith    BundleItem[]      @relation("BundleFor")
+  bundledIn      BundleItem[]      @relation("BundleCompanion")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([categoryId])
+  @@index([brandId])
+  @@map("products")
+}

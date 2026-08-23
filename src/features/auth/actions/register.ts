@@ -8,10 +8,11 @@ import {
   registerSchema,
   type RegisterInput,
 } from "@/features/auth/schemas/register.schema";
-import { firstFieldErrors } from "@/features/auth/schemas/format-zod-errors";
+import { firstFieldErrors } from "@/lib/format-zod-errors";
 import { roleRedirectPath } from "@/features/auth/services/role-redirect";
-import { logUnexpectedError } from "@/features/auth/services/log-unexpected-error";
+import { logUnexpectedError } from "@/lib/log-unexpected-error";
 import { z } from "zod";
+import { checkRateLimit, getClientIp, rateLimitMessage } from "@/lib/rate-limit";
 
 export interface RegisterResult {
   errors?: Partial<
@@ -27,6 +28,14 @@ export async function register(
     return {
       errors: firstFieldErrors(z.flattenError(result.error).fieldErrors),
     };
+  }
+
+  // Five new accounts per hour per IP — stops scripted account creation
+  // without meaningfully limiting a real household or office signing up.
+  const ip = await getClientIp();
+  const limit = checkRateLimit(`register:${ip}`, 5, 60 * 60 * 1000);
+  if (!limit.ok) {
+    return { errors: { form: rateLimitMessage(limit.retryAfterSeconds!) } };
   }
 
   let redirectTo: string;

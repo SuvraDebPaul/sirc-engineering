@@ -3,6 +3,7 @@ export type {
   Feature,
   ImageCredit,
   Post,
+  PostBlock,
   Promotion,
   PromoTone,
   ServiceHighlight,

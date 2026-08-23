@@ -9,9 +9,9 @@ import {
   verifyEmailSchema,
   type VerifyEmailInput,
 } from "@/features/auth/schemas/verify-email.schema";
-import { firstFieldErrors } from "@/features/auth/schemas/format-zod-errors";
+import { firstFieldErrors } from "@/lib/format-zod-errors";
 import { roleRedirectPath } from "@/features/auth/services/role-redirect";
-import { logUnexpectedError } from "@/features/auth/services/log-unexpected-error";
+import { logUnexpectedError } from "@/lib/log-unexpected-error";
 import { z } from "zod";
 
 export interface VerifyEmailResult {

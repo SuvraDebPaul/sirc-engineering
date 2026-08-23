@@ -1,0 +1,27 @@
+model Promotion {
+  id String @id @default(uuid())
+
+  /// "hero" (home-page slideshow) or "banner" (grid promo tiles) — one model
+  /// because both are the exact same shape, just displayed in different
+  /// home-page zones.
+  placement String
+  eyebrow   String
+  title     String
+  subtitle  String?
+  ctaLabel  String
+  href      String
+  imageUrl  String
+  /// PromoTone — "dark" | "amber" | "slate" | "brand"
+  tone      String  @default("slate")
+
+  /// Display order within its placement. The home page's fixed banner
+  /// slots (paired tiles, one wide tile) are filled positionally by this
+  /// order, so reordering here reorders the page.
+  sortOrder Int @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([placement, sortOrder])
+  @@map("promotions")
+}

@@ -2,12 +2,12 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { Gift, Heart, Minus, Plus, RotateCcw, ShoppingBag, Truck, X } from "lucide-react";
+import { Gift, Heart, Minus, Plus, RotateCcw, ShoppingBag, X } from "lucide-react";
 
 import { useCart } from "@/features/cart/components/cart-provider";
 import { EmptyState } from "@/components/shared/empty-state";
 import { Button } from "@/components/ui/button";
-import { FREE_DELIVERY_THRESHOLD, MAX_QUANTITY } from "@/features/cart/services/cart";
+import { MAX_QUANTITY } from "@/features/cart/services/cart";
 import { formatBDT } from "@/lib/format";
 
 /**
@@ -50,9 +50,6 @@ export function CartContents() {
       />
     );
   }
-
-  const remaining = Math.max(0, FREE_DELIVERY_THRESHOLD - subtotal);
-  const progress = Math.min(100, (subtotal / FREE_DELIVERY_THRESHOLD) * 100);
 
   return (
     <div className="grid gap-8 lg:grid-cols-[1fr_22rem]">
@@ -177,31 +174,6 @@ export function CartContents() {
       </div>
 
       <aside className="space-y-5">
-        <div className="rounded-2xl border border-dashed p-5">
-          <div className="flex items-center gap-3">
-            <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-muted">
-              <div
-                className="h-full rounded-full bg-emerald-500 transition-[width] duration-300"
-                style={{ width: `${progress}%` }}
-              />
-            </div>
-            <Truck className="size-5 shrink-0 text-emerald-600" strokeWidth={1.75} aria-hidden="true" />
-          </div>
-
-          <p className="mt-2 text-center text-sm text-muted-foreground">
-            {remaining === 0 ? (
-              <span className="font-medium text-emerald-600">
-                Your order qualifies for free delivery.
-              </span>
-            ) : (
-              <>
-                Spend <span className="font-medium text-foreground">{formatBDT(remaining)}</span> more
-                for free delivery.
-              </>
-            )}
-          </p>
-        </div>
-
         <div className="rounded-2xl bg-muted/40 p-6">
           <h2 className="text-lg font-bold uppercase tracking-tight">Cart totals</h2>
 

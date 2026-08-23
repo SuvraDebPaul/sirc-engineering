@@ -39,12 +39,15 @@ export function FeaturedProducts({
   title = "Special offers",
   subtitle,
   ctaHref = "/products",
+  /** Distinguishes the heading id when more than one of these lands on the same page. */
+  headingId = "special-offers-heading",
 }: {
   products?: Product[];
   tier?: CustomerTier;
   title?: string;
   subtitle?: string;
   ctaHref?: string;
+  headingId?: string;
 }) {
   if (products.length === 0) return null;
 
@@ -52,10 +55,10 @@ export function FeaturedProducts({
   const multiPage = pages.length > 1;
 
   return (
-    <section aria-labelledby="special-offers-heading">
+    <section aria-labelledby={headingId}>
       <Carousel opts={{ align: "start", loop: multiPage }} className="w-full">
         <SectionHeading
-          id="special-offers-heading"
+          id={headingId}
           align="start"
           title={title}
           subtitle={

@@ -20,12 +20,13 @@ import { useState } from "react";
 /**
  * Checkout — billing details on the left, order summary on the right.
  *
- * **No card fields.** There is no payment processor connected to this site, so
- * every settlement method here happens off the website: bank transfer, a
- * purchase order, or cash on delivery. A form that looked like it took card
- * details but only logged them would be the most dangerous thing that could
- * ship, and adding one later means handing the customer to a processor's own
- * hosted page — never collecting a card number in these inputs.
+ * **No card or wallet PIN fields, and no payment method to choose.** Cash on
+ * delivery is the only option while no gateway is wired in — offering
+ * bKash/SSLCommerz as choices when they only end in "we'll confirm manually"
+ * is worse than not offering them, so the payment section is informational
+ * rather than a picker. Real gateway integration means handing the customer
+ * to bKash/SSLCommerz's own hosted page, never collecting a wallet PIN or
+ * card number in these inputs.
  *
  * The cart is posted as a JSON summary so the order record includes what the
  * customer actually saw. It is evidence, not pricing: the server must re-price
@@ -94,7 +95,7 @@ export function CheckoutForm() {
 
   const { errors, values } = state;
   const hasErrors = Object.keys(errors).length > 0;
-  const shipping = deliveryCost(delivery as never, subtotal);
+  const shipping = deliveryCost(delivery as never);
   const total = subtotal + shipping;
 
   return (
@@ -300,7 +301,7 @@ export function CheckoutForm() {
 
             <div className="mt-3 space-y-2">
               {DELIVERY_OPTIONS.map((option) => {
-                const cost = deliveryCost(option.value, subtotal);
+                const cost = deliveryCost(option.value);
 
                 return (
                   <label key={option.value} className="flex cursor-pointer items-start gap-2.5 text-sm">
@@ -340,29 +341,13 @@ export function CheckoutForm() {
             </div>
           </dl>
 
-          <fieldset className="mt-5 border-t pt-4">
-            <legend className="text-sm font-semibold">How would you like to pay?</legend>
-
-            <div className="mt-3 space-y-3">
-              {PAYMENT_METHODS.map((method, index) => (
-                <label key={method.value} className="flex cursor-pointer items-start gap-2.5 text-sm">
-                  <input
-                    type="radio"
-                    name="payment"
-                    value={method.value}
-                    defaultChecked={values.payment ? values.payment === method.value : index === 0}
-                    className="mt-0.5 size-4 shrink-0 accent-primary"
-                  />
-                  <span className="min-w-0">
-                    <span className="block font-medium">{method.label}</span>
-                    <span className="block text-xs text-muted-foreground">{method.note}</span>
-                  </span>
-                </label>
-              ))}
-            </div>
-
+          <div className="mt-5 border-t pt-4">
+            <input type="hidden" name="payment" value={PAYMENT_METHODS[0].value} />
+            <p className="text-sm font-semibold">Payment</p>
+            <p className="mt-1 text-sm">{PAYMENT_METHODS[0].label}</p>
+            <p className="text-xs text-muted-foreground">{PAYMENT_METHODS[0].note}</p>
             {errors.payment && <p className="mt-2 text-sm text-destructive">{errors.payment}</p>}
-          </fieldset>
+          </div>
 
           <Button type="submit" size="lg" disabled={isPending} className="mt-6 h-12 w-full text-base">
             {isPending ? <Loader2 className="size-4 animate-spin" aria-hidden="true" /> : <Lock className="size-4" aria-hidden="true" />}

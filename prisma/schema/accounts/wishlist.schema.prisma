@@ -1,0 +1,18 @@
+model WishlistItem {
+  id String @id @default(uuid())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  /// The server-side mirror of the per-device wishlist in localStorage — lets
+  /// a signed-in customer's saved items follow them across devices. The
+  /// localStorage wishlist keeps working unchanged for guests.
+  @@unique([userId, productId])
+  @@index([userId])
+  @@map("wishlist_items")
+}

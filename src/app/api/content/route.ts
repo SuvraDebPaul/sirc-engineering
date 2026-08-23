@@ -1,14 +1,14 @@
 import { NextResponse } from "next/server";
 
-import { FEATURES, POSTS, PROMOTIONS, SERVICES, TESTIMONIALS } from "@/data";
+import { getFeatures, getPosts, getPromotions, getServices, getTestimonials } from "@/features/content/services/content";
 
 /** Marketing content for the home page, for client-side or external consumers. */
-export function GET() {
+export async function GET() {
   return NextResponse.json({
-    promotions: PROMOTIONS,
-    features: FEATURES,
-    services: SERVICES,
-    testimonials: TESTIMONIALS,
-    posts: POSTS,
+    promotions: await getPromotions(),
+    features: await getFeatures(),
+    services: await getServices(),
+    testimonials: await getTestimonials(),
+    posts: await getPosts(),
   });
 }

@@ -24,11 +24,18 @@ export interface ProductTab {
   content: React.ReactNode;
 }
 
-export function ProductTabs({ tabs }: { tabs: ProductTab[] }) {
+export function ProductTabs({
+  tabs,
+  defaultValue,
+}: {
+  tabs: ProductTab[];
+  /** Overrides which tab starts active — e.g. a review-sort link should land back on "reviews". */
+  defaultValue?: string;
+}) {
   if (tabs.length === 0) return null;
 
   return (
-    <Tabs defaultValue={tabs[0]!.value} className="w-full">
+    <Tabs defaultValue={defaultValue ?? tabs[0]!.value} className="w-full">
       <div className="border-b">
         <TabsList className="h-auto w-full justify-start gap-1 overflow-x-auto rounded-none bg-transparent p-0">
           {tabs.map((tab) => (

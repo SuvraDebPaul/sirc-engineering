@@ -56,14 +56,7 @@ export default async function BrandsPage() {
                       alt={brand.name}
                       fill
                       sizes="180px"
-                      className="object-contain transition-opacity group-hover:opacity-80 dark:hidden"
-                    />
-                    <Image
-                      src={brand.logoDarkUrl}
-                      alt=""
-                      fill
-                      sizes="180px"
-                      className="hidden object-contain transition-opacity group-hover:opacity-80 dark:block"
+                      className="object-contain transition-opacity group-hover:opacity-80"
                     />
                   </div>
 

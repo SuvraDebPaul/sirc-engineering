@@ -1,7 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { headers } from "next/headers";
 import { notFound } from "next/navigation";
 import { CalendarClock, PackageCheck, ShieldCheck, Truck } from "lucide-react";
+
+import { auth } from "@/lib/db/auth";
 
 import { Container } from "@/components/layout/container";
 import { ProductAssurance } from "@/features/catalog/components/product-assurance";
@@ -23,6 +26,16 @@ import {
   getRelatedProducts,
 } from "@/features/catalog/services";
 import { complementaryProducts } from "@/features/catalog/services/complements";
+import { getFrequentlyBoughtTogether } from "@/features/catalog/services/bundles";
+import { FrequentlyBoughtTogether } from "@/features/catalog/components/frequently-bought-together";
+import { listAnsweredQuestions } from "@/features/enquiries/services/product-questions";
+import {
+  getReviewSummary,
+  getUserReviewForProduct,
+  listReviews,
+  REVIEW_PAGE_SIZE,
+  type ReviewSort,
+} from "@/features/reviews/services/review";
 import { getSiteSettings } from "@/features/settings/services/settings";
 import { formatBDT } from "@/lib/format";
 import { STOCK_LABEL, discountPercent, resolvePriceDisplay } from "@/features/catalog/services/product";
@@ -89,13 +102,45 @@ const priceLabel = (price: PriceDisplay): string => {
   return "Price on request";
 };
 
-export default async function ProductPage({ params }: PageProps<"/product/[slug]">) {
+const REVIEW_SORTS: ReviewSort[] = ["recent", "highest", "lowest"];
+
+export default async function ProductPage({
+  params,
+  searchParams,
+}: PageProps<"/product/[slug]">) {
   const { slug } = await params;
-  const [result, settings] = await Promise.all([getProductDetail(slug), getSiteSettings()]);
+  const query = await searchParams;
+
+  const reviewSortRaw = Array.isArray(query.reviewSort) ? query.reviewSort[0] : query.reviewSort;
+  const reviewSort: ReviewSort = REVIEW_SORTS.includes(reviewSortRaw as ReviewSort)
+    ? (reviewSortRaw as ReviewSort)
+    : "recent";
+
+  const shownRaw = Array.isArray(query.reviewsShown) ? query.reviewsShown[0] : query.reviewsShown;
+  const shownParsed = Number(shownRaw);
+  const reviewsShown =
+    Number.isFinite(shownParsed) && shownParsed >= REVIEW_PAGE_SIZE
+      ? Math.floor(shownParsed)
+      : REVIEW_PAGE_SIZE;
+
+  const [result, settings, session] = await Promise.all([
+    getProductDetail(slug),
+    getSiteSettings(),
+    auth.api.getSession({ headers: await headers() }),
+  ]);
 
   if (!result) notFound();
 
   const { product, detail } = result;
+
+  const [reviewSummary, reviewList, existingReview, answeredQuestions, bundleItems] =
+    await Promise.all([
+      getReviewSummary(product.id),
+      listReviews(product.id, reviewSort, reviewsShown),
+      session ? getUserReviewForProduct(session.user.id, product.id) : Promise.resolve(null),
+      listAnsweredQuestions(product.id),
+      getFrequentlyBoughtTogether(product.id),
+    ]);
 
   const price = resolvePriceDisplay(product, "GUEST");
   const discount = discountPercent(product);
@@ -105,7 +150,7 @@ export default async function ProductPage({ params }: PageProps<"/product/[slug]
   // Two strips with no overlap: the first is what is closest to this product,
   // the second is everything else. Showing the same five cards twice under
   // different headings would be padding, not a recommendation.
-  const complements = complementaryProducts(product);
+  const complements = await complementaryProducts(product);
   const alsoLike = await getRelatedProducts(product, 10);
   const alsoLikeIds = new Set(alsoLike.map((entry) => entry.id));
   const related = (await getRelatedProducts(product, 30))
@@ -208,6 +253,18 @@ export default async function ProductPage({ params }: PageProps<"/product/[slug]
               outOfStock={outOfStock}
             />
 
+            {product.retailPrice !== null && bundleItems.length > 0 && (
+              <FrequentlyBoughtTogether
+                currentProduct={{
+                  id: product.id,
+                  name: product.name,
+                  imageUrl: product.imageUrl,
+                  retailPrice: product.retailPrice,
+                }}
+                items={bundleItems}
+              />
+            )}
+
             <ul className="space-y-2.5 text-sm text-muted-foreground">
               <li className="flex items-center gap-2.5">
                 <CalendarClock className="size-4 shrink-0 text-primary" strokeWidth={1.75} aria-hidden="true" />
@@ -240,6 +297,7 @@ export default async function ProductPage({ params }: PageProps<"/product/[slug]
 
         <div className="mt-16" id="reviews">
           <ProductTabs
+            defaultValue={query.reviewSort || query.reviewsShown ? "reviews" : undefined}
             tabs={[
               {
                 value: "description",
@@ -253,8 +311,19 @@ export default async function ProductPage({ params }: PageProps<"/product/[slug]
               },
               {
                 value: "reviews",
-                label: `Reviews (${product.reviewCount})`,
-                content: <ProductReviews product={product} reviews={detail.reviews} />,
+                label: `Reviews (${reviewSummary.total})`,
+                content: (
+                  <ProductReviews
+                    productId={product.id}
+                    productSlug={product.slug}
+                    summary={reviewSummary}
+                    reviews={reviewList.reviews}
+                    sort={reviewSort}
+                    hasMore={reviewList.total > reviewList.reviews.length}
+                    canReview={session !== null}
+                    existingReview={existingReview}
+                  />
+                ),
               },
               {
                 value: "shipping",
@@ -267,9 +336,11 @@ export default async function ProductPage({ params }: PageProps<"/product/[slug]
 
         <div className="mt-16 border-t pt-12">
           <ProductQuestions
+            productId={product.id}
             productName={product.name}
             model={product.modelNumber}
             whatsapp={settings.whatsapp}
+            questions={answeredQuestions}
           />
         </div>
 

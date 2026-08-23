@@ -71,14 +71,7 @@ export default async function BrandPage({ params, searchParams }: PageProps<"/br
               alt={brand.name}
               fill
               sizes="192px"
-              className="object-contain dark:hidden"
-            />
-            <Image
-              src={brand.logoDarkUrl}
-              alt=""
-              fill
-              sizes="192px"
-              className="hidden object-contain dark:block"
+              className="object-contain"
             />
           </div>
         </div>

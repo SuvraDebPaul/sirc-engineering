@@ -224,6 +224,10 @@ export const TESTIMONIALS: Testimonial[] = [
   },
 ];
 
+// The live app no longer reads this — the blog is real `BlogPost` rows now
+// (see `features/content/services/content.ts`). Kept only as the source
+// `scripts/seed-blog.ts` promotes into the database, same status as
+// `data/products.ts` after the catalogue migration.
 export const POSTS: Post[] = [
   {
     id: "post-1",

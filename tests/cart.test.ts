@@ -3,7 +3,6 @@ import assert from "node:assert/strict";
 
 import {
   DELIVERY_OPTIONS,
-  FREE_DELIVERY_THRESHOLD,
   cartCount,
   cartSubtotal,
   cartUnitPrice,
@@ -153,39 +152,23 @@ describe("cartSubtotal and cartCount", () => {
 });
 
 describe("deliveryCost", () => {
-  const under = FREE_DELIVERY_THRESHOLD - 1;
-
-  test("charges the standard rate below the threshold", () => {
-    assert.equal(deliveryCost("standard", under), 60_000);
+  test("charges the flat Dhaka rate", () => {
+    assert.equal(deliveryCost("dhaka"), 6_000);
   });
 
-  test("is free exactly at the threshold, not one poisha above it", () => {
-    // Off-by-one here is a customer who was promised free delivery and
-    // charged for it, which is the version of this bug that generates
-    // complaints rather than lost margin.
-    assert.equal(deliveryCost("standard", FREE_DELIVERY_THRESHOLD), 0);
-    assert.equal(deliveryCost("standard", under), 60_000);
+  test("charges the flat outside-Dhaka rate", () => {
+    assert.equal(deliveryCost("outside-dhaka"), 12_000);
   });
 
-  test("express is also free above the threshold", () => {
-    assert.equal(deliveryCost("express", FREE_DELIVERY_THRESHOLD + 1), 0);
-    assert.equal(deliveryCost("express", under), 150_000);
-  });
-
-  test("collection is always free, whatever the subtotal", () => {
-    assert.equal(deliveryCost("pickup", 0), 0);
-    assert.equal(deliveryCost("pickup", under), 0);
-  });
-
-  test("an unknown option falls back to standard rather than free", () => {
+  test("an unknown option falls back to the first declared option rather than free", () => {
     // Defaulting an unrecognised delivery method to zero would let a crafted
     // request post free shipping.
-    assert.equal(deliveryCost("nonsense" as never, under), 60_000);
+    assert.equal(deliveryCost("nonsense" as never), DELIVERY_OPTIONS[0].cost);
   });
 
-  test("every declared option has a non-negative cost", () => {
+  test("every declared option has a positive cost", () => {
     for (const option of DELIVERY_OPTIONS) {
-      assert.ok(option.cost >= 0, `${option.value} has a negative cost`);
+      assert.ok(option.cost > 0, `${option.value} has a non-positive cost`);
     }
   });
 });

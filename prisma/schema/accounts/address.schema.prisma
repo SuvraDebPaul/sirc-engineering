@@ -1,0 +1,26 @@
+model Address {
+  id String @id @default(uuid())
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  /// Customer's own name for the address, e.g. "Home", "Site office".
+  label     String
+  firstName String
+  lastName  String
+  company   String
+  phone     String
+  address   String
+  city      String
+  district  String
+  postcode  String
+
+  /// The address checkout pre-fills from, when the customer has more than one.
+  isDefault Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@map("addresses")
+}

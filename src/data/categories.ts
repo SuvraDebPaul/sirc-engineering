@@ -7,7 +7,11 @@ import type { Category } from "@/features/catalog/types";
  * the app changes — the route handler in `app/api/categories` is the only
  * consumer, and pages reach it through `lib/api/categories.ts`.
  */
-export const CATEGORIES: Category[] = [
+// This demo file predates the parent/child hierarchy and stays flat — the
+// live app no longer reads it (only `scripts/seed-catalog.ts` does), so the
+// type just omits the field rather than adding `parentId: null` to all 24
+// entries.
+export const CATEGORIES: Omit<Category, "parentId">[] = [
   {
     id: "calibration",
     name: "Calibration",

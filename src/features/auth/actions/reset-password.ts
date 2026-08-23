@@ -8,8 +8,8 @@ import {
   resetPasswordSchema,
   type ResetPasswordInput,
 } from "@/features/auth/schemas/forgot-password.schema";
-import { firstFieldErrors } from "@/features/auth/schemas/format-zod-errors";
-import { logUnexpectedError } from "@/features/auth/services/log-unexpected-error";
+import { firstFieldErrors } from "@/lib/format-zod-errors";
+import { logUnexpectedError } from "@/lib/log-unexpected-error";
 import { z } from "zod";
 
 export interface ResetPasswordResult {

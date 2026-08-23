@@ -1,9 +1,12 @@
+import { headers } from "next/headers";
+
 import { CartProvider } from "@/features/cart/components/cart-provider";
 import { Footer } from "@/components/layout/site-footer";
 import { SiteHeader } from "@/components/layout/site-header";
 import { WhatsAppButton } from "@/components/shared/whatsapp-button";
 import { getProducts } from "@/features/catalog/services";
 import { getSiteSettings } from "@/features/settings/services/settings";
+import { auth } from "@/lib/db/auth";
 
 /**
  * Public site shell.
@@ -20,12 +23,16 @@ import { getSiteSettings } from "@/features/settings/services/settings";
 export default async function PublicLayout({ children }: LayoutProps<"/">) {
   // The catalogue is handed to the cart so stored lines always resolve against
   // current prices rather than whatever they cost when they were added.
-  const [products, settings] = await Promise.all([getProducts(), getSiteSettings()]);
+  const [products, settings, session] = await Promise.all([
+    getProducts(),
+    getSiteSettings(),
+    auth.api.getSession({ headers: await headers() }),
+  ]);
 
   return (
-    <CartProvider products={products}>
+    <CartProvider products={products} userId={session?.user.id ?? null}>
       <SiteHeader />
-      <main className="flex-1">{children}</main>
+      <main className="flex-1 bg-[#F5F5F5]">{children}</main>
       <Footer />
 
       {/* One tap to a human, on every page. In this market it converts better

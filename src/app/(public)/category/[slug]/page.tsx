@@ -11,6 +11,7 @@ import {
   getCategoryBySlug,
   getCategoryCounts,
   getProductsByCategory,
+  getSubcategories,
 } from "@/features/catalog/services";
 
 /**
@@ -57,10 +58,11 @@ export default async function CategoryPage({
 
   if (!category) notFound();
 
-  const [search, products, counts] = await Promise.all([
+  const [search, products, counts, subcategories] = await Promise.all([
     searchParams,
     getProductsByCategory(category),
     getCategoryCounts(),
+    getSubcategories(category.id),
   ]);
 
   const stocked = (await getCategories()).filter((entry) => (counts[entry.name] ?? 0) > 0);
@@ -82,6 +84,21 @@ export default async function CategoryPage({
       />
 
       <Container className="pb-20">
+        {subcategories.length > 0 && (
+          <div className="mb-8 flex flex-wrap gap-2">
+            {subcategories.map((sub) => (
+              <Link
+                key={sub.id}
+                href={`/category/${sub.slug}`}
+                className="flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium transition-colors hover:border-primary/40 hover:bg-muted"
+              >
+                <Icon name={sub.icon} className="size-4 text-primary" aria-hidden="true" />
+                {sub.name}
+              </Link>
+            ))}
+          </div>
+        )}
+
         {products.length === 0 ? (
           <EmptyCategory categoryName={category.name} stocked={stocked} />
         ) : (

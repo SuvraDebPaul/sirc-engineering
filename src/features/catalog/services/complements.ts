@@ -1,5 +1,6 @@
-import { PRODUCTS } from "@/data";
 import type { Product } from "@/features/catalog/types";
+
+import { getProducts } from "./products";
 
 /**
  * Complementary instruments — "often specified together".
@@ -33,12 +34,13 @@ const COMPLEMENTS: Record<string, string[]> = {
  * "works with" strip full of near-identical meters is a listing page, not a
  * recommendation.
  */
-export const complementaryProducts = (product: Product, limit = 4): Product[] => {
+export const complementaryProducts = async (product: Product, limit = 4): Promise<Product[]> => {
   const wanted = COMPLEMENTS[product.categoryName] ?? [];
   if (wanted.length === 0) return [];
 
+  const products = await getProducts();
   const ranked = wanted.flatMap((category) =>
-    PRODUCTS.filter(
+    products.filter(
       (candidate) => candidate.id !== product.id && candidate.categoryName === category,
     ),
   );

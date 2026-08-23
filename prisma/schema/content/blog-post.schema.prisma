@@ -1,0 +1,28 @@
+model BlogPost {
+  id       String @id @default(uuid())
+  slug     String @unique
+  title    String
+  excerpt  String
+  category String
+  author   String
+  imageUrl String
+
+  /// "DRAFT" | "PUBLISHED" — only published posts are public. Draft is the
+  /// default so a half-written article can be saved without going live.
+  status      String   @default("DRAFT")
+  publishedAt DateTime @default(now())
+
+  /// string[]
+  tags   Json @default("[]")
+  /// { type: "p" | "h2" | "quote", text: string }[] | { type: "ul", items: string[] }[] —
+  /// a tagged union per block, same reasoning as `Product`'s JSON fields:
+  /// structured blocks, never an HTML string, so there is nothing here that
+  /// could execute if an editor pasted something unexpected.
+  blocks Json @default("[]")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status])
+  @@map("blog_posts")
+}

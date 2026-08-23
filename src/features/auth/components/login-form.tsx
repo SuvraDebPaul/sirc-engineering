@@ -12,11 +12,30 @@ import {
 } from "@/features/auth/schemas/login.schema";
 import { login } from "@/features/auth/actions/login";
 import { signInWithGoogle } from "@/features/auth/actions/sign-in-google";
+import { LoginOtpForm } from "@/features/auth/components/login-otp-form";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { FormField } from "@/components/ui/form-field";
 
+/**
+ * Switches between the password form and the one-time-code form.
+ *
+ * Kept as a plain mode switch with no hooks of its own — each mode is its
+ * own component with its own hooks, so switching never skips a hook call
+ * partway through a render (a component that returns early *between* two
+ * hook calls breaks React's fixed hook order for that render).
+ */
 export function LoginForm() {
+  const [mode, setMode] = useState<"password" | "otp">("password");
+
+  if (mode === "otp") {
+    return <LoginOtpForm onUsePassword={() => setMode("password")} />;
+  }
+
+  return <PasswordLoginForm onUseOtp={() => setMode("otp")} />;
+}
+
+function PasswordLoginForm({ onUseOtp }: { onUseOtp: () => void }) {
   const [showPassword, setShowPassword] = useState(false);
   const {
     register: registerField,
@@ -141,6 +160,14 @@ export function LoginForm() {
           Continue with Google
         </Button>
       </form>
+
+      <button
+        type="button"
+        onClick={onUseOtp}
+        className="w-full text-center text-sm font-medium text-primary hover:underline"
+      >
+        Sign in with a one-time code instead
+      </button>
 
       <p className="text-center text-sm text-muted-foreground">
         Don&apos;t have an account?{" "}

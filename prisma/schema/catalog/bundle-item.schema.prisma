@@ -1,0 +1,26 @@
+model BundleItem {
+  id String @id @default(uuid())
+
+  /// The product this bundle is shown on.
+  productId String
+  product   Product @relation("BundleFor", fields: [productId], references: [id], onDelete: Cascade)
+
+  /// The companion product offered alongside it.
+  companionId String
+  companion   Product @relation("BundleCompanion", fields: [companionId], references: [id], onDelete: Cascade)
+
+  /// Minimum quantity of the companion added when it's included — defaults
+  /// to 1, but stays a real field for the catalogue's consumable side
+  /// (cables, batteries, jumper packs) where a bundle genuinely sells more
+  /// than one.
+  moq Int @default(1)
+
+  /// Display order — admin-curated, not alphabetical.
+  position Int @default(0)
+
+  createdAt DateTime @default(now())
+
+  @@unique([productId, companionId])
+  @@index([productId])
+  @@map("bundle_items")
+}

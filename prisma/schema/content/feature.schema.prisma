@@ -1,0 +1,12 @@
+model Feature {
+  id          String @id @default(uuid())
+  icon        String
+  title       String
+  description String
+  sortOrder   Int    @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("features")
+}

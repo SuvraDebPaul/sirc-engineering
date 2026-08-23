@@ -1,0 +1,25 @@
+model Review {
+  id String @id @default(uuid())
+
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  rating Int
+  title  String
+  body   String
+
+  /// True when the reviewer has a non-cancelled order containing this product
+  /// at the time of writing — computed once, on submission, not re-checked later.
+  verified Boolean @default(false)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  /// One review per customer per product — resubmitting edits it in place.
+  @@unique([productId, userId])
+  @@index([productId])
+  @@map("reviews")
+}

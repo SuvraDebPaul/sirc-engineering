@@ -1,7 +1,8 @@
 "use server";
 
-import { deliverEnquiry } from "@/features/enquiries/services/enquiry-delivery";
+import { createQuestion } from "@/features/enquiries/services/product-questions";
 import type { QuestionState } from "@/features/enquiries/services/questions";
+import { checkRateLimit, getClientIp, rateLimitMessage } from "@/lib/rate-limit";
 
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
@@ -13,9 +14,10 @@ const read = (formData: FormData, key: string): string => {
 /**
  * Accept a pre-sales question about a product.
  *
- * Carries the model number so the sales desk never has to ask "which one?" —
- * the single most common reason a technical enquiry takes two days instead of
- * ten minutes.
+ * Stored against the product itself now, not just logged — a staff member
+ * answers it from the admin panel, and once answered it becomes the public
+ * Q&A on that product's page. Carries the product id so the admin queue
+ * never has to guess which product a question was about.
  */
 export async function askProductQuestion(
   _previous: QuestionState,
@@ -25,9 +27,20 @@ export async function askProductQuestion(
     return { status: "success", errors: {}, values: {} };
   }
 
+  // Five questions per ten minutes per IP — see the note in the RFQ action.
+  const ip = await getClientIp();
+  const limit = checkRateLimit(`product-question:${ip}`, 5, 10 * 60 * 1000);
+  if (!limit.ok) {
+    return {
+      status: "error",
+      errors: { form: rateLimitMessage(limit.retryAfterSeconds!) },
+      values: { question: read(formData, "question"), email: read(formData, "email") },
+    };
+  }
+
   const question = read(formData, "question");
   const email = read(formData, "email");
-  const model = read(formData, "model");
+  const productId = read(formData, "productId");
 
   const errors: QuestionState["errors"] = {};
 
@@ -37,12 +50,14 @@ export async function askProductQuestion(
   if (email === "") errors.email = "We need an email address to send the answer to.";
   else if (!EMAIL.test(email)) errors.email = "That does not look like an email address.";
 
+  if (!productId) errors.form = "Something went wrong. Please reload the page and try again.";
+
   if (Object.keys(errors).length > 0) {
     return { status: "error", errors, values: { question, email } };
   }
 
   try {
-    await deliverEnquiry("question", { model, question, email });
+    await createQuestion(productId, { question, email });
     return { status: "success", errors: {}, values: {} };
   } catch {
     return {

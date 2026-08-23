@@ -1,0 +1,23 @@
+model ProductQuestion {
+  id String @id @default(uuid())
+
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  /// Not a relation to User — asking a question never required an account,
+  /// and this keeps that true. The email is private: used only to send the
+  /// reply, never shown alongside the published answer.
+  email String
+
+  question   String
+  /// Null until a staff member answers — that's what makes a question
+  /// public. Nothing here is ever displayed unanswered.
+  answer     String?
+  answeredAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([productId])
+  @@map("product_questions")
+}

@@ -63,6 +63,19 @@ export interface Post {
   tags: string[];
 }
 
+/**
+ * One block of an article body.
+ *
+ * Structured blocks rather than an HTML string — no markdown parser, no
+ * `dangerouslySetInnerHTML`, and nothing an editor could paste that would end
+ * up executing.
+ */
+export type PostBlock =
+  | { type: "p"; text: string }
+  | { type: "h2"; text: string }
+  | { type: "ul"; items: string[] }
+  | { type: "quote"; text: string };
+
 export interface ImageCredit {
   id: string;
   file: string;

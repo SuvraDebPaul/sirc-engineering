@@ -5,6 +5,7 @@ import {
   validateComment,
   type CommentFormState,
 } from "@/features/enquiries/services/comments";
+import { checkRateLimit, getClientIp, rateLimitMessage } from "@/lib/rate-limit";
 
 const ECHOED = ["name", "email", "body"];
 
@@ -30,6 +31,17 @@ export async function submitComment(
   // Honeypot — see the note in the RFQ action.
   if (formData.get("website") !== "") {
     return { status: "success", errors: {}, values: {} };
+  }
+
+  // Five comments per ten minutes per IP — see the note in the RFQ action.
+  const ip = await getClientIp();
+  const limit = checkRateLimit(`comment:${ip}`, 5, 10 * 60 * 1000);
+  if (!limit.ok) {
+    return {
+      status: "error",
+      errors: { form: rateLimitMessage(limit.retryAfterSeconds!) },
+      values: echo(formData),
+    };
   }
 
   const result = validateComment(formData);

@@ -1,0 +1,66 @@
+model Order {
+  id        String @id @default(uuid())
+  reference String @unique
+
+  /// "PENDING" | "PROCESSING" | "FULFILLED" | "CANCELLED"
+  status        String @default("PENDING")
+  /// "PENDING" | "PAID" | "FAILED" — separate from `status` since payment and
+  /// fulfilment don't move together. Starts PENDING for every method; for
+  /// bKash/SSLCommerz this is flipped to PAID by a manual "mark as paid"
+  /// action in the admin panel until real gateway webhooks exist to set it
+  /// automatically. Cash on delivery is settled in person, not tracked here.
+  paymentStatus String @default("PENDING")
+
+  // Customer and delivery details — same shape as CheckoutDetails in
+  // features/cart/services/checkout.ts, since that's what fills this in.
+  firstName String
+  lastName  String
+  company   String
+  phone     String
+  email     String
+  address   String
+  city      String
+  district  String
+  postcode  String
+  delivery  String
+  payment   String
+  notes     String
+
+  /// All in poisha, matching the site-wide money convention.
+  subtotal    Int
+  deliveryFee Int
+  total       Int
+
+  /// Nullable — checkout works without an account. Set when the buyer is
+  /// signed in at the time of order.
+  userId String?
+  user   User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  items OrderItem[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@map("orders")
+}
+
+model OrderItem {
+  id      String @id @default(uuid())
+  orderId String
+  order   Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  /// Nullable — a deleted product shouldn't delete order history, only loosen this link.
+  productId String?
+  product   Product? @relation(fields: [productId], references: [id], onDelete: SetNull)
+
+  /// Snapshot at the time of order — deliberately independent of the live
+  /// product, which may be renamed or repriced afterwards.
+  productName String
+  modelNumber String
+  unitPrice   Int
+  quantity    Int
+
+  @@index([orderId])
+  @@map("order_items")
+}

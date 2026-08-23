@@ -1,36 +1,22 @@
 /**
  * Checkout shape and validation.
  *
- * ⚠️ **This is not a payment flow, and deliberately so.**
+ * ⚠️ **No payment gateway is wired in yet — deliberately, for now.**
  *
- * There is no payment processor connected to this site. A checkout that
- * collected card numbers into a form that merely logged them would be the
- * single most dangerous thing in the codebase — so no card, CVV or expiry
- * field exists anywhere, and none should be added until a real PCI-compliant
- * processor is integrated (at which point the card fields belong to *its*
- * hosted form, never to ours).
- *
- * What this does instead is what the business actually does: take the order,
- * confirm it, and invoice. Bank transfer, cash on delivery and purchase order
- * are the three methods, all of which settle outside the website. The customer
- * is told this plainly on the page rather than discovering it after clicking
- * "place order".
+ * A checkout that collected card or wallet PIN numbers into a form that
+ * merely logged them would be the single most dangerous thing in the
+ * codebase — so no card, CVV, expiry or wallet PIN field exists anywhere.
+ * Cash on delivery is the only method offered because it is the only one
+ * that settles without a gateway: nothing to collect, nothing to confirm
+ * manually. bKash and SSLCommerz belong back in `PAYMENT_METHODS` once real
+ * integration lands — at which point those fields belong to *their* hosted
+ * page, never to ours.
  */
 export const PAYMENT_METHODS = [
   {
-    value: "bank-transfer",
-    label: "Bank transfer",
-    note: "We email an invoice with our account details. Goods are dispatched once funds clear.",
-  },
-  {
-    value: "purchase-order",
-    label: "Purchase order",
-    note: "For registered businesses with an approved account. Send your PO number and we invoice against it.",
-  },
-  {
     value: "cash-on-delivery",
     label: "Cash on delivery",
-    note: "Available within Dhaka and Chattogram metro, on orders under ৳100,000.",
+    note: "Pay in cash when your order arrives.",
   },
 ] as const;
 

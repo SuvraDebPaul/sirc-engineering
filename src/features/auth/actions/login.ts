@@ -1,12 +1,13 @@
 "use server";
 import { auth } from "@/lib/db/auth";
 import { LoginInput, loginSchema } from "../schemas/login.schema";
-import { firstFieldErrors } from "@/features/auth/schemas/format-zod-errors";
+import { firstFieldErrors } from "@/lib/format-zod-errors";
 import { redirect } from "next/navigation";
 import { roleRedirectPath } from "../services/role-redirect";
 import { APIError } from "better-auth";
 import { z } from "zod";
-import { logUnexpectedError } from "../services/log-unexpected-error";
+import { logUnexpectedError } from "@/lib/log-unexpected-error";
+import { checkRateLimit, getClientIp, rateLimitMessage } from "@/lib/rate-limit";
 
 export interface LoginResult {
   errors?: Partial<Record<"email" | "password" | "form", string>>;
@@ -18,6 +19,19 @@ export async function login(data: LoginInput): Promise<LoginResult | void> {
     return {
       errors: firstFieldErrors(z.flattenError(result.error).fieldErrors),
     };
+  }
+
+  // Rate-limited on both the target account and the requester's IP — the
+  // account limit stops a distributed password-guessing attack on one
+  // victim, the IP limit stops one attacker credential-stuffing many
+  // accounts. Ten attempts is generous enough that a real user who forgot
+  // their password a couple of times never hits it.
+  const ip = await getClientIp();
+  const emailLimit = checkRateLimit(`login:email:${result.data.email.toLowerCase()}`, 10, 15 * 60 * 1000);
+  const ipLimit = checkRateLimit(`login:ip:${ip}`, 20, 15 * 60 * 1000);
+  const tighter = !emailLimit.ok ? emailLimit : !ipLimit.ok ? ipLimit : null;
+  if (tighter) {
+    return { errors: { form: rateLimitMessage(tighter.retryAfterSeconds!) } };
   }
 
   let redirectTo: string;

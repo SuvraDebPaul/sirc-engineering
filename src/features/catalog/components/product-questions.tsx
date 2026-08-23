@@ -10,6 +10,14 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { emptyQuestionState } from "@/features/enquiries/services/questions";
+import { formatDate } from "@/lib/format";
+
+interface AnsweredQuestion {
+  id: string;
+  question: string;
+  answer: string | null;
+  answeredAt: Date | null;
+}
 
 /**
  * Ask a question about this product.
@@ -27,13 +35,17 @@ import { emptyQuestionState } from "@/features/enquiries/services/questions";
  * a considered reply, WhatsApp for anything that needs one now.
  */
 export function ProductQuestions({
+  productId,
   productName,
   model,
   whatsapp,
+  questions,
 }: {
+  productId: string;
   productName: string;
   model: string;
   whatsapp: string;
+  questions: AnsweredQuestion[];
 }) {
   const [state, formAction, isPending] = useActionState(askProductQuestion, emptyQuestionState);
   const summaryRef = useRef<HTMLDivElement>(null);
@@ -48,13 +60,32 @@ export function ProductQuestions({
         <h2 id="questions" className="flex items-center gap-2 text-lg font-semibold tracking-tight">
           <HelpCircle className="size-5 text-primary" strokeWidth={1.75} aria-hidden="true" />
           Questions about this instrument
+          {questions.length > 0 && (
+            <span className="text-sm font-normal text-muted-foreground">({questions.length})</span>
+          )}
         </h2>
 
-        <p className="mt-3 rounded-xl border border-dashed p-5 text-sm text-muted-foreground">
-          No questions have been asked about this instrument yet. Ask one and an applications
-          engineer will answer — we publish the answers here, so the next person with the same
-          question finds it.
-        </p>
+        {questions.length === 0 ? (
+          <p className="mt-3 rounded-xl border border-dashed p-5 text-sm text-muted-foreground">
+            No questions have been asked about this instrument yet. Ask one and an applications
+            engineer will answer — we publish the answers here, so the next person with the same
+            question finds it.
+          </p>
+        ) : (
+          <ul className="mt-3 space-y-4">
+            {questions.map((item) => (
+              <li key={item.id} className="rounded-xl border p-4">
+                <p className="text-sm font-medium">Q: {item.question}</p>
+                <p className="mt-2 text-sm text-muted-foreground">A: {item.answer}</p>
+                {item.answeredAt && (
+                  <p className="mt-2 text-xs text-muted-foreground">
+                    Answered {formatDate(item.answeredAt)}
+                  </p>
+                )}
+              </li>
+            ))}
+          </ul>
+        )}
 
         <div className="mt-5">
           <p className="text-sm font-medium">Need an answer today?</p>
@@ -78,7 +109,7 @@ export function ProductQuestions({
         </div>
       ) : (
         <form action={formAction} noValidate className="rounded-2xl border bg-card p-6">
-          <input type="hidden" name="model" value={model} />
+          <input type="hidden" name="productId" value={productId} />
 
           <h3 className="font-semibold">Ask a question</h3>
 

@@ -2,6 +2,7 @@
 
 import { deliverEnquiry } from "@/features/enquiries/services/enquiry-delivery";
 import type { ContactFormState } from "@/features/enquiries/services/contact";
+import { checkRateLimit, getClientIp, rateLimitMessage } from "@/lib/rate-limit";
 
 const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
@@ -25,6 +26,23 @@ export async function submitContact(
   // Honeypot — see the note in the RFQ action.
   if (formData.get("website") !== "") {
     return { status: "success", errors: {}, values: {}, reference: "MSG-00000000-000" };
+  }
+
+  // Five requests per ten minutes per IP — see the note in the RFQ action.
+  const ip = await getClientIp();
+  const limit = checkRateLimit(`contact:${ip}`, 5, 10 * 60 * 1000);
+  if (!limit.ok) {
+    return {
+      status: "error",
+      errors: { form: rateLimitMessage(limit.retryAfterSeconds!) },
+      values: {
+        name: read(formData, "name"),
+        email: read(formData, "email"),
+        phone: read(formData, "phone"),
+        subject: read(formData, "subject"),
+        message: read(formData, "message"),
+      },
+    };
   }
 
   const name = read(formData, "name");
@@ -55,7 +73,13 @@ export async function submitContact(
   if (Object.keys(errors).length > 0) return { status: "error", errors, values };
 
   try {
-    const reference = await deliverEnquiry("contact", values);
+    const reference = await deliverEnquiry("contact", {
+      name,
+      email,
+      phone: phone || undefined,
+      message,
+      details: { subject },
+    });
     return { status: "success", errors: {}, values: {}, reference };
   } catch {
     return {

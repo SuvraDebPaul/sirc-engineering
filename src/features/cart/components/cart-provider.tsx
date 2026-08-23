@@ -20,6 +20,7 @@ import {
   type CartLine,
   type ResolvedLine,
 } from "@/features/cart/services/cart";
+import { toggleWishlistAction } from "@/features/account/actions/toggle-wishlist";
 import type { Product } from "@/features/catalog/types";
 
 /**
@@ -66,9 +67,12 @@ const CartContext = createContext<CartContextValue | null>(null);
 export function CartProvider({
   children,
   products,
+  userId,
 }: {
   children: React.ReactNode;
   products: Product[];
+  /** Present when signed in — mirrors wishlist toggles to the account so they survive across devices. */
+  userId?: string | null;
 }) {
   const lines = useSyncExternalStore(subscribeCart, getCartSnapshot, getEmptyLines);
   const wishlist = useSyncExternalStore(subscribeWishlist, getWishlistSnapshot, getEmptyIds);
@@ -111,14 +115,23 @@ export function CartProvider({
 
   const clearCart = useCallback(() => writeCart([]), []);
 
-  const toggleWishlist = useCallback((productId: string) => {
-    const current = readWishlist();
-    writeWishlist(
-      current.includes(productId)
-        ? current.filter((id) => id !== productId)
-        : [...current, productId],
-    );
-  }, []);
+  const toggleWishlist = useCallback(
+    (productId: string) => {
+      const current = readWishlist();
+      writeWishlist(
+        current.includes(productId)
+          ? current.filter((id) => id !== productId)
+          : [...current, productId],
+      );
+
+      // Fire-and-forget: the localStorage write above is the source of truth
+      // for this device's UI, and always succeeds. This just mirrors the same
+      // toggle to the account so a signed-in customer's saves follow them to
+      // another device — a failure here shouldn't roll back the local toggle.
+      if (userId) void toggleWishlistAction(productId);
+    },
+    [userId],
+  );
 
   const isWishlisted = useCallback(
     (productId: string) => wishlist.includes(productId),

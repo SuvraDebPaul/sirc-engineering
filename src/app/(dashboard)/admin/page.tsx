@@ -1,41 +1,42 @@
-import { headers } from "next/headers";
-import Link from "next/link";
-import { Settings } from "lucide-react";
+import { DollarSign, Package, ShoppingCart, Users } from "lucide-react";
 
-import { auth } from "@/lib/db/auth";
-import { SignOutButton } from "@/features/admin/components/sign-out-button";
+import { StatCard } from "@/features/admin/components/stat-card";
+import { RecentOrdersTable } from "@/features/admin/components/recent-orders-table";
+import { getDashboardStats, getRecentOrders } from "@/features/admin/services/dashboard";
 
 export default async function AdminDashboardPage() {
-  const session = await auth.api.getSession({ headers: await headers() });
+  const [stats, recentOrders] = await Promise.all([getDashboardStats(), getRecentOrders()]);
 
   return (
-    <div className="mx-auto max-w-2xl px-6 py-12">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-xl font-semibold tracking-tight">Admin</h1>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Signed in as {session?.user.email}
-          </p>
-        </div>
-        <SignOutButton />
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-xl font-semibold tracking-tight">Dashboard</h1>
+        <p className="mt-1 text-sm text-muted-foreground">An overview of the store.</p>
       </div>
 
-      <Link
-        href="/admin/settings"
-        className="mt-8 flex items-center gap-3 rounded-xl border p-4 transition-colors hover:bg-muted/50"
-      >
-        <Settings className="size-5 text-primary" aria-hidden="true" />
-        <span>
-          <span className="block text-sm font-medium">Site settings</span>
-          <span className="block text-sm text-muted-foreground">
-            Logo, contact details and social links
-          </span>
-        </span>
-      </Link>
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <StatCard
+          label="Revenue (30d)"
+          value={stats.revenue.value}
+          change={stats.revenue.change}
+          icon={DollarSign}
+        />
+        <StatCard
+          label="Orders (30d)"
+          value={stats.orders.value}
+          change={stats.orders.change}
+          icon={ShoppingCart}
+        />
+        <StatCard
+          label="Customers"
+          value={stats.customers.value}
+          change={stats.customers.change}
+          icon={Users}
+        />
+        <StatCard label="Products" value={stats.products.value} icon={Package} />
+      </div>
 
-      <p className="mt-6 text-sm text-muted-foreground">
-        More sections — products, categories, orders, content — come next.
-      </p>
+      <RecentOrdersTable orders={recentOrders} />
     </div>
   );
 }

@@ -157,7 +157,7 @@ const checkoutForm = (over: Record<string, string> = {}) => {
     address: "House 12, Road 4, Banani",
     city: "Dhaka",
     district: "Dhaka",
-    payment: "bank-transfer",
+    payment: "cash-on-delivery",
     ...over,
   };
   for (const [k, v] of Object.entries(base)) if (v !== "") data.set(k, v);
@@ -180,7 +180,7 @@ describe("validateCheckout", () => {
   });
 
   test("every accepted payment method settles off-site", () => {
-    for (const method of ["bank-transfer", "purchase-order", "cash-on-delivery"]) {
+    for (const method of ["cash-on-delivery", "bkash", "sslcommerz"]) {
       assert.equal(validateCheckout(checkoutForm({ payment: method })).ok, true, method);
     }
   });

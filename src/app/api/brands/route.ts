@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 
-import { BRANDS } from "@/data";
+import { getBrands } from "@/features/catalog/services";
 
-export function GET() {
-  return NextResponse.json(BRANDS);
+export async function GET() {
+  return NextResponse.json(await getBrands());
 }

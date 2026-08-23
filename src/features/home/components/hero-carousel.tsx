@@ -34,9 +34,16 @@ import type { Promotion } from "@/features/content/types";
 export function HeroCarousel({ slides }: { slides: Promotion[] }) {
   const reducedMotion = useReducedMotion();
 
-  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, align: "start" }, [
-    Autoplay({ delay: 6000, stopOnInteraction: true, stopOnMouseEnter: true }),
-  ]);
+  const [emblaRef, emblaApi] = useEmblaCarousel(
+    { loop: true, align: "start" },
+    [
+      Autoplay({
+        delay: 6000,
+        stopOnInteraction: true,
+        stopOnMouseEnter: true,
+      }),
+    ],
+  );
 
   const [selected, setSelected] = useState(0);
 
@@ -61,7 +68,10 @@ export function HeroCarousel({ slides }: { slides: Promotion[] }) {
     autoplay?.stop();
   }, [emblaApi, reducedMotion]);
 
-  const scrollTo = useCallback((index: number) => emblaApi?.scrollTo(index), [emblaApi]);
+  const scrollTo = useCallback(
+    (index: number) => emblaApi?.scrollTo(index),
+    [emblaApi],
+  );
   const scrollPrev = useCallback(() => emblaApi?.scrollPrev(), [emblaApi]);
   const scrollNext = useCallback(() => emblaApi?.scrollNext(), [emblaApi]);
 
@@ -69,7 +79,7 @@ export function HeroCarousel({ slides }: { slides: Promotion[] }) {
 
   return (
     <section
-      className="relative overflow-hidden rounded-2xl"
+      className="relative overflow-hidden"
       aria-roledescription="carousel"
       aria-label="Featured"
     >
@@ -98,8 +108,8 @@ export function HeroCarousel({ slides }: { slides: Promotion[] }) {
                   className="absolute inset-0 bg-linear-to-r from-black/85 via-black/60 to-black/10"
                 />
 
-                <div className="absolute inset-0 flex items-center">
-                  <div className="w-full max-w-2xl px-6 py-8 sm:px-10 lg:px-14">
+                <div className="absolute inset-0 flex items-center justify-center text-center">
+                  <div className="w-full px-6 py-8 sm:px-10 lg:px-14">
                     <p className="text-xs font-semibold uppercase tracking-[0.2em] text-amber-400 sm:text-sm">
                       {slide.eyebrow}
                     </p>
@@ -109,13 +119,13 @@ export function HeroCarousel({ slides }: { slides: Promotion[] }) {
                     </h2>
 
                     {slide.subtitle && (
-                      <p className="mt-4 max-w-lg text-sm text-white/80 sm:text-base">
+                      <p className="mt-4 text-sm text-white/80 sm:text-base">
                         {slide.subtitle}
                       </p>
                     )}
 
-                    <div className="mt-6 flex flex-wrap gap-3">
-                      <Button asChild size="lg" className="group rounded-full">
+                    <div className="mt-6 flex flex-wrap gap-3 items-center justify-center">
+                      <Button asChild size="lg" className="group py-6 px-4">
                         <Link href={slide.href}>
                           {slide.ctaLabel}
                           <ArrowUpRight
@@ -129,9 +139,9 @@ export function HeroCarousel({ slides }: { slides: Promotion[] }) {
                         asChild
                         size="lg"
                         variant="outline"
-                        className="rounded-full border-white/30 bg-white/10 text-white backdrop-blur-sm hover:bg-white/20 hover:text-white"
+                        className="py-6 px-4 border-white/30 bg-white/10 text-white backdrop-blur-sm hover:bg-white/20 hover:text-white"
                       >
-                        <Link href="/rfq">Request a quote</Link>
+                        <Link href="/rfq">Request a quotation</Link>
                       </Button>
                     </div>
                   </div>
@@ -171,7 +181,9 @@ export function HeroCarousel({ slides }: { slides: Promotion[] }) {
             aria-current={selected === index}
             className={cn(
               "h-2 rounded-full transition-all duration-300",
-              selected === index ? "w-6 bg-white" : "w-2 bg-white/50 hover:bg-white/75",
+              selected === index
+                ? "w-6 bg-white"
+                : "w-2 bg-white/50 hover:bg-white/75",
             )}
           />
         ))}

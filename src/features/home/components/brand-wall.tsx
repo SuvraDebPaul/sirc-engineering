@@ -37,14 +37,7 @@ export function BrandWall({ brands }: { brands: Brand[] }) {
                 alt={brand.name}
                 width={160}
                 height={40}
-                className="h-8 w-auto opacity-70 transition-opacity hover:opacity-100 dark:hidden"
-              />
-              <Image
-                src={brand.logoDarkUrl}
-                alt={brand.name}
-                width={160}
-                height={40}
-                className="hidden h-8 w-auto opacity-70 transition-opacity hover:opacity-100 dark:block"
+                className="h-8 w-auto opacity-70 transition-opacity hover:opacity-100"
               />
             </Link>
           </li>

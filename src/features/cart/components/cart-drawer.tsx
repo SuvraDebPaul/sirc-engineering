@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Heart, ShoppingBag, Truck, X } from "lucide-react";
+import { Heart, ShoppingBag, X } from "lucide-react";
 
 import { useCart } from "@/features/cart/components/cart-provider";
 import { Button } from "@/components/ui/button";
@@ -15,7 +15,6 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { FREE_DELIVERY_THRESHOLD } from "@/features/cart/services/cart";
 import { formatBDT } from "@/lib/format";
 import { cn } from "@/lib/utils";
 
@@ -25,17 +24,10 @@ import { cn } from "@/lib/utils";
  * The badge counts come from `useSyncExternalStore`, which renders the server
  * snapshot (empty) during hydration and swaps to the real one immediately
  * after. That is what keeps a stored cart from causing a hydration mismatch.
- *
- * The free-delivery bar reflects a real commercial threshold rather than a
- * countdown or a fake scarcity device: it tells the shopper how much more they
- * would need to spend, and says so plainly once they are over the line.
  */
 export function CartControls() {
   const { count, resolved, subtotal, wishlist, removeItem } = useCart();
   const [open, setOpen] = useState(false);
-
-  const remaining = Math.max(0, FREE_DELIVERY_THRESHOLD - subtotal);
-  const progress = Math.min(100, (subtotal / FREE_DELIVERY_THRESHOLD) * 100);
 
   return (
     <div className="flex items-center gap-1">
@@ -71,33 +63,6 @@ export function CartControls() {
               Items you have added, with a link to checkout.
             </SheetDescription>
           </SheetHeader>
-
-          {resolved.length > 0 && (
-            <div className="border-b px-5 py-4">
-              <div className="flex items-center gap-3">
-                <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-muted">
-                  <div
-                    className="h-full rounded-full bg-emerald-500 transition-[width] duration-300"
-                    style={{ width: `${progress}%` }}
-                  />
-                </div>
-                <Truck className="size-5 shrink-0 text-emerald-600" strokeWidth={1.75} aria-hidden="true" />
-              </div>
-
-              <p className="mt-2 text-center text-sm text-muted-foreground">
-                {remaining === 0 ? (
-                  <span className="font-medium text-emerald-600">
-                    Your order qualifies for free delivery.
-                  </span>
-                ) : (
-                  <>
-                    Spend <span className="font-medium text-foreground">{formatBDT(remaining)}</span>{" "}
-                    more for free delivery.
-                  </>
-                )}
-              </p>
-            </div>
-          )}
 
           <div className="flex-1 overflow-y-auto px-5">
             {resolved.length === 0 ? (

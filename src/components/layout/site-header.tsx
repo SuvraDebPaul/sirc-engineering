@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { FileText, Mail, Phone } from "lucide-react";
+import { headers } from "next/headers";
+import { FileText, Mail, Phone, User } from "lucide-react";
 
 import { CartControls } from "@/features/cart/components/cart-drawer";
 import { Container } from "@/components/layout/container";
@@ -12,6 +13,7 @@ import {
   getProducts,
 } from "@/features/catalog/services";
 import { getSiteSettings } from "@/features/settings/services/settings";
+import { auth } from "@/lib/db/auth";
 
 /**
  * Site header — two rows.
@@ -30,10 +32,11 @@ import { getSiteSettings } from "@/features/settings/services/settings";
  * chrome any more.
  */
 export async function SiteHeader() {
-  const [categories, products, settings] = await Promise.all([
+  const [categories, products, settings, session] = await Promise.all([
     getCategories(),
     getProducts(),
     getSiteSettings(),
+    auth.api.getSession({ headers: await headers() }),
   ]);
 
   // Counts tell the mobile drawer which categories actually hold stock, so an
@@ -66,15 +69,6 @@ export async function SiteHeader() {
             </a>
           </div>
 
-          {/*
-            No customer "Login" link. This used to point at a placeholder
-            account page; that page is gone now that /admin/login is a real
-            staff-only sign-in. Pointing a public nav link at it would be
-            wrong twice over — customers have no accounts to log into, and it
-            would advertise the admin entrance to every visitor. Bring a
-            customer-facing login back here only when there's a real
-            customer-account system for it to lead to.
-          */}
           <nav aria-label="Secondary" className="hidden shrink-0 sm:block">
             <ul className="flex items-center gap-4">
               {utilityNav.map((item) => (
@@ -87,6 +81,15 @@ export async function SiteHeader() {
                   </Link>
                 </li>
               ))}
+              <li>
+                <Link
+                  href={session ? "/account" : "/login"}
+                  className="flex items-center gap-1.5 whitespace-nowrap text-muted-foreground transition-colors hover:text-primary"
+                >
+                  <User className="size-3.5 shrink-0" aria-hidden="true" />
+                  {session ? "My account" : "Sign in"}
+                </Link>
+              </li>
             </ul>
           </nav>
         </Container>

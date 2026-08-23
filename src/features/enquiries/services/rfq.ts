@@ -155,12 +155,8 @@ export const validateQuoteRequest = (formData: FormData): ValidationResult => {
 };
 
 
-/**
- * Hand a validated request to the shared delivery seam.
- *
- * See `lib/enquiry-delivery.ts` — that is the one function to replace when a
- * real destination is chosen.
- */
+/** Hand a validated request to the shared delivery seam. */
 export async function deliverQuoteRequest(request: QuoteRequest): Promise<string> {
-  return deliverEnquiry("quotation", { ...request });
+  const { name, email, phone, message, ...details } = request;
+  return deliverEnquiry("quotation", { name, email, phone, message, details });
 }

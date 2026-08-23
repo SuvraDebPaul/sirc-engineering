@@ -1,14 +1,13 @@
 import { NextResponse } from "next/server";
 
-import { PRODUCTS } from "@/data";
+import { getProducts } from "@/features/catalog/services";
 
 /**
  * Products endpoint.
  *
- * The seam between the site and its data source. Right now it returns the demo
- * records from `src/data`; swap the body for a database query and every page
- * keeps working unchanged.
+ * The seam Client Components use to reach the catalogue — server-rendered
+ * pages call `getProducts()` directly instead of self-fetching this route.
  */
-export function GET() {
-  return NextResponse.json(PRODUCTS);
+export async function GET() {
+  return NextResponse.json(await getProducts());
 }

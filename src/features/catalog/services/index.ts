@@ -4,12 +4,17 @@ export {
   getCategories,
   getCategoryBySlug,
   getCategoryCounts,
+  getCategoryTree,
   getProductsByCategory,
+  getSubcategories,
+  type CategoryNode,
 } from "./categories";
 export {
   getFeaturedProducts,
   getProductBySlug,
   getProductDetail,
   getProducts,
+  getQuoteOnlyProducts,
   getRelatedProducts,
 } from "./products";
+export { getTopSellingProducts, getTrendingProducts } from "./merchandising";

@@ -5,6 +5,7 @@ import {
   validateQuoteRequest,
   type QuoteFormState,
 } from "@/features/enquiries/services/rfq";
+import { checkRateLimit, getClientIp, rateLimitMessage } from "@/lib/rate-limit";
 
 /**
  * Handle a quotation request.
@@ -53,6 +54,18 @@ export async function submitQuoteRequest(
     // Answer as though it worked. Telling a bot precisely how it was caught
     // is the one thing that would help it get past this next time.
     return { status: "success", errors: {}, values: {}, reference: "RFQ-00000000-000" };
+  }
+
+  // Five requests per ten minutes per IP — enough for a real buyer to retry a
+  // typo, not enough for a scraper to fill the enquiries inbox.
+  const ip = await getClientIp();
+  const limit = checkRateLimit(`rfq:${ip}`, 5, 10 * 60 * 1000);
+  if (!limit.ok) {
+    return {
+      status: "error",
+      errors: { form: rateLimitMessage(limit.retryAfterSeconds!) },
+      values: echo(formData),
+    };
   }
 
   const result = validateQuoteRequest(formData);

@@ -9,4 +9,6 @@ export interface Category {
   imageUrl?: string;
   /** Shown on the category grid so the tile is not just a label. */
   productCount?: number;
+  /** Null for a top-level category; otherwise the parent's id. */
+  parentId: string | null;
 }

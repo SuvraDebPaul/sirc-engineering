@@ -1,0 +1,21 @@
+model Category {
+  id        String   @id @default(uuid())
+  name      String
+  slug      String   @unique
+  icon      String
+  imageUrl  String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  /// One level of hierarchy — a subcategory names its parent, a top-level
+  /// category leaves this null. Deleting the parent orphans the children back
+  /// to top-level rather than deleting them.
+  parentId String?
+  parent   Category?  @relation("CategoryHierarchy", fields: [parentId], references: [id], onDelete: SetNull)
+  children Category[] @relation("CategoryHierarchy")
+
+  products Product[]
+
+  @@index([parentId])
+  @@map("category")
+}

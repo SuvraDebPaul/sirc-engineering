@@ -22,14 +22,7 @@ export function BrandSlider({ brands }: { brands: Brand[] }) {
               alt={brand.name}
               width={200}
               height={100}
-              className="h-8 w-36 dark:hidden"
-            />
-            <Image
-              src={brand.logoDarkUrl}
-              alt={brand.name}
-              width={200}
-              height={100}
-              className="hidden h-8 w-36 dark:block"
+              className="h-8 w-36"
             />
           </div>
         ))}

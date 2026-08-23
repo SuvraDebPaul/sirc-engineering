@@ -1,0 +1,13 @@
+model Brand {
+  id        String   @id @default(uuid())
+  name      String
+  slug      String   @unique
+  /// The only logo the site keeps — there is no dark mode to need a second one.
+  logoUrl   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  products Product[]
+
+  @@map("brand")
+}

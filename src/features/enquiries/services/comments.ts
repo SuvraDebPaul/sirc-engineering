@@ -3,19 +3,15 @@ import { deliverEnquiry } from "@/features/enquiries/services/enquiry-delivery";
 /**
  * Article comments.
  *
- * ⚠️ **Not yet wired.** A submitted comment is validated, given an id and
- * written to the server log. Nothing is stored and nothing is published, which
- * is why the form tells the visitor their comment is held for moderation
- * rather than pretending it has appeared.
- *
- * No comments are displayed anywhere, and none are invented. The reference
- * design shows a thread of nine; fabricating discussion — names, opinions,
- * replies — on a business's own site is the one kind of placeholder content
- * that cannot be quietly shipped by accident.
- *
- * Replace `deliverComment` with the real destination. Whatever that is, it
- * must moderate before publishing: an unmoderated comment form on a public
- * site is a spam target within days.
+ * A submitted comment is validated, given a reference, and stored as an
+ * `Enquiry` row — visible to staff at `/admin/enquiries` — with the business
+ * notified by email. It is **not** published anywhere: no comment thread
+ * exists on the blog yet, and none is invented. The reference design shows a
+ * thread of nine; fabricating discussion — names, opinions, replies — on a
+ * business's own site is the one kind of placeholder content that cannot be
+ * quietly shipped by accident. Publishing is a separate, unbuilt feature —
+ * whatever that turns out to be, it must moderate before publishing: an
+ * unmoderated comment form on a public site is a spam target within days.
  */
 export interface CommentInput {
   postSlug: string;
@@ -66,7 +62,8 @@ export const validateComment = (
   return { ok: true, data: { postSlug, name, email, body } };
 };
 
-/** Hands off to the shared seam, which must moderate before publishing. */
+/** Hands off to the shared seam, which stores it for moderation and never auto-publishes. */
 export async function deliverComment(comment: CommentInput): Promise<void> {
-  await deliverEnquiry("comment", { ...comment });
+  const { postSlug, name, email, body } = comment;
+  await deliverEnquiry("comment", { name, email, message: body, details: { postSlug } });
 }

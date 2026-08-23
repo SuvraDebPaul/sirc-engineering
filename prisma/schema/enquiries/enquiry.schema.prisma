@@ -1,0 +1,27 @@
+model Enquiry {
+  id        String @id @default(uuid())
+  reference String @unique
+
+  /// "quotation" | "contact" | "comment"
+  kind   String
+  /// "NEW" | "RESPONDED" | "CLOSED" — for a comment this tracks moderation
+  /// state in the same three buckets rather than a separate vocabulary.
+  status String @default("NEW")
+
+  name    String
+  email   String
+  phone   String?
+  message String
+
+  /// Kind-specific extra fields kept as JSON rather than a wide sparse
+  /// table: company/department/designation/sku/quantity/enquiryType for a
+  /// quotation, subject for a contact message, postSlug for a comment.
+  details Json @default("{}")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([kind])
+  @@index([status])
+  @@map("enquiries")
+}

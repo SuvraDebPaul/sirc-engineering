@@ -47,7 +47,7 @@ export function WhatsAppButton({
         aria-label={label}
         title={label}
         className={cn(
-          "fixed bottom-5 left-5 z-30 grid size-13 place-items-center rounded-full bg-[#25D366] text-white shadow-lg transition-transform hover:scale-105 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none motion-reduce:transform-none",
+          "fixed right-5 bottom-5 z-30 grid size-13 place-items-center rounded-full bg-[#25D366] text-white shadow-lg transition-transform hover:scale-105 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none motion-reduce:transform-none",
           "print:hidden",
           className,
         )}

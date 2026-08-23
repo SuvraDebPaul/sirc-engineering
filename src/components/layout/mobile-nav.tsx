@@ -49,8 +49,18 @@ export function MobileNav({
 }) {
   const [open, setOpen] = useState(false);
 
-  const stocked = categories.filter((category) => (counts[category.name] ?? 0) > 0);
-  const rest = categories.filter((category) => (counts[category.name] ?? 0) === 0);
+  // Stocked categories lead, both at the top level and within each parent's
+  // own children — the flatter walk stays intact, it's just grouped in two
+  // passes instead of one.
+  const byStock = (list: Category[]) => [
+    ...list.filter((category) => (counts[category.name] ?? 0) > 0),
+    ...list.filter((category) => (counts[category.name] ?? 0) === 0),
+  ];
+
+  const childrenOf = (parentId: string) =>
+    byStock(categories.filter((category) => category.parentId === parentId));
+
+  const topLevel = byStock(categories.filter((category) => category.parentId === null));
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
@@ -96,36 +106,44 @@ export function MobileNav({
 
               <AccordionContent>
                 <ul className="flex flex-col gap-0.5 pt-1">
-                  {[...stocked, ...rest].map((category) => {
-                    const count = counts[category.name] ?? 0;
+                  {topLevel.flatMap((category) => {
+                    const row = (entry: Category, indent: boolean) => {
+                      const count = counts[entry.name] ?? 0;
 
-                    return (
-                      <li key={category.id}>
-                        <Link
-                          href={`/category/${category.slug}`}
-                          className="flex items-center gap-2.5 rounded-md p-2 text-sm transition-colors hover:bg-muted"
-                        >
-                          <Icon
-                            name={category.icon}
-                            className={
-                              count > 0
-                                ? "size-4 shrink-0 text-primary"
-                                : "size-4 shrink-0 text-muted-foreground/40"
-                            }
-                            strokeWidth={1.5}
-                            aria-hidden="true"
-                          />
-                          <span className={count > 0 ? "flex-1" : "flex-1 text-muted-foreground"}>
-                            {category.name}
-                          </span>
-                          {count > 0 && (
-                            <span className="text-xs tabular-nums text-muted-foreground">
-                              {count}
+                      return (
+                        <li key={entry.id}>
+                          <Link
+                            href={`/category/${entry.slug}`}
+                            className="flex items-center gap-2.5 rounded-md p-2 text-sm transition-colors hover:bg-muted"
+                            style={indent ? { paddingLeft: "2.25rem" } : undefined}
+                          >
+                            <Icon
+                              name={entry.icon}
+                              className={
+                                count > 0
+                                  ? "size-4 shrink-0 text-primary"
+                                  : "size-4 shrink-0 text-muted-foreground/40"
+                              }
+                              strokeWidth={1.5}
+                              aria-hidden="true"
+                            />
+                            <span className={count > 0 ? "flex-1" : "flex-1 text-muted-foreground"}>
+                              {entry.name}
                             </span>
-                          )}
-                        </Link>
-                      </li>
-                    );
+                            {count > 0 && (
+                              <span className="text-xs tabular-nums text-muted-foreground">
+                                {count}
+                              </span>
+                            )}
+                          </Link>
+                        </li>
+                      );
+                    };
+
+                    return [
+                      row(category, false),
+                      ...childrenOf(category.id).map((child) => row(child, true)),
+                    ];
                   })}
                 </ul>
               </AccordionContent>

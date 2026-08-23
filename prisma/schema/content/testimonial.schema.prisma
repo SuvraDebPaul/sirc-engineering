@@ -1,0 +1,16 @@
+model Testimonial {
+  id         String  @id @default(uuid())
+  headline   String
+  quote      String
+  authorName String
+  authorRole String
+  company    String
+  /// Optional headshot — falls back to monogram initials when empty.
+  imageUrl   String?
+  sortOrder  Int     @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("testimonials")
+}

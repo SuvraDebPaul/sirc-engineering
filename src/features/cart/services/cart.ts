@@ -130,25 +130,19 @@ export const cartCount = (lines: CartLine[]): number =>
 /**
  * Delivery options.
  *
- * Free over the threshold, because that is a real commercial rule the business
- * can honour, not a fake urgency device. Figures are placeholders until the
- * business confirms them.
+ * Flat fee by zone — the model this market actually uses. Dhaka delivery
+ * costs the courier less than a run outside it, and shoppers here expect to
+ * see exactly that split rather than a "calculated at checkout" surprise.
  */
-export const FREE_DELIVERY_THRESHOLD = 5_000_000; // ৳50,000 in poisha
-
 export const DELIVERY_OPTIONS = [
-  { value: "standard", label: "Standard delivery", cost: 60_000, note: "2–4 working days" },
-  { value: "express", label: "Express delivery", cost: 150_000, note: "Next working day, Dhaka & Chattogram" },
-  { value: "pickup", label: "Collect from our office", cost: 0, note: "Dhaka, by arrangement" },
+  { value: "dhaka", label: "Inside Dhaka", cost: 6_000, note: "Usually delivered within 2–3 working days" },
+  { value: "outside-dhaka", label: "Outside Dhaka", cost: 12_000, note: "Usually delivered within 3–5 working days" },
 ] as const;
 
 export type DeliveryValue = (typeof DELIVERY_OPTIONS)[number]["value"];
 
-export const deliveryCost = (option: DeliveryValue, subtotal: number): number => {
-  const entry = DELIVERY_OPTIONS.find((item) => item.value === option) ?? DELIVERY_OPTIONS[0];
-  if (entry.value === "pickup") return 0;
-  return subtotal >= FREE_DELIVERY_THRESHOLD ? 0 : entry.cost;
-};
+export const deliveryCost = (option: DeliveryValue): number =>
+  (DELIVERY_OPTIONS.find((item) => item.value === option) ?? DELIVERY_OPTIONS[0]).cost;
 
 /**
  * External-store plumbing for `useSyncExternalStore`.
