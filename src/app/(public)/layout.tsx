@@ -8,21 +8,7 @@ import { getProducts } from "@/features/catalog/services";
 import { getSiteSettings } from "@/features/settings/services/settings";
 import { auth } from "@/lib/db/auth";
 
-/**
- * Public site shell.
- *
- * The header and footer own their own containers now — both are full-bleed
- * bands with contained contents, which the layout cannot express by wrapping
- * them from outside. `main` stays unwrapped for the same reason: pages supply
- * their own `Container` so a page can put a full-width band between two
- * contained sections.
- *
- * Both render on the server, so the chrome on every page costs nothing in
- * hydration.
- */
 export default async function PublicLayout({ children }: LayoutProps<"/">) {
-  // The catalogue is handed to the cart so stored lines always resolve against
-  // current prices rather than whatever they cost when they were added.
   const [products, settings, session] = await Promise.all([
     getProducts(),
     getSiteSettings(),
@@ -34,9 +20,6 @@ export default async function PublicLayout({ children }: LayoutProps<"/">) {
       <SiteHeader />
       <main className="flex-1 bg-[#F5F5F5]">{children}</main>
       <Footer />
-
-      {/* One tap to a human, on every page. In this market it converts better
-          than any form — and it is a plain link, so it costs nothing. */}
       <WhatsAppButton
         whatsapp={settings.whatsapp}
         variant="floating"
