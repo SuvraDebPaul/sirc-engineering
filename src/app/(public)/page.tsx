@@ -9,6 +9,7 @@ import { Testimonial } from "@/features/home/components/testimonial";
 import { TrendingProducts } from "@/features/home/components/trending-products";
 import { TrustStrip } from "@/features/home/components/trust-strip";
 import { Container } from "@/components/layout/container";
+import { Reveal } from "@/components/motion/reveal";
 import { getSiteSettings } from "@/features/settings/services/settings";
 import FeaturedProducts from "@/features/home/components/featured-products";
 import {
@@ -65,82 +66,109 @@ export default async function HomePage() {
       </h1>
 
       <HeroCarousel slides={heroSlides} />
+      {/* Each band is wrapped in `Reveal`, so it animates in as it reaches the
+          viewport. The hero is deliberately not wrapped — it is already on
+          screen at load, and fading in the first thing a visitor sees delays
+          the page rather than decorating it. */}
       <div className="space-y-14 py-6 sm:space-y-20 sm:py-10">
-        <Container>
-          <BrandSlider brands={brands.slice(0, 6)} />
-        </Container>
+        <Reveal>
+          <Container>
+            <BrandSlider brands={brands.slice(0, 6)} />
+          </Container>
+        </Reveal>
 
-        <Container>
-          <CategoryCarousel categories={categories} />
-        </Container>
+        <Reveal>
+          <Container>
+            <CategoryCarousel categories={categories} />
+          </Container>
+        </Reveal>
 
-        <Container>
-          <FeaturedProducts
-            products={topSelling}
-            title="Top selling"
-            subtitle="Our most-ordered instruments, all time."
-            headingId="top-selling-heading"
-          />
-        </Container>
+        <Reveal>
+          <Container>
+            <FeaturedProducts
+              products={topSelling}
+              title="Top selling"
+              subtitle="Our most-ordered instruments, all time."
+              headingId="top-selling-heading"
+            />
+          </Container>
+        </Reveal>
 
-        <Container>
-          <FeaturedProducts
-            products={trending}
-            title="Trending now"
-            subtitle="What customers have been ordering over the last two weeks."
-            headingId="trending-now-heading"
-          />
-        </Container>
+        <Reveal>
+          <Container>
+            <FeaturedProducts
+              products={trending}
+              title="Trending now"
+              subtitle="What customers have been ordering over the last two weeks."
+              headingId="trending-now-heading"
+            />
+          </Container>
+        </Reveal>
 
         {/* Paired promos — the reference splits the width here to break up the
-          run of product grids. */}
+          run of product grids. Staggered so the two cards arrive in sequence
+          rather than as one block. */}
         {insulation && thermal && (
           <Container>
-            <div className="grid gap-4 md:grid-cols-2">
+            <Reveal stagger className="grid gap-4 md:grid-cols-2">
               <PromoBanner promotion={insulation} />
               <PromoBanner promotion={thermal} />
-            </div>
+            </Reveal>
           </Container>
         )}
 
-        <Container>
-          <TrendingProducts products={products} trending={trending} topSelling={topSelling} />
-        </Container>
+        <Reveal>
+          <Container>
+            <TrendingProducts products={products} trending={trending} topSelling={topSelling} />
+          </Container>
+        </Reveal>
 
-        <Container>
-          <TrustStrip features={features} />
-        </Container>
+        <Reveal>
+          <Container>
+            <TrustStrip features={features} />
+          </Container>
+        </Reveal>
 
-        <Container>
-          <ServicesBand services={services} />
-        </Container>
+        <Reveal>
+          <Container>
+            <ServicesBand services={services} />
+          </Container>
+        </Reveal>
 
         {wide && (
-          <Container>
-            <PromoBanner promotion={wide} size="wide" />
-          </Container>
+          <Reveal>
+            <Container>
+              <PromoBanner promotion={wide} size="wide" />
+            </Container>
+          </Reveal>
         )}
 
-        <Container>
-          <Testimonial testimonials={testimonials} />
-        </Container>
+        <Reveal>
+          <Container>
+            <Testimonial testimonials={testimonials} />
+          </Container>
+        </Reveal>
 
         {safety && power && (
           <Container>
-            <div className="grid gap-4 md:grid-cols-2">
+            <Reveal stagger className="grid gap-4 md:grid-cols-2">
               <PromoBanner promotion={safety} />
               <PromoBanner promotion={power} />
-            </div>
+            </Reveal>
           </Container>
         )}
 
-        <Container>
-          <BrandWall brands={brands} />
-        </Container>
+        <Reveal>
+          <Container>
+            <BrandWall brands={brands} />
+          </Container>
+        </Reveal>
 
-        <Container>
-          <LatestPosts posts={posts} />
-        </Container>
+        <Reveal>
+          <Container>
+            <LatestPosts posts={posts} />
+          </Container>
+        </Reveal>
       </div>
     </>
   );

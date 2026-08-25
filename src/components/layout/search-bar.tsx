@@ -195,7 +195,15 @@ export function SearchBar({ className }: { className?: string }) {
               {loading ? "Searching…" : `No matches for “${query.trim()}”`}
             </p>
           ) : (
-            <ul id={listboxId} role="listbox" aria-label="Search suggestions" className="max-h-96 overflow-y-auto py-2">
+            // `data-lenis-prevent` keeps the wheel inside this list instead of
+            // handing it to the page's smooth scroll once it hits the end.
+            <ul
+              id={listboxId}
+              role="listbox"
+              aria-label="Search suggestions"
+              data-lenis-prevent
+              className="max-h-96 overflow-y-auto py-2"
+            >
               <ResultGroup
                 label="Products"
                 items={results.products}
