@@ -5,6 +5,8 @@ import { Search } from "lucide-react";
 import { Container } from "@/components/layout/container";
 import { CatalogBrowser } from "@/features/catalog/components/catalog-browser";
 import { PageHeader } from "@/components/shared/page-header";
+import { ServiceResults } from "@/features/search/components/service-results";
+import { searchSite } from "@/features/search/services/site-search";
 import { WhatsAppButton } from "@/components/shared/whatsapp-button";
 import { getProducts } from "@/features/catalog/services";
 import { getSiteSettings } from "@/features/settings/services/settings";
@@ -42,6 +44,13 @@ export default async function SearchPage({ searchParams }: PageProps<"/search">)
   // The browser filters on `q` itself, so the page hands it the whole
   // catalogue and lets one implementation do the matching.
   const hasQuery = query !== "";
+
+  // Services are matched separately — they aren't in the catalogue, so the
+  // faceted browser can't reach them. `Infinity` because there are only a
+  // handful in total and this is the full result page, not a drop-down.
+  const { services: serviceHits } = hasQuery
+    ? await searchSite(query, Infinity)
+    : { services: [] };
 
   return (
     <>
@@ -94,13 +103,17 @@ export default async function SearchPage({ searchParams }: PageProps<"/search">)
         </form>
 
         {hasQuery ? (
-          <CatalogBrowser
-            products={products}
-            params={params}
-            basePath="/search"
-            emptyHeading={`No results for “${query}”`}
-            emptyMessage={`Nothing in the catalogue matches “${query}”. We supply far more than we list — send us the model and we will source it.`}
-          />
+          <>
+            <ServiceResults services={serviceHits} />
+
+            <CatalogBrowser
+              products={products}
+              params={params}
+              basePath="/search"
+              emptyHeading={`No results for “${query}”`}
+              emptyMessage={`Nothing in the catalogue matches “${query}”. We supply far more than we list — send us the model and we will source it.`}
+            />
+          </>
         ) : (
           <div className="rounded-2xl border border-dashed py-16 text-center">
             <p className="font-medium">What are you looking for?</p>

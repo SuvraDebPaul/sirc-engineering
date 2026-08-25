@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { headers } from "next/headers";
-import { FileText, Mail, Phone, SearchIcon, User } from "lucide-react";
+import { FileText, Mail, Phone, User } from "lucide-react";
 
 import { AccountMenu } from "@/features/account/components/account-menu";
 import { AnimatedNavLinks } from "@/components/layout/animated-nav-links";
@@ -14,11 +14,7 @@ import { mainNav } from "@/config/site";
 import { getCategories, getProducts } from "@/features/catalog/services";
 import { getSiteSettings } from "@/features/settings/services/settings";
 import { auth } from "@/lib/db/auth";
-import {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupInput,
-} from "../ui/input-group";
+import { SearchBar } from "@/components/layout/search-bar";
 
 export async function SiteHeader() {
   const [categories, products, settings, session] = await Promise.all([
@@ -56,14 +52,7 @@ export async function SiteHeader() {
                 <span className="truncate">{settings.email}</span>
               </a>
             </div>
-            <div className="w-full max-w-lg">
-              <InputGroup className="rounded-full px-2 h-8">
-                <InputGroupInput placeholder="Search..." />
-                <InputGroupAddon>
-                  <SearchIcon />
-                </InputGroupAddon>
-              </InputGroup>
-            </div>
+            <SearchBar className="w-full max-w-lg" />
 
             <nav aria-label="Secondary" className="hidden shrink-0 sm:block">
               <ul className="flex items-center gap-4">

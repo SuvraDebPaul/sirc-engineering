@@ -3,14 +3,20 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Tag } from "lucide-react";
 
 import { CardActions, AddToCartButton } from "@/features/catalog/components/product-card-actions";
 import { QuickViewDialog } from "@/features/catalog/components/quick-view-dialog";
 import { StarRating } from "@/features/catalog/components/star-rating";
 import { Icon } from "@/components/shared/icon";
 import { formatBDT } from "@/lib/format";
-import { BADGE_CLASS, BADGE_LABEL, discountPercent, resolvePriceDisplay } from "@/features/catalog/services/product";
+import {
+  BADGE_CLASS,
+  BADGE_LABEL,
+  discountPercent,
+  resolvePriceDisplay,
+  STOCK_DOT,
+  STOCK_LABEL,
+} from "@/features/catalog/services/product";
 import { cn } from "@/lib/utils";
 import type {
   CustomerTier,
@@ -23,6 +29,22 @@ type ProductCardProps = {
   priority?: boolean;
 };
 
+/**
+ * Product card.
+ *
+ * Edge-to-edge photo with the content block below it, rather than a photo
+ * inset inside padding — the image is the thing being scanned, so it gets the
+ * full width of the card.
+ *
+ * The lift on hover (`-translate-y-1` + shadow) is on the card, never on its
+ * contents: scaling text or buttons on hover shifts the layout under the
+ * cursor. The photo's own zoom is safe because it's clipped by the image
+ * frame's `overflow-hidden` and can't push anything around it.
+ *
+ * Stock is shown as a dot *and* a label. Colour alone would fail for anyone
+ * who can't distinguish amber from emerald, so the word carries the meaning
+ * and the dot only reinforces it.
+ */
 export const ProductCard = ({ product, tier, priority = false }: ProductCardProps) => {
   const [quickViewOpen, setQuickViewOpen] = useState(false);
 
@@ -31,8 +53,8 @@ export const ProductCard = ({ product, tier, priority = false }: ProductCardProp
   const isOutOfStock = product.stockStatus === "OUT_OF_STOCK";
 
   return (
-    <article className="group relative flex h-full flex-col rounded-2xl border bg-card p-3 transition-shadow duration-200 hover:shadow-lg">
-      <div className="relative aspect-square overflow-hidden rounded-xl bg-muted/40">
+    <article className="group relative flex h-full cursor-pointer flex-col overflow-hidden rounded-2xl border border-border/60 bg-card shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-primary/25 hover:shadow-lg hover:shadow-primary/10 motion-reduce:transform-none">
+      <div className="relative aspect-square overflow-hidden bg-linear-to-b from-muted/30 to-muted/60">
         {product.imageUrl ? (
           <Image
             src={product.imageUrl}
@@ -40,7 +62,7 @@ export const ProductCard = ({ product, tier, priority = false }: ProductCardProp
             fill
             priority={priority}
             sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
-            className="object-cover transition-transform duration-300 group-hover:scale-105 motion-reduce:transform-none motion-reduce:transition-none"
+            className="object-cover transition-transform duration-500 group-hover:scale-105 motion-reduce:transform-none motion-reduce:transition-none"
           />
         ) : (
           <div className="flex h-full items-center justify-center text-muted-foreground/25">
@@ -51,99 +73,113 @@ export const ProductCard = ({ product, tier, priority = false }: ProductCardProp
         {/* Saving, top-left. Computed from compare-at rather than stored, so it
             can never contradict the prices shown below it. */}
         {discount !== null && (
-          <span className="absolute left-3 top-3 z-10 rounded-md bg-destructive px-2 py-1 text-xs font-semibold text-white shadow-sm">
+          <span className="absolute top-3 left-3 z-10 rounded-md bg-destructive px-2 py-1 text-xs font-semibold text-white shadow-sm">
             −{discount}%
           </span>
+        )}
+
+        {isOutOfStock && (
+          <div
+            aria-hidden="true"
+            className="absolute inset-0 z-10 grid place-items-center bg-background/60 backdrop-blur-[1px]"
+          >
+            <span className="rounded-full bg-background px-4 py-1.5 text-xs font-semibold shadow-sm">
+              Out of stock
+            </span>
+          </div>
         )}
 
         <CardActions product={product} onQuickView={() => setQuickViewOpen(true)} />
       </div>
 
-      <div className="mt-4 flex items-start justify-between gap-2">
-        <div className="flex min-w-0 items-center gap-1.5 text-xs text-muted-foreground">
-          <Tag className="size-3.5 shrink-0" strokeWidth={1.5} aria-hidden="true" />
-          <span className="truncate">{product.categoryName}</span>
-          {product.subCategoryName && (
-            <>
-              <span aria-hidden="true">&middot;</span>
-              <span className="truncate">{product.subCategoryName}</span>
-            </>
-          )}
-        </div>
-
-        {product.badge && (
-          <span
-            className={cn(
-              "shrink-0 rounded-md px-2 py-0.5 text-xs font-medium ring-1 ring-inset",
-              BADGE_CLASS[product.badge],
-            )}
-          >
-            {BADGE_LABEL[product.badge]}
+      <div className="flex flex-1 flex-col p-4">
+        <div className="flex items-start justify-between gap-2">
+          <span className="min-w-0 truncate text-xs font-medium tracking-wide text-muted-foreground uppercase">
+            {product.brand}
           </span>
-        )}
-      </div>
 
-      <h3 className="mt-2 text-base font-semibold leading-snug">
-        {/* Stretched link: the whole card is clickable, one entry in the a11y tree */}
-        <Link
-          href={`/product/${product.slug}`}
-          className="after:absolute after:inset-0 after:rounded-2xl focus-visible:underline focus-visible:outline-none"
-        >
-          <span className="line-clamp-1">{product.name}</span>
-        </Link>
-      </h3>
-
-      <p className="mt-1 line-clamp-2 min-h-10 text-sm leading-5 text-muted-foreground">
-        {product.description}
-      </p>
-
-      {product.rating !== null && (
-        <div className="mt-3 flex items-center gap-2">
-          <StarRating rating={product.rating} />
-          <span className="text-sm font-medium">{product.rating.toFixed(1)}</span>
-          <span className="min-w-0 truncate text-sm text-muted-foreground">
-            {product.reviewCount} {product.reviewCount === 1 ? "review" : "reviews"}
-          </span>
-        </div>
-      )}
-
-      {/* mt-auto pins price + button to the bottom so cards in a row align */}
-      <div className="mt-auto pt-3">
-        <div className="flex min-h-8 flex-wrap items-baseline gap-x-2">
-          {price.kind === "price" && (
-            <>
-              <span className="text-xl font-semibold tracking-tight">{formatBDT(price.amount)}</span>
-              {price.compareAt !== null && (
-                <span className="text-sm text-muted-foreground line-through">
-                  {formatBDT(price.compareAt)}
-                </span>
+          {product.badge && (
+            <span
+              className={cn(
+                "shrink-0 rounded-md px-2 py-0.5 text-xs font-medium ring-1 ring-inset",
+                BADGE_CLASS[product.badge],
               )}
-              {price.note && (
-                <span className="w-full text-xs text-emerald-600 dark:text-emerald-400">
-                  {price.note}
-                </span>
-              )}
-            </>
-          )}
-
-          {price.kind === "range" && (
-            <span className="text-xl font-semibold tracking-tight">
-              {formatBDT(price.min)} – {formatBDT(price.max)}
+            >
+              {BADGE_LABEL[product.badge]}
             </span>
           )}
-
-          {price.kind === "quote" && (
-            <span className="text-base font-medium text-muted-foreground">Price on request</span>
-          )}
         </div>
 
-        <AddToCartButton
-          productId={product.id}
-          productName={product.name}
-          model={product.modelNumber}
-          mode={price.kind === "quote" ? "quote" : "cart"}
-          disabled={isOutOfStock}
-        />
+        <h3 className="mt-1.5 text-base leading-snug font-semibold">
+          {/* Stretched link: the whole card is clickable, one entry in the a11y tree */}
+          <Link
+            href={`/product/${product.slug}`}
+            className="after:absolute after:inset-0 after:rounded-2xl focus-visible:underline focus-visible:outline-none"
+          >
+            <span className="line-clamp-2 transition-colors duration-200 group-hover:text-primary">
+              {product.name}
+            </span>
+          </Link>
+        </h3>
+
+        <p className="mt-1 text-xs text-muted-foreground">{product.categoryName}</p>
+
+        {product.rating !== null && (
+          <div className="mt-2.5 flex items-center gap-1.5">
+            <StarRating rating={product.rating} />
+            <span className="text-xs font-medium">{product.rating.toFixed(1)}</span>
+            <span className="min-w-0 truncate text-xs text-muted-foreground">
+              ({product.reviewCount})
+            </span>
+          </div>
+        )}
+
+        {/* mt-auto pins price + button to the bottom so cards in a row align */}
+        <div className="mt-auto pt-4">
+          <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+            <span
+              className={cn("size-1.5 shrink-0 rounded-full", STOCK_DOT[product.stockStatus])}
+              aria-hidden="true"
+            />
+            {STOCK_LABEL[product.stockStatus]}
+          </div>
+
+          <div className="mt-1.5 flex min-h-8 flex-wrap items-baseline gap-x-2">
+            {price.kind === "price" && (
+              <>
+                <span className="text-xl font-semibold tracking-tight">{formatBDT(price.amount)}</span>
+                {price.compareAt !== null && (
+                  <span className="text-sm text-muted-foreground line-through">
+                    {formatBDT(price.compareAt)}
+                  </span>
+                )}
+                {price.note && (
+                  <span className="w-full text-xs text-emerald-600 dark:text-emerald-400">
+                    {price.note}
+                  </span>
+                )}
+              </>
+            )}
+
+            {price.kind === "range" && (
+              <span className="text-xl font-semibold tracking-tight">
+                {formatBDT(price.min)} – {formatBDT(price.max)}
+              </span>
+            )}
+
+            {price.kind === "quote" && (
+              <span className="text-base font-medium text-muted-foreground">Price on request</span>
+            )}
+          </div>
+
+          <AddToCartButton
+            productId={product.id}
+            productName={product.name}
+            model={product.modelNumber}
+            mode={price.kind === "quote" ? "quote" : "cart"}
+            disabled={isOutOfStock}
+          />
+        </div>
       </div>
 
       <QuickViewDialog

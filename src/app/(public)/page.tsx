@@ -1,7 +1,6 @@
 import { BrandSlider } from "@/features/home/components/brand-slider";
 import { BrandWall } from "@/features/home/components/brand-wall";
 import { CategoryCarousel } from "@/features/home/components/category-carousel";
-import { FeaturedRows } from "@/features/home/components/featured-rows";
 import { HeroCarousel } from "@/features/home/components/hero-carousel";
 import { LatestPosts } from "@/features/home/components/latest-posts";
 import { PromoBanner } from "@/features/home/components/promo-banner";
@@ -75,8 +74,6 @@ export default async function HomePage() {
           <CategoryCarousel categories={categories} />
         </Container>
 
-        {/* Real sales data, not editorial picks — both sections quietly render
-          nothing until there is enough order history to rank from. */}
         <Container>
           <FeaturedProducts
             products={topSelling}
@@ -107,10 +104,7 @@ export default async function HomePage() {
         )}
 
         <Container>
-          <TrendingProducts
-            products={products}
-            subtitle="What our customers are specifying this month, by discipline."
-          />
+          <TrendingProducts products={products} trending={trending} topSelling={topSelling} />
         </Container>
 
         <Container>
@@ -128,22 +122,7 @@ export default async function HomePage() {
         )}
 
         <Container>
-          <FeaturedRows
-            products={products.slice(8, 20)}
-            subtitle="Hand-picked instruments our application engineers recommend most often."
-          />
-        </Container>
-
-        <Container>
           <Testimonial testimonials={testimonials} />
-        </Container>
-
-        <Container>
-          <FeaturedProducts
-            products={products.slice(0, 16)}
-            tier="GUEST"
-            title="Special offers"
-          />
         </Container>
 
         {safety && power && (

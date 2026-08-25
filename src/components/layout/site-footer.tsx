@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Clock, FileText, Mail, MapPin, Phone } from "lucide-react";
+import { ArrowRight, Clock, FileText, Mail, MapPin, Phone } from "lucide-react";
 
 import { Container } from "@/components/layout/container";
 import Logo from "@/components/layout/logo";
@@ -29,7 +29,7 @@ export async function Footer() {
   const settings = await getSiteSettings();
 
   return (
-    <footer className="mt-20 border-t bg-muted/30">
+    <footer className="mt-20 border-t bg-linear-to-b from-muted/50 to-muted/20">
       <Container className="py-14">
         <div className="grid gap-10 lg:grid-cols-[1.4fr_repeat(3,1fr)_1.3fr]">
           <div>
@@ -47,7 +47,7 @@ export async function Footer() {
                     target="_blank"
                     rel="noreferrer noopener"
                     aria-label={social.label}
-                    className="grid size-9 place-items-center rounded-full border text-muted-foreground transition-colors hover:border-primary hover:text-primary"
+                    className="grid size-9 place-items-center rounded-full border border-border/60 bg-background text-muted-foreground shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-primary hover:bg-primary hover:text-primary-foreground hover:shadow-md motion-reduce:transform-none"
                   >
                     <SocialIcon name={social.icon} className="size-4" />
                   </a>
@@ -58,16 +58,20 @@ export async function Footer() {
 
           {footerNav.map((column) => (
             <nav key={column.title} aria-label={column.title}>
-              <h2 className="text-sm font-semibold tracking-tight">
+              <h2 className="text-sm font-semibold tracking-wide uppercase">
                 {column.title}
               </h2>
+
+              {/* Short brand rule under each column head — gives the four
+                  columns a shared visual anchor line across the footer. */}
+              <span aria-hidden="true" className="mt-2 block h-0.5 w-8 rounded-full bg-primary/60" />
 
               <ul className="mt-4 space-y-3">
                 {column.items.map((item) => (
                   <li key={item.href}>
                     <Link
                       href={item.href}
-                      className="text-sm text-muted-foreground transition-colors hover:text-primary"
+                      className="inline-block text-sm text-muted-foreground transition-all duration-200 hover:translate-x-1 hover:text-primary motion-reduce:transform-none"
                     >
                       {item.label}
                     </Link>
@@ -80,10 +84,12 @@ export async function Footer() {
           <section aria-labelledby="footer-contact">
             <h2
               id="footer-contact"
-              className="text-sm font-semibold tracking-tight"
+              className="text-sm font-semibold tracking-wide uppercase"
             >
               Talk to an engineer
             </h2>
+
+            <span aria-hidden="true" className="mt-2 block h-0.5 w-8 rounded-full bg-primary/60" />
 
             <ul className="mt-4 space-y-3 text-sm">
               <li className="flex items-start gap-2.5">
@@ -137,16 +143,23 @@ export async function Footer() {
               </li>
             </ul>
 
-            <Button asChild className="mt-5 w-full">
+            <Button
+              asChild
+              className="group mt-5 h-11 w-full rounded-full shadow-sm transition-all duration-300 hover:shadow-lg hover:shadow-primary/20"
+            >
               <Link href="/rfq">
                 <FileText className="size-4" aria-hidden="true" />
                 Request a quotation
+                <ArrowRight
+                  className="size-4 transition-transform duration-300 group-hover:translate-x-1 motion-reduce:transform-none"
+                  aria-hidden="true"
+                />
               </Link>
             </Button>
           </section>
         </div>
 
-        <div className="mt-12 flex flex-col items-center justify-between gap-3 border-t pt-6 text-xs text-muted-foreground sm:flex-row">
+        <div className="mt-12 flex flex-col items-center justify-between gap-3 border-t border-border/60 pt-6 text-xs text-muted-foreground sm:flex-row">
           <p>
             © {year} {settings.name}. All rights reserved.
           </p>

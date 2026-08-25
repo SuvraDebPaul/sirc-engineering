@@ -73,6 +73,18 @@ export const STOCK_LABEL: Record<StockStatus, string> = {
   OUT_OF_STOCK: "Out of stock",
 };
 
+/**
+ * Status dot colours. Paired with `STOCK_LABEL` everywhere they're used —
+ * colour is never the only signal, so the state survives colour blindness and
+ * greyscale printing.
+ */
+export const STOCK_DOT: Record<StockStatus, string> = {
+  IN_STOCK: "bg-emerald-500",
+  LOW_STOCK: "bg-amber-500",
+  MADE_TO_ORDER: "bg-sky-500",
+  OUT_OF_STOCK: "bg-rose-500",
+};
+
 export const BADGE_LABEL: Record<NonNullable<ProductBadge>, string> = {
   NEW: "New",
   TRENDING: "Trending",

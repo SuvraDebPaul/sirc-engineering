@@ -5,12 +5,26 @@ import Image from "next/image";
 import Link from "next/link";
 import Autoplay from "embla-carousel-autoplay";
 import useEmblaCarousel from "embla-carousel-react";
-import { ArrowUpRight, ChevronLeft, ChevronRight } from "lucide-react";
+import { motion } from "framer-motion";
+import { ArrowUpRight, ChevronLeft, ChevronRight, ShieldCheck } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { useReducedMotion } from "@/hooks/use-reduced-motion";
 import { cn } from "@/lib/utils";
 import type { Promotion } from "@/features/content/types";
+
+const AUTOPLAY_DELAY_MS = 6000;
+
+/** Staggered entrance for the text block — each line arrives a beat after the last, not all at once. */
+const CONTENT_VARIANTS = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.09, delayChildren: 0.15 } },
+};
+
+const ITEM_VARIANTS = {
+  hidden: { opacity: 0, y: 16 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] as const } },
+};
 
 export function HeroCarousel({ slides }: { slides: Promotion[] }) {
   const reducedMotion = useReducedMotion();
@@ -19,9 +33,9 @@ export function HeroCarousel({ slides }: { slides: Promotion[] }) {
     { loop: true, align: "start" },
     [
       Autoplay({
-        delay: 6000,
-        stopOnInteraction: true,
-        stopOnMouseEnter: true,
+        delay: AUTOPLAY_DELAY_MS,
+        stopOnInteraction: false,
+        stopOnMouseEnter: false,
       }),
     ],
   );
@@ -66,70 +80,101 @@ export function HeroCarousel({ slides }: { slides: Promotion[] }) {
     >
       <div ref={emblaRef} className="overflow-hidden">
         <div className="flex">
-          {slides.map((slide, index) => (
-            <div
-              key={slide.id}
-              className="relative min-w-0 flex-[0_0_100%]"
-              role="group"
-              aria-roledescription="slide"
-              aria-label={`${index + 1} of ${slides.length}`}
-            >
-              <div className="relative aspect-4/3 w-full sm:aspect-21/9 lg:aspect-[2.6/1]">
-                <Image
-                  src={slide.imageUrl}
-                  alt=""
-                  fill
-                  priority={index === 0}
-                  sizes="(min-width: 1280px) 1200px, 100vw"
-                  className="object-cover"
-                />
+          {slides.map((slide, index) => {
+            const isActive = selected === index;
 
-                <div
-                  aria-hidden="true"
-                  className="absolute inset-0 bg-linear-to-r from-black/85 via-black/60 to-black/10"
-                />
+            return (
+              <div
+                key={slide.id}
+                className="relative min-w-0 flex-[0_0_100%]"
+                role="group"
+                aria-roledescription="slide"
+                aria-label={`${index + 1} of ${slides.length}`}
+              >
+                <div className="relative h-[480px] w-full sm:h-[560px] lg:h-[640px]">
+                  <Image
+                    src={slide.imageUrl}
+                    alt=""
+                    fill
+                    priority={index === 0}
+                    sizes="100vw"
+                    className="object-cover"
+                  />
 
-                <div className="absolute inset-0 flex items-center justify-center text-center">
-                  <div className="w-full px-6 py-8 sm:px-10 lg:px-14">
-                    <p className="text-xs font-semibold uppercase tracking-[0.2em] text-amber-400 sm:text-sm">
-                      {slide.eyebrow}
-                    </p>
+                  {/* Left-to-right for legible left-aligned copy, plus a soft
+                      bottom fade so the progress bars always sit on a dark
+                      surface regardless of what's in the photo there. */}
+                  <div
+                    aria-hidden="true"
+                    className="absolute inset-0 bg-linear-to-r from-black/90 via-black/55 to-black/10"
+                  />
+                  <div
+                    aria-hidden="true"
+                    className="absolute inset-x-0 bottom-0 h-28 bg-linear-to-t from-black/60 to-transparent"
+                  />
 
-                    <h2 className="mt-3 text-2xl font-semibold leading-tight text-balance text-white sm:text-4xl lg:text-5xl">
-                      {slide.title}
-                    </h2>
-
-                    {slide.subtitle && (
-                      <p className="mt-4 text-sm text-white/80 sm:text-base">
-                        {slide.subtitle}
-                      </p>
-                    )}
-
-                    <div className="mt-6 flex flex-wrap gap-3 items-center justify-center">
-                      <Button asChild size="lg" className="group py-6 px-4">
-                        <Link href={slide.href}>
-                          {slide.ctaLabel}
-                          <ArrowUpRight
-                            className="size-4 transition-transform duration-300 group-hover:rotate-45"
-                            aria-hidden="true"
-                          />
-                        </Link>
-                      </Button>
-
-                      <Button
-                        asChild
-                        size="lg"
-                        variant="outline"
-                        className="py-6 px-4 border-white/30 bg-white/10 text-white backdrop-blur-sm hover:bg-white/20 hover:text-white"
+                  <div className="absolute inset-0 flex items-center">
+                    <div className="w-full px-6 sm:px-10 lg:px-16">
+                      <motion.div
+                        initial={reducedMotion ? undefined : "hidden"}
+                        animate={reducedMotion ? undefined : isActive ? "visible" : "hidden"}
+                        variants={reducedMotion ? undefined : CONTENT_VARIANTS}
+                        className="max-w-xl"
                       >
-                        <Link href="/rfq">Request a quotation</Link>
-                      </Button>
+                        <motion.span
+                          variants={reducedMotion ? undefined : ITEM_VARIANTS}
+                          className="inline-flex items-center gap-1.5 rounded-full border border-amber-400/30 bg-amber-400/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.16em] text-amber-300 backdrop-blur-sm"
+                        >
+                          <ShieldCheck className="size-3.5" aria-hidden="true" />
+                          {slide.eyebrow}
+                        </motion.span>
+
+                        <motion.h2
+                          variants={reducedMotion ? undefined : ITEM_VARIANTS}
+                          className="mt-4 text-3xl leading-[1.1] font-semibold text-balance text-white sm:text-4xl lg:text-5xl"
+                        >
+                          {slide.title}
+                        </motion.h2>
+
+                        {slide.subtitle && (
+                          <motion.p
+                            variants={reducedMotion ? undefined : ITEM_VARIANTS}
+                            className="mt-4 max-w-md text-sm leading-relaxed text-white/80 sm:text-base"
+                          >
+                            {slide.subtitle}
+                          </motion.p>
+                        )}
+
+                        <motion.div
+                          variants={reducedMotion ? undefined : ITEM_VARIANTS}
+                          className="mt-7 flex flex-wrap items-center gap-3"
+                        >
+                          <Button asChild size="lg" className="group px-6 shadow-lg shadow-primary/25">
+                            <Link href={slide.href}>
+                              {slide.ctaLabel}
+                              <ArrowUpRight
+                                className="size-4 transition-transform duration-300 group-hover:rotate-45"
+                                aria-hidden="true"
+                              />
+                            </Link>
+                          </Button>
+
+                          <Button
+                            asChild
+                            size="lg"
+                            variant="outline"
+                            className="border-white/30 bg-white/10 px-6 text-white backdrop-blur-sm hover:bg-white/20 hover:text-white"
+                          >
+                            <Link href="/rfq">Request a quotation</Link>
+                          </Button>
+                        </motion.div>
+                      </motion.div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
 
@@ -138,7 +183,7 @@ export function HeroCarousel({ slides }: { slides: Promotion[] }) {
         type="button"
         onClick={scrollPrev}
         aria-label="Previous slide"
-        className="absolute left-4 top-1/2 hidden size-10 -translate-y-1/2 place-items-center rounded-full bg-background/80 text-foreground backdrop-blur-sm transition-colors hover:bg-background sm:grid"
+        className="absolute left-4 top-1/2 hidden size-10 -translate-y-1/2 place-items-center rounded-full border border-white/20 bg-white/10 text-white backdrop-blur-md transition-colors hover:bg-white/20 sm:grid"
       >
         <ChevronLeft className="size-5" aria-hidden="true" />
       </button>
@@ -147,12 +192,12 @@ export function HeroCarousel({ slides }: { slides: Promotion[] }) {
         type="button"
         onClick={scrollNext}
         aria-label="Next slide"
-        className="absolute right-4 top-1/2 hidden size-10 -translate-y-1/2 place-items-center rounded-full bg-background/80 text-foreground backdrop-blur-sm transition-colors hover:bg-background sm:grid"
+        className="absolute right-4 top-1/2 hidden size-10 -translate-y-1/2 place-items-center rounded-full border border-white/20 bg-white/10 text-white backdrop-blur-md transition-colors hover:bg-white/20 sm:grid"
       >
         <ChevronRight className="size-5" aria-hidden="true" />
       </button>
 
-      <div className="absolute bottom-4 left-1/2 flex -translate-x-1/2 gap-2">
+      <div className="absolute bottom-6 left-6 flex gap-2 sm:left-10 lg:left-16">
         {slides.map((slide, index) => (
           <button
             key={slide.id}
@@ -160,13 +205,24 @@ export function HeroCarousel({ slides }: { slides: Promotion[] }) {
             onClick={() => scrollTo(index)}
             aria-label={`Go to slide ${index + 1}`}
             aria-current={selected === index}
-            className={cn(
-              "h-2 rounded-full transition-all duration-300",
-              selected === index
-                ? "w-6 bg-white"
-                : "w-2 bg-white/50 hover:bg-white/75",
+            className="group relative h-1.5 w-8 overflow-hidden rounded-full bg-white/25"
+          >
+            {selected === index && (
+              <motion.span
+                key={reducedMotion ? "static" : selected}
+                className="absolute inset-y-0 left-0 rounded-full bg-white"
+                initial={{ width: reducedMotion ? "100%" : "0%" }}
+                animate={{ width: "100%" }}
+                transition={reducedMotion ? { duration: 0 } : { duration: AUTOPLAY_DELAY_MS / 1000, ease: "linear" }}
+              />
             )}
-          />
+            <span
+              className={cn(
+                "absolute inset-0 rounded-full bg-white transition-opacity",
+                selected === index ? "opacity-0" : "opacity-0 group-hover:opacity-40",
+              )}
+            />
+          </button>
         ))}
       </div>
     </section>

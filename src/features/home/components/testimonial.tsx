@@ -64,7 +64,7 @@ export function Testimonial({
   return (
     <section
       aria-labelledby="testimonials-heading"
-      className="overflow-hidden rounded-2xl border bg-card"
+      className="overflow-hidden rounded-3xl border border-border/60 bg-card shadow-sm"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
       onFocusCapture={() => setPaused(true)}
@@ -79,14 +79,26 @@ export function Testimonial({
             sizes="(min-width: 768px) 50vw, 100vw"
             className="object-cover"
           />
+
+          {/* Warms the photo into the brand palette so the two halves read as
+              one panel rather than a stock image bolted to a card. */}
+          <div
+            aria-hidden="true"
+            className="absolute inset-0 bg-linear-to-tr from-primary/25 via-transparent to-transparent"
+          />
         </div>
 
-        <div className="flex flex-col justify-center gap-5 bg-muted/30 p-8 sm:p-10">
-          <h2 id="testimonials-heading" className="text-xl font-semibold tracking-tight sm:text-2xl">
+        <div className="flex flex-col justify-center gap-5 bg-linear-to-b from-muted/50 to-muted/20 p-8 sm:p-10">
+          <h2
+            id="testimonials-heading"
+            className="text-xl font-bold tracking-tight uppercase sm:text-2xl"
+          >
             What our clients say
           </h2>
 
-          <Quote className="size-8 shrink-0 text-primary/30" aria-hidden="true" />
+          <span className="grid size-11 shrink-0 place-items-center rounded-full bg-primary/10">
+            <Quote className="size-5 fill-primary text-primary" aria-hidden="true" />
+          </span>
 
           {/*
             aria-live so the change is announced to a screen reader rather than
@@ -99,7 +111,7 @@ export function Testimonial({
               {active.quote}
             </blockquote>
 
-            <figcaption className="mt-6 flex items-center gap-3">
+            <figcaption className="mt-6 flex items-center gap-3 border-t border-border/60 pt-5">
               <span
                 aria-hidden="true"
                 className="grid size-11 shrink-0 place-items-center rounded-full bg-primary/10 text-sm font-semibold text-primary"
