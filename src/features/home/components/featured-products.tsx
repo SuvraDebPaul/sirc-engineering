@@ -10,13 +10,13 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
-import type {
-  CustomerTier,
-  Product,
-} from "@/features/catalog/types";
+import type { CustomerTier, Product } from "@/features/catalog/types";
 
 /**
- * Special offers — full product cards, paged as a carousel.
+ * A titled band of full product cards, paged as a carousel.
+ *
+ * Generic on purpose — the home page uses it for "Top selling" and "Trending
+ * now", and every caller passes its own title and subtitle.
  *
  * Same shape as every other carousel band: title left, arrows right on the
  * same row, and the "view all" at the bottom where it reads as the next step
@@ -29,7 +29,8 @@ const PER_PAGE = 8;
 
 function chunk<T>(items: T[], size: number): T[][] {
   const pages: T[][] = [];
-  for (let i = 0; i < items.length; i += size) pages.push(items.slice(i, i + size));
+  for (let i = 0; i < items.length; i += size)
+    pages.push(items.slice(i, i + size));
   return pages;
 }
 
@@ -56,7 +57,10 @@ export function FeaturedProducts({
 
   return (
     <section aria-labelledby={headingId}>
-      <Carousel opts={{ align: "start", loop: multiPage }} className="w-full">
+      <Carousel
+        opts={{ align: "start", loop: multiPage }}
+        className="w-full border"
+      >
         <SectionHeading
           id={headingId}
           align="start"
@@ -68,8 +72,8 @@ export function FeaturedProducts({
           actions={
             multiPage ? (
               <div className="hidden items-center gap-2 sm:flex">
-                <CarouselPrevious className="static size-9 translate-y-0" />
-                <CarouselNext className="static size-9 translate-y-0" />
+                <CarouselPrevious className="static size-10 translate-y-0 border-border/80 hover:border-primary hover:bg-primary hover:text-primary-foreground" />
+                <CarouselNext className="static size-10 translate-y-0 border-border/80 hover:border-primary hover:bg-primary hover:text-primary-foreground" />
               </div>
             ) : null
           }

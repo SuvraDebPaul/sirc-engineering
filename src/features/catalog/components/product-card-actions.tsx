@@ -10,25 +10,7 @@ import { cn } from "@/lib/utils";
 import type { Product } from "@/features/catalog/types";
 
 /**
- * Card hover actions.
- *
- * Hidden until the card is hovered, as designed. Two guards keep that from
- * locking anyone out:
- *
- *  - `[.group:focus-within_&]` reveals them for keyboard users, who never hover.
- *  - `@media (hover: none)` keeps them permanently visible on touch, where a
- *    hover state can never occur and the controls would otherwise be dead.
- *
- * The reveal uses arbitrary variants rather than `group-hover:`. Tailwind
- * compiles `group-hover` with `:where(.group)`, which has zero specificity, so
- * it ties with the base `opacity-0` — and `opacity-0` is emitted later in the
- * sheet, so it won and the buttons never appeared. Writing `.group:hover`
- * directly gives the reveal a real class in the selector, so it wins outright.
- *
- * `z-10` keeps them above the card's stretched link; without it the link
- * swallows every click.
- *
- * Cart and wishlist writes go to the real store — see `lib/cart.ts`.
+ * Card hover actions — floating top-right action pills.
  */
 export function CardActions({
   product,
@@ -38,11 +20,11 @@ export function CardActions({
   onQuickView: () => void;
 }) {
   return (
-    <div className="absolute right-3 top-3 z-10 flex flex-col gap-2 opacity-0 transition-opacity duration-200 [.group:hover_&]:opacity-100 [.group:focus-within_&]:opacity-100 [@media(hover:none)]:opacity-100!">
+    <div className="absolute right-3 top-3 z-10 flex flex-col gap-1.5 opacity-0 transition-all duration-200 [.group:hover_&]:opacity-100 [.group:focus-within_&]:opacity-100 [@media(hover:none)]:opacity-100!">
       <WishlistButton productId={product.id} productName={product.name} />
 
       <ActionButton label={`Quick view: ${product.name}`} onClick={onQuickView}>
-        <Eye className="size-4" aria-hidden="true" />
+        <Eye className="size-3.5" aria-hidden="true" />
       </ActionButton>
     </div>
   );
@@ -63,7 +45,7 @@ function ActionButton({
       onClick={onClick}
       aria-label={label}
       title={label}
-      className="grid size-9 place-items-center rounded-full bg-background/90 text-muted-foreground shadow-sm backdrop-blur transition-all hover:scale-105 hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none motion-reduce:transform-none"
+      className="grid size-8.5 place-items-center rounded-full border border-border/70 bg-background/95 text-muted-foreground shadow-sm backdrop-blur-md transition-all duration-200 hover:scale-110 hover:border-primary/50 hover:bg-background hover:text-primary hover:shadow-md focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none motion-reduce:transform-none"
     >
       {children}
     </button>
@@ -71,10 +53,7 @@ function ActionButton({
 }
 
 /**
- * Wishlist toggle.
- *
- * The saved state comes through `useSyncExternalStore`, so it renders unsaved
- * during hydration and corrects immediately after — no mismatch, no flag.
+ * Wishlist toggle button.
  */
 export const WishlistButton = ({
   productId,
@@ -92,16 +71,18 @@ export const WishlistButton = ({
       onClick={() => toggleWishlist(productId)}
       aria-pressed={saved}
       aria-label={
-        saved ? `Remove ${productName} from wishlist` : `Save ${productName} to wishlist`
+        saved
+          ? `Remove ${productName} from wishlist`
+          : `Save ${productName} to wishlist`
       }
       title={saved ? "Saved to wishlist" : "Save to wishlist"}
       data-product-id={productId}
-      className="grid size-9 place-items-center rounded-full bg-background/90 shadow-sm backdrop-blur transition-transform hover:scale-105 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none motion-reduce:transform-none"
+      className="grid size-8.5 place-items-center rounded-full border border-border/70 bg-background/95 shadow-sm backdrop-blur-md transition-all duration-200 hover:scale-110 hover:border-primary/50 hover:bg-background hover:shadow-md focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none motion-reduce:transform-none"
     >
       <Heart
         className={cn(
-          "size-4 transition-colors",
-          saved ? "fill-red-500 text-red-500" : "text-muted-foreground",
+          "size-3.5 transition-colors duration-200",
+          saved ? "fill-red-500 text-red-500" : "text-muted-foreground hover:text-red-500",
         )}
         strokeWidth={2}
         aria-hidden="true"
@@ -111,16 +92,7 @@ export const WishlistButton = ({
 };
 
 /**
- * Primary card action.
- *
- * Three shapes, decided by the resolved price rather than by the caller:
- * a real button for buyable stock, and a link to the RFQ form — carrying the
- * SKU — for anything quoted. The quote path is a `Link`, not a button, because
- * it navigates; making it a button would break middle-click and open-in-new-tab.
- *
- * The add is synchronous — it writes to local storage — so there is no pending
- * spinner. A loading state for an operation that cannot fail or take time
- * would be theatre.
+ * Primary card action button (Add to Cart / Request Quote).
  */
 export const AddToCartButton = ({
   productId,
@@ -140,10 +112,19 @@ export const AddToCartButton = ({
 
   if (mode === "quote") {
     return (
-      <Button asChild variant="outline" className="relative z-10 mt-3 h-11 w-full rounded-xl">
-        <Link href={`/rfq?sku=${encodeURIComponent(model)}`} aria-label={`Ask for price: ${productName}`}>
-          <FileText className="size-4" aria-hidden="true" />
-          Ask for price
+      <Button
+        asChild
+        variant="outline"
+        size="sm"
+        className="relative z-10 h-8.5 w-full rounded-full border-border/80 font-medium text-xs hover:border-primary hover:bg-primary/5 hover:text-primary transition-all duration-200"
+      >
+        <Link
+          href={`/rfq?sku=${encodeURIComponent(model)}`}
+          aria-label={`Request quote for: ${productName}`}
+          className="inline-flex items-center justify-center gap-1.5"
+        >
+          <FileText className="size-3.5" aria-hidden="true" />
+          <span>Request Quote</span>
         </Link>
       </Button>
     );
@@ -158,18 +139,22 @@ export const AddToCartButton = ({
   return (
     <Button
       type="button"
-      className="relative z-10 mt-3 h-11 w-full rounded-xl"
+      size="sm"
+      className={cn(
+        "relative z-10 h-8.5 w-full rounded-full font-medium text-xs transition-all duration-200 shadow-xs",
+        done ? "bg-emerald-600 text-white hover:bg-emerald-700" : "shadow-primary/20",
+      )}
       disabled={disabled}
       onClick={handleClick}
       aria-label={`Add to cart: ${productName}`}
       data-product-id={productId}
     >
       {done ? (
-        <Check className="size-4" aria-hidden="true" />
+        <Check className="size-3.5" aria-hidden="true" />
       ) : (
-        <ShoppingBag className="size-4" aria-hidden="true" />
+        <ShoppingBag className="size-3.5" aria-hidden="true" />
       )}
-      {disabled ? "Out of Stock" : done ? "Added" : "Add to Cart"}
+      <span>{disabled ? "Out of Stock" : done ? "Added to Cart" : "Add to Cart"}</span>
     </Button>
   );
 };

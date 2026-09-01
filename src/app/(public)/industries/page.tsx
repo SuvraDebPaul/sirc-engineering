@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 
 import { Container } from "@/components/layout/container";
 import { CtaPanel } from "@/components/shared/cta-panel";
@@ -43,7 +43,7 @@ export default async function IndustriesPage() {
             <Link
               key={industry.slug}
               href={`/industries/${industry.slug}`}
-              className="group flex flex-col overflow-hidden rounded-2xl border bg-card transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-lg motion-reduce:transform-none"
+              className="group flex cursor-pointer flex-col overflow-hidden rounded-2xl border border-border/60 bg-card shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-primary/25 hover:shadow-lg hover:shadow-primary/10 motion-reduce:transform-none"
             >
               <div className="relative aspect-16/10 overflow-hidden bg-muted">
                 <Image
@@ -71,10 +71,10 @@ export default async function IndustriesPage() {
                   {industry.summary}
                 </p>
 
-                <span className="mt-4 inline-flex items-center gap-1.5 text-sm font-medium text-primary">
+                <span className="mt-4 inline-flex items-center justify-between gap-1.5 border-t border-border/60 pt-4 text-sm font-medium text-primary">
                   What this sector needs
-                  <ArrowRight
-                    className="size-3.5 transition-transform duration-200 group-hover:translate-x-1 motion-reduce:transform-none"
+                  <ArrowUpRight
+                    className="size-4 transition-transform duration-300 group-hover:rotate-45 motion-reduce:transform-none"
                     aria-hidden="true"
                   />
                 </span>

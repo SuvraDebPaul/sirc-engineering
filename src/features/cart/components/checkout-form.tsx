@@ -51,7 +51,7 @@ export function CheckoutForm() {
 
   if (state.status === "success") {
     return (
-      <div className="mx-auto max-w-2xl rounded-2xl border bg-card p-8 text-center sm:p-12">
+      <div className="mx-auto max-w-2xl rounded-2xl border border-border/60 bg-card p-8 text-center shadow-sm sm:p-12">
         <CheckCircle2 className="mx-auto size-14 text-emerald-500" strokeWidth={1.5} aria-hidden="true" />
 
         <h2 className="mt-5 text-2xl font-semibold tracking-tight">Order received</h2>

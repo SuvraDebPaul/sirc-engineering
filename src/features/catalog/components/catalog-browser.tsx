@@ -94,7 +94,7 @@ export function CatalogBrowser({
       <section aria-label="Products">
         {/* Counts describe the filtered set, not the catalogue, so the number
             always agrees with what is drawn underneath it. */}
-        <div className="mb-6 flex flex-wrap items-center justify-between gap-3 border-b pb-4">
+        <div className="mb-6 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-border/60 bg-card p-4 shadow-sm">
           <div className="flex items-center gap-3">
             <FilterDrawer activeCount={activeCount}>{sidebar}</FilterDrawer>
 
@@ -134,6 +134,7 @@ export function CatalogBrowser({
                     tier="GUEST"
                     // Only the first row is above the fold on a desktop grid.
                     priority={index < 4}
+                    showRating={false}
                   />
                 ))}
               </div>

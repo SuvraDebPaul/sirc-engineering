@@ -3,8 +3,7 @@ import Image from "next/image";
 import { BadgeCheck, Plus } from "lucide-react";
 
 import { listBrandsAdmin } from "@/features/catalog/services/brand-admin";
-import { deleteBrandAction } from "@/features/catalog/actions/delete-brand";
-import { ConfirmDeleteButton } from "@/components/shared/confirm-delete-button";
+import { DeleteBrandButton } from "@/features/catalog/components/delete-brand-button";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { EmptyState } from "@/components/shared/empty-state";
@@ -51,6 +50,7 @@ export default async function AdminBrandsPage() {
                     <th className="px-6 py-2 font-medium">Logo</th>
                     <th className="px-6 py-2 font-medium">Brand</th>
                     <th className="px-6 py-2 font-medium">Slug</th>
+                    <th className="px-6 py-2 font-medium">Products</th>
                     <th className="px-6 py-2 text-right font-medium">
                       Actions
                     </th>
@@ -72,6 +72,9 @@ export default async function AdminBrandsPage() {
                       <td className="px-6 py-3 font-mono text-xs text-muted-foreground">
                         {brand.slug}
                       </td>
+                      <td className="px-6 py-3 text-muted-foreground">
+                        {brand._count.products}
+                      </td>
                       <td className="px-6 py-3">
                         <div className="flex justify-end gap-2">
                           <Button asChild variant="outline" size="sm">
@@ -79,9 +82,10 @@ export default async function AdminBrandsPage() {
                               Edit
                             </Link>
                           </Button>
-                          <ConfirmDeleteButton
+                          <DeleteBrandButton
+                            id={brand.id}
                             name={brand.name}
-                            action={deleteBrandAction.bind(null, brand.id)}
+                            productCount={brand._count.products}
                           />
                         </div>
                       </td>

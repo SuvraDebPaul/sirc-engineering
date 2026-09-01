@@ -45,7 +45,7 @@ export function WishlistContents({ products }: { products: Product[] }) {
 
   return (
     <>
-      <div className="mb-6 flex flex-wrap items-center justify-between gap-3 border-b pb-4">
+      <div className="mb-6 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-border/60 bg-card p-4 shadow-sm">
         <p className="text-sm text-muted-foreground">
           {saved.length} {saved.length === 1 ? "item" : "items"} saved
         </p>

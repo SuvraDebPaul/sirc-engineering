@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Check, Star } from "lucide-react";
+import { Check, X } from "lucide-react";
 
 import {
   catalogHref,
@@ -39,8 +39,10 @@ function FilterGroup({
   scroll?: boolean;
 }) {
   return (
-    <section className="rounded-xl border bg-card p-5">
-      <h3 className="mb-4 text-sm font-semibold tracking-tight">{title}</h3>
+    <section className="rounded-2xl border border-border/60 bg-card p-5 shadow-sm">
+      <h3 className="mb-4 text-xs font-semibold tracking-wide text-muted-foreground uppercase">
+        {title}
+      </h3>
       <div className={cn(scroll && "max-h-64 overflow-y-auto pr-1")}>{children}</div>
     </section>
   );
@@ -67,7 +69,7 @@ function FacetCheckbox({ facet, href }: { facet: Facet; href: string }) {
     </>
   );
 
-  const className = "flex items-center gap-2.5 rounded-md px-1 py-1.5 text-sm transition-colors";
+  const className = "flex items-center gap-2.5 rounded-lg px-2 py-1.5 text-sm transition-colors duration-200";
 
   if (disabled) {
     return (
@@ -107,7 +109,7 @@ function FacetRadio({
     </>
   );
 
-  const className = "flex items-center gap-2 rounded-md px-1 py-1.5 text-sm transition-colors";
+  const className = "flex items-center gap-2 rounded-lg px-2 py-1.5 text-sm transition-colors duration-200";
 
   if (disabled) {
     return (
@@ -152,8 +154,9 @@ export function FilterPanel({
         <Link
           href={catalogHref({}, { view: query.view === "list" ? "list" : null, sort: query.sort === "featured" ? null : query.sort }, basePath)}
           scroll={false}
-          className="flex w-full items-center justify-center rounded-xl border border-dashed py-2.5 text-sm font-medium transition-colors hover:border-primary hover:text-primary"
+          className="flex w-full items-center justify-center gap-1.5 rounded-full border border-dashed border-border py-2.5 text-sm font-medium text-muted-foreground transition-all duration-200 hover:border-primary hover:bg-primary/5 hover:text-primary"
         >
+          <X className="size-3.5" aria-hidden="true" />
           Clear all filters
         </Link>
       )}
@@ -206,7 +209,7 @@ export function FilterPanel({
           scroll={false}
           aria-current={query.price === null ? "true" : undefined}
           className={cn(
-            "flex rounded-md px-1 py-1.5 text-sm transition-colors",
+            "flex rounded-lg px-2 py-1.5 text-sm transition-colors duration-200",
             query.price === null ? "font-medium text-primary" : "hover:bg-muted",
           )}
         >
@@ -219,30 +222,6 @@ export function FilterPanel({
             facet={facet}
             href={href({ price: facet.active ? null : facet.value })}
           />
-        ))}
-      </FilterGroup>
-
-      <FilterGroup title="Average rating">
-        {facets.ratings.map((facet) => (
-          <FacetRadio
-            key={facet.value}
-            facet={facet}
-            href={href({ rating: facet.active ? null : facet.value })}
-          >
-            <span className="flex items-center gap-1" aria-hidden="true">
-              {Array.from({ length: 5 }, (_, index) => (
-                <Star
-                  key={index}
-                  className={cn(
-                    "size-3.5",
-                    index < facet.threshold ? "fill-amber-400 text-amber-400" : "fill-muted-foreground/25 text-muted-foreground/25",
-                  )}
-                  strokeWidth={0}
-                />
-              ))}
-              <span className="ml-1 text-xs text-muted-foreground">&amp; up</span>
-            </span>
-          </FacetRadio>
         ))}
       </FilterGroup>
     </div>

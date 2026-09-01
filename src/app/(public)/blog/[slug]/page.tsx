@@ -162,8 +162,11 @@ export default async function BlogPostPage({ params }: PageProps<"/blog/[slug]">
             </article>
 
             {related.length > 0 && (
-              <section className="mt-14 rounded-2xl bg-muted/40 p-6 sm:p-8" aria-labelledby="similar-posts">
-                <h2 id="similar-posts" className="text-sm font-semibold uppercase tracking-wide">
+              <section
+                className="mt-14 rounded-3xl border border-border/60 bg-linear-to-b from-muted/50 to-muted/20 p-6 sm:p-8"
+                aria-labelledby="similar-posts"
+              >
+                <h2 id="similar-posts" className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">
                   Similar posts
                 </h2>
 
@@ -171,7 +174,7 @@ export default async function BlogPostPage({ params }: PageProps<"/blog/[slug]">
                   {related.slice(0, 2).map((entry) => (
                     <article
                       key={entry.id}
-                      className="group relative overflow-hidden rounded-xl border bg-card transition-shadow hover:shadow-md"
+                      className="group relative cursor-pointer overflow-hidden rounded-2xl border border-border/60 bg-card shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-primary/25 hover:shadow-lg hover:shadow-primary/10"
                     >
                       <div className="relative aspect-16/10 bg-muted">
                         <Image
@@ -209,7 +212,7 @@ export default async function BlogPostPage({ params }: PageProps<"/blog/[slug]">
                 Comments
               </h2>
 
-              <p className="mt-2 rounded-xl border border-dashed p-5 text-sm text-muted-foreground">
+              <p className="mt-2 rounded-2xl border border-dashed border-border p-5 text-sm text-muted-foreground">
                 No comments on this article yet. Be the first — or if you would rather ask us
                 directly,{" "}
                 <Link href="/rfq?type=other" className="font-medium text-primary hover:underline">
@@ -223,7 +226,7 @@ export default async function BlogPostPage({ params }: PageProps<"/blog/[slug]">
               </div>
             </section>
 
-            <aside className="mt-14 rounded-2xl border bg-muted/30 p-8 text-center">
+            <aside className="mt-14 rounded-3xl border border-border/60 bg-linear-to-b from-muted/50 to-muted/20 p-8 text-center shadow-sm">
               <h2 className="text-lg font-semibold tracking-tight">
                 Questions about your own instruments?
               </h2>

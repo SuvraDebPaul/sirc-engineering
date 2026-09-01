@@ -69,9 +69,9 @@ export default function AboutPage() {
         breadcrumbs={[{ label: "Home", href: "/" }, { label: "About us" }]}
       />
 
-      <Container className="pb-20">
+      <Container className="pb-12">
         <Tabs defaultValue="who" className="mx-auto max-w-4xl">
-          <TabsList className="mx-auto h-auto justify-center gap-1 bg-transparent p-0">
+          <TabsList className="w-full justify-start gap-1 overflow-x-auto  overflow-y-hidden bg-transparent p-0 sm:justify-center">
             {[
               { value: "who", label: "Who we are" },
               { value: "how", label: "How we work" },
@@ -87,43 +87,48 @@ export default function AboutPage() {
             ))}
           </TabsList>
 
-          <div className="mt-6 rounded-2xl border p-6 text-sm leading-relaxed text-muted-foreground sm:p-8">
+          <div className="mt-6 rounded-2xl border border-border/60 bg-card p-6 text-sm leading-relaxed text-muted-foreground shadow-sm sm:p-8">
             <TabsContent value="who" className="space-y-4">
               <p>
-                SIRC supplies industrial measurement instruments and provides the testing,
-                inspection and calibration services that keep them trustworthy. We are based in
-                Bangladesh and work across the country — textiles, pharmaceuticals, power
-                generation, gas, construction and manufacturing.
+                SIRC supplies industrial measurement instruments and provides
+                the testing, inspection and calibration services that keep them
+                trustworthy. We are based in Bangladesh and work across the
+                country — textiles, pharmaceuticals, power generation, gas,
+                construction and manufacturing.
               </p>
               <p>
-                Most suppliers sell you an instrument and send you elsewhere for its certificate. We
-                do both, which means the people who recommended the meter are the people who
-                calibrate it, and there is nobody to point at when a reading is questioned.
+                Most suppliers sell you an instrument and send you elsewhere for
+                its certificate. We do both, which means the people who
+                recommended the meter are the people who calibrate it, and there
+                is nobody to point at when a reading is questioned.
               </p>
             </TabsContent>
 
             <TabsContent value="how" className="space-y-4">
               <p>
-                Every instrument we supply is function-checked and certified before dispatch. Every
-                certificate carries as-found and as-left values, the stated measurement uncertainty
-                and the reference standard used — the things an auditor actually asks for.
+                Every instrument we supply is function-checked and certified
+                before dispatch. Every certificate carries as-found and as-left
+                values, the stated measurement uncertainty and the reference
+                standard used — the things an auditor actually asks for.
               </p>
               <p>
-                We keep your due dates and contact you before they lapse. Work is scheduled around
-                your maintenance windows rather than ours, and where an instrument cannot leave the
-                process, we come to it.
+                We keep your due dates and contact you before they lapse. Work
+                is scheduled around your maintenance windows rather than ours,
+                and where an instrument cannot leave the process, we come to it.
               </p>
             </TabsContent>
 
             <TabsContent value="why" className="space-y-4">
               <p>
-                A measurement is only worth what you can defend. An uncalibrated instrument does not
-                announce itself — it quietly produces plausible numbers that pass unnoticed until an
-                audit, a failure or an insurance claim puts weight on them.
+                A measurement is only worth what you can defend. An uncalibrated
+                instrument does not announce itself — it quietly produces
+                plausible numbers that pass unnoticed until an audit, a failure
+                or an insurance claim puts weight on them.
               </p>
               <p>
-                That is the whole business: making sure the number on the display can be traced back
-                to a national standard, and that you can prove it years later.
+                That is the whole business: making sure the number on the
+                display can be traced back to a national standard, and that you
+                can prove it years later.
               </p>
             </TabsContent>
           </div>
@@ -142,7 +147,7 @@ export default function AboutPage() {
           </div>
 
           <div className="grid gap-4">
-            <div className="relative aspect-16/9 overflow-hidden rounded-2xl bg-muted">
+            <div className="relative aspect-video overflow-hidden rounded-2xl bg-muted">
               <Image
                 src="/images/catalog/svc-testing.jpg"
                 alt="Acceptance testing before dispatch"
@@ -176,7 +181,7 @@ export default function AboutPage() {
         </div>
 
         {/* Vision / mission */}
-        <section className="mt-16 grid items-center gap-10 rounded-2xl bg-muted/40 p-8 sm:p-12 lg:grid-cols-2">
+        <section className="mt-16 grid items-center gap-10 rounded-3xl border border-border/60 bg-linear-to-b from-muted/50 to-muted/20 p-8 shadow-sm sm:p-12 lg:grid-cols-2">
           <div>
             <h2 className="text-2xl font-bold uppercase leading-tight tracking-tight sm:text-3xl">
               Accuracy, traceability
@@ -188,30 +193,43 @@ export default function AboutPage() {
               Three commitments that decide whether a supplier is worth keeping.
             </p>
 
-            <Accordion type="single" collapsible defaultValue="vision" className="mt-6">
+            <Accordion
+              type="single"
+              collapsible
+              defaultValue="vision"
+              className="mt-6"
+            >
               <AccordionItem value="vision">
-                <AccordionTrigger className="text-sm font-medium">Our vision</AccordionTrigger>
+                <AccordionTrigger className="text-sm font-medium">
+                  Our vision
+                </AccordionTrigger>
                 <AccordionContent className="text-sm leading-relaxed text-muted-foreground">
-                  That no measurement taken in Bangladeshi industry has to be qualified with
-                  &ldquo;as far as we know&rdquo;. Every reading should be traceable, and every
-                  certificate should survive scrutiny.
+                  That no measurement taken in Bangladeshi industry has to be
+                  qualified with &ldquo;as far as we know&rdquo;. Every reading
+                  should be traceable, and every certificate should survive
+                  scrutiny.
                 </AccordionContent>
               </AccordionItem>
 
               <AccordionItem value="mission">
-                <AccordionTrigger className="text-sm font-medium">Our mission</AccordionTrigger>
+                <AccordionTrigger className="text-sm font-medium">
+                  Our mission
+                </AccordionTrigger>
                 <AccordionContent className="text-sm leading-relaxed text-muted-foreground">
-                  To supply the right instrument for the job, certify it properly, and keep it
-                  certified — so our customers spend their time using measurements rather than
-                  defending them.
+                  To supply the right instrument for the job, certify it
+                  properly, and keep it certified — so our customers spend their
+                  time using measurements rather than defending them.
                 </AccordionContent>
               </AccordionItem>
 
               <AccordionItem value="support">
-                <AccordionTrigger className="text-sm font-medium">Our support</AccordionTrigger>
+                <AccordionTrigger className="text-sm font-medium">
+                  Our support
+                </AccordionTrigger>
                 <AccordionContent className="text-sm leading-relaxed text-muted-foreground">
-                  Local service and spares, on-site work where the process cannot stop, and recall
-                  reminders that arrive before the due date rather than after it.
+                  Local service and spares, on-site work where the process
+                  cannot stop, and recall reminders that arrive before the due
+                  date rather than after it.
                 </AccordionContent>
               </AccordionItem>
             </Accordion>
@@ -231,16 +249,28 @@ export default function AboutPage() {
         {/* Capabilities */}
         <div className="mt-16 grid gap-5 md:grid-cols-3">
           {CAPABILITIES.map(({ icon: Icon, title, body }) => (
-            <section key={title} className="rounded-2xl border bg-card p-8 text-center">
-              <Icon className="mx-auto size-10 text-primary" strokeWidth={1.5} aria-hidden="true" />
-              <h2 className="mt-4 text-sm font-semibold uppercase tracking-wide">{title}</h2>
-              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{body}</p>
+            <section
+              key={title}
+              className="rounded-2xl border border-border/60 bg-card p-8 text-center shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-primary/25 hover:shadow-lg hover:shadow-primary/10"
+            >
+              <span className="mx-auto grid size-14 place-items-center rounded-full bg-primary/10 text-primary">
+                <Icon className="size-7" strokeWidth={1.5} aria-hidden="true" />
+              </span>
+              <h2 className="mt-4 text-sm font-semibold uppercase tracking-wide">
+                {title}
+              </h2>
+              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                {body}
+              </p>
             </section>
           ))}
         </div>
 
         {/* Statistics band */}
-        <section className="relative mt-16 overflow-hidden rounded-2xl" aria-labelledby="stats">
+        <section
+          className="relative mt-16 overflow-hidden rounded-2xl"
+          aria-labelledby="stats"
+        >
           <div className="relative min-h-56">
             <Image
               src="/images/catalog/svc-testing.jpg"
@@ -260,7 +290,9 @@ export default function AboutPage() {
             <dl className="grid w-full max-w-3xl grid-cols-2 gap-6 text-center text-white sm:grid-cols-4">
               {STATS.map((stat) => (
                 <div key={stat.label}>
-                  <dd className="text-3xl font-bold sm:text-4xl">{stat.value}</dd>
+                  <dd className="text-3xl font-bold sm:text-4xl">
+                    {stat.value}
+                  </dd>
                   <dt className="mt-1 text-xs text-white/70">{stat.label}</dt>
                 </div>
               ))}
@@ -275,11 +307,13 @@ export default function AboutPage() {
         {/* Closing CTA */}
         <section className="mt-16 text-center">
           <p className="text-sm text-muted-foreground">Talk to us</p>
-          <h2 className="mt-1 text-2xl font-bold uppercase tracking-tight">Tell us what you need</h2>
+          <h2 className="mt-1 text-2xl font-bold uppercase tracking-tight">
+            Tell us what you need
+          </h2>
 
           <p className="mx-auto mt-3 max-w-xl text-sm text-muted-foreground">
-            Send the specification, the plant or just the problem. An engineer will come back within
-            one working day with something you can act on.
+            Send the specification, the plant or just the problem. An engineer
+            will come back within one working day with something you can act on.
           </p>
 
           <Button asChild size="lg" className="mt-6">

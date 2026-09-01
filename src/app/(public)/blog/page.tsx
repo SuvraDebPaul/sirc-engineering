@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { Clock, User } from "lucide-react";
+import { ArrowUpRight, Clock, User } from "lucide-react";
 
 import { BlogSidebar } from "@/features/content/components/blog-sidebar";
 import { Container } from "@/components/layout/container";
@@ -80,7 +80,7 @@ export default async function BlogPage({ searchParams }: PageProps<"/blog">) {
                 {filtered.map((post, index) => (
                   <article
                     key={post.id}
-                    className="group relative flex flex-col overflow-hidden rounded-2xl border bg-card transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-lg motion-reduce:transform-none"
+                    className="group relative flex cursor-pointer flex-col overflow-hidden rounded-2xl border border-border/60 bg-card shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-primary/25 hover:shadow-lg hover:shadow-primary/10 motion-reduce:transform-none"
                   >
                     <div className="relative aspect-16/10 overflow-hidden bg-muted">
                       <Image
@@ -125,8 +125,12 @@ export default async function BlogPage({ searchParams }: PageProps<"/blog">) {
                         {post.excerpt}
                       </p>
 
-                      <span className="mt-4 text-sm font-semibold uppercase tracking-wide text-primary">
-                        Read more →
+                      <span className="mt-4 inline-flex w-fit items-center gap-1 text-sm font-semibold tracking-wide text-primary uppercase">
+                        Read more
+                        <ArrowUpRight
+                          className="size-3.5 transition-transform duration-300 group-hover:rotate-45 motion-reduce:transform-none"
+                          aria-hidden="true"
+                        />
                       </span>
                     </div>
                   </article>

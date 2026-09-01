@@ -31,8 +31,10 @@ export async function RfqSidebar() {
 
   return (
     <aside className="space-y-5" aria-label="How this works">
-      <section className="rounded-2xl border bg-card p-6">
-        <h2 className="text-sm font-semibold tracking-tight">What happens next</h2>
+      <section className="rounded-2xl border border-border/60 bg-card p-6 shadow-sm">
+        <h2 className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">
+          What happens next
+        </h2>
 
         <ol className="mt-5 space-y-5">
           {STEPS.map((step, index) => (
@@ -53,8 +55,10 @@ export async function RfqSidebar() {
         </ol>
       </section>
 
-      <section className="rounded-2xl border bg-muted/30 p-6">
-        <h2 className="text-sm font-semibold tracking-tight">Rather talk to someone?</h2>
+      <section className="rounded-2xl border border-border/60 bg-muted/40 p-6">
+        <h2 className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">
+          Rather talk to someone?
+        </h2>
 
         <ul className="mt-4 space-y-3 text-sm">
           <li className="flex items-start gap-3">

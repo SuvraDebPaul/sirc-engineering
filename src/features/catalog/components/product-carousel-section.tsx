@@ -47,8 +47,8 @@ export function ProductCarouselSection({
           actions={
             scrollable ? (
               <div className="hidden items-center gap-2 sm:flex">
-                <CarouselPrevious className="static size-9 translate-y-0" />
-                <CarouselNext className="static size-9 translate-y-0" />
+                <CarouselPrevious className="static size-10 translate-y-0 border-border/80 hover:border-primary hover:bg-primary hover:text-primary-foreground" />
+                <CarouselNext className="static size-10 translate-y-0 border-border/80 hover:border-primary hover:bg-primary hover:text-primary-foreground" />
               </div>
             ) : null
           }

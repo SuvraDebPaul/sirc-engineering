@@ -1,6 +1,23 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  /**
+   * Every admin form that uploads an image (brands, products, categories,
+   * testimonials, promotions, industries, services, blog posts, settings —
+   * anything going through `lib/cloudinary.ts`'s `uploadImage`) sends the
+   * file straight through a Server Action. Next.js caps a Server Action's
+   * request body at 1MB by default, silently below that guard — a real
+   * photo or a logo exported at any real resolution clears 1MB easily, and
+   * the request is rejected before the action's own code, and therefore its
+   * error handling, ever runs. 10MB comfortably covers a real image with
+   * room to spare, while still refusing anything actually excessive.
+   */
+  experimental: {
+    serverActions: {
+      bodySizeLimit: "10mb",
+    },
+  },
+
   images: {
     /**
      * Allow-list, not a wildcard.

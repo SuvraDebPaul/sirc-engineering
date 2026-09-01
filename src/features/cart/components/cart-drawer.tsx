@@ -18,13 +18,6 @@ import {
 import { formatBDT } from "@/lib/format";
 import { cn } from "@/lib/utils";
 
-/**
- * Cart and wishlist controls for the header, plus the slide-out basket.
- *
- * The badge counts come from `useSyncExternalStore`, which renders the server
- * snapshot (empty) during hydration and swaps to the real one immediately
- * after. That is what keeps a stored cart from causing a hydration mismatch.
- */
 export function CartControls() {
   const { count, resolved, subtotal, wishlist, removeItem } = useCart();
   const [open, setOpen] = useState(false);
@@ -38,7 +31,7 @@ export function CartControls() {
             ? `Wishlist, ${wishlist.length} ${wishlist.length === 1 ? "item" : "items"}`
             : "Wishlist"
         }
-        className="relative grid size-10 place-items-center rounded-lg text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+        className="relative grid size-10 place-items-center rounded-full bg-background text-muted-foreground transition-colors hover:bg-muted hover:text-primary border hover:border-primary"
       >
         <Heart className="size-5" strokeWidth={1.75} aria-hidden="true" />
         {wishlist.length > 0 && <Badge>{wishlist.length}</Badge>}
@@ -48,17 +41,27 @@ export function CartControls() {
         <SheetTrigger asChild>
           <button
             type="button"
-            aria-label={count > 0 ? `Cart, ${count} ${count === 1 ? "item" : "items"}` : "Cart"}
-            className="relative grid size-10 place-items-center rounded-lg text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+            aria-label={
+              count > 0
+                ? `Cart, ${count} ${count === 1 ? "item" : "items"}`
+                : "Cart"
+            }
+            className="relative grid size-10 place-items-center border rounded-full bg-background text-muted-foreground transition-colors hover:bg-muted  hover:text-primary hover:border-primary"
           >
-            <ShoppingBag className="size-5" strokeWidth={1.75} aria-hidden="true" />
+            <ShoppingBag
+              className="size-5"
+              strokeWidth={1.75}
+              aria-hidden="true"
+            />
             {count > 0 && <Badge>{count}</Badge>}
           </button>
         </SheetTrigger>
 
         <SheetContent className="flex w-[92vw] flex-col gap-0 p-0 sm:max-w-md">
           <SheetHeader className="border-b px-5 py-4">
-            <SheetTitle className="text-base uppercase tracking-wide">Shopping cart</SheetTitle>
+            <SheetTitle className="text-base uppercase tracking-wide">
+              Shopping cart
+            </SheetTitle>
             <SheetDescription className="sr-only">
               Items you have added, with a link to checkout.
             </SheetDescription>
@@ -67,7 +70,11 @@ export function CartControls() {
           <div className="flex-1 overflow-y-auto px-5">
             {resolved.length === 0 ? (
               <div className="flex flex-col items-center justify-center py-20 text-center">
-                <ShoppingBag className="size-12 text-muted-foreground/30" strokeWidth={1.25} aria-hidden="true" />
+                <ShoppingBag
+                  className="size-12 text-muted-foreground/30"
+                  strokeWidth={1.25}
+                  aria-hidden="true"
+                />
                 <p className="mt-4 font-medium">Your cart is empty</p>
                 <p className="mt-1 text-sm text-muted-foreground">
                   Instruments you add will appear here.
@@ -139,7 +146,12 @@ export function CartControls() {
               </p>
 
               <div className="mt-4 grid grid-cols-2 gap-3">
-                <Button asChild variant="outline" size="lg" onClick={() => setOpen(false)}>
+                <Button
+                  asChild
+                  variant="outline"
+                  size="lg"
+                  onClick={() => setOpen(false)}
+                >
                   <Link href="/cart">View cart</Link>
                 </Button>
                 <Button asChild size="lg" onClick={() => setOpen(false)}>

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 
 import { SectionHeading } from "@/features/home/components/section-heading";
 import { Icon } from "@/components/shared/icon";
@@ -26,7 +27,9 @@ import type { Category } from "@/features/catalog/types";
  *
  * Tiles use line-art icons, not photographs. At this size a photo reduces to a
  * muddy colour blob; a monochrome outline stays legible and gives the row a
- * consistent rhythm that 24 unrelated photos never would.
+ * consistent rhythm that 24 unrelated photos never would. Fixed to a square
+ * aspect ratio so the grid reads as one deliberate mosaic rather than tiles of
+ * whatever height their label happened to wrap to.
  */
 const PER_PAGE = 14;
 
@@ -56,8 +59,8 @@ export function CategoryCarousel({ categories }: { categories: Category[] }) {
             // buttons ship with, so they sit in the flow of the heading row.
             multiPage ? (
               <div className="hidden items-center gap-2 sm:flex">
-                <CarouselPrevious className="static size-9 translate-y-0" />
-                <CarouselNext className="static size-9 translate-y-0" />
+                <CarouselPrevious className="static size-10 translate-y-0 border-border/80 hover:border-primary hover:bg-primary hover:text-primary-foreground" />
+                <CarouselNext className="static size-10 translate-y-0 border-border/80 hover:border-primary hover:bg-primary hover:text-primary-foreground" />
               </div>
             ) : null
           }
@@ -71,18 +74,33 @@ export function CategoryCarousel({ categories }: { categories: Category[] }) {
                   <li key={category.id}>
                     <Link
                       href={`/category/${category.slug}`}
-                      className="group flex h-full flex-col items-center justify-center gap-3 rounded-xl bg-muted/50 p-5 text-center transition-colors duration-200 hover:bg-muted focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
+                      className="group relative flex aspect-square flex-col items-center justify-center gap-3 overflow-hidden rounded-2xl border border-border/60 bg-card p-4 text-center shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-primary/25 hover:shadow-lg hover:shadow-primary/10 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
                     >
-                      <Icon
-                        name={category.icon}
-                        className="size-12 text-foreground/80 transition-transform duration-200 group-hover:scale-110 motion-reduce:transform-none md:size-14"
-                        strokeWidth={1}
+                      {/* Soft glow behind the icon on hover, not a flat colour
+                          swap — reads as premium rather than just "a state
+                          changed". Clipped by the card's own overflow-hidden. */}
+                      <span
                         aria-hidden="true"
+                        className="absolute inset-0 scale-90 rounded-full bg-primary/10 opacity-0 blur-2xl transition-all duration-300 group-hover:scale-150 group-hover:opacity-100"
                       />
 
-                      <span className="line-clamp-2 text-xs font-medium leading-snug text-balance group-hover:text-primary sm:text-sm">
+                      <span className="relative flex size-14 shrink-0 items-center justify-center rounded-full bg-muted transition-colors duration-300 group-hover:bg-primary md:size-16">
+                        <Icon
+                          name={category.icon}
+                          className="size-7 text-foreground/70 transition-colors duration-300 group-hover:text-primary-foreground md:size-8"
+                          strokeWidth={1.5}
+                          aria-hidden="true"
+                        />
+                      </span>
+
+                      <span className="relative line-clamp-2 text-xs font-medium text-balance text-foreground/90 leading-snug transition-colors duration-300 group-hover:text-primary sm:text-sm">
                         {category.name}
                       </span>
+
+                      <ArrowRight
+                        aria-hidden="true"
+                        className="absolute top-3 right-3 size-3.5 -translate-x-1 text-primary opacity-0 transition-all duration-300 group-hover:translate-x-0 group-hover:opacity-100"
+                      />
                     </Link>
                   </li>
                 ))}

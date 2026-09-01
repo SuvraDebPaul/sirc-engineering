@@ -113,7 +113,7 @@ export function ActiveFilters({
           href={chip.href}
           scroll={false}
           aria-label={`Remove filter: ${chip.label}`}
-          className="inline-flex items-center gap-1.5 rounded-full border bg-card py-1 pl-3 pr-2 text-sm transition-colors hover:border-destructive/50 hover:text-destructive"
+          className="inline-flex items-center gap-1.5 rounded-full border border-border/60 bg-card py-1.5 pr-2 pl-3 text-sm shadow-sm transition-all duration-200 hover:border-destructive/50 hover:text-destructive"
         >
           {chip.label}
           <X className="size-3.5" aria-hidden="true" />
