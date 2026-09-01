@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 
 import { discountPercent, resolvePriceDisplay } from "@/features/catalog/services/product";
 import { validateQuoteRequest } from "@/features/enquiries/services/rfq";
-import { validateCheckout } from "@/features/cart/services/checkout";
+import { PAYMENT_METHODS, validateCheckout } from "@/features/cart/services/checkout";
 import type { Product } from "@/features/catalog/types";
 
 /**
@@ -179,9 +179,9 @@ describe("validateCheckout", () => {
     assert.equal(validateCheckout(checkoutForm({ payment: "free" })).ok, false);
   });
 
-  test("every accepted payment method settles off-site", () => {
-    for (const method of ["cash-on-delivery", "bkash", "sslcommerz"]) {
-      assert.equal(validateCheckout(checkoutForm({ payment: method })).ok, true, method);
+  test("every declared payment method is accepted", () => {
+    for (const option of PAYMENT_METHODS) {
+      assert.equal(validateCheckout(checkoutForm({ payment: option.value })).ok, true, option.value);
     }
   });
 

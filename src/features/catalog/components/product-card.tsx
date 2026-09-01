@@ -139,6 +139,13 @@ export const ProductCard = ({
 
         <p className="text-xs text-muted-foreground">{product.categoryName}</p>
 
+        {showRating && product.rating !== null && (
+          <div className="mt-1 flex items-center gap-1.5 text-xs text-muted-foreground">
+            <StarRating rating={product.rating} />
+            {product.reviewCount > 0 && <span>({product.reviewCount})</span>}
+          </div>
+        )}
+
         {/* mt-auto pins price + button to the bottom so cards in a row align */}
         <div className="mt-auto pt-2">
           <div className="flex items-center gap-1.5 text-xs text-muted-foreground">

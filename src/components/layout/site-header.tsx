@@ -31,78 +31,110 @@ export async function SiteHeader() {
 
   return (
     <>
-      <header>
-        {/* Row 1 — utility strip */}
-        <div className="border-b text-xs">
-          <Container className="flex h-10 items-center justify-between gap-4">
-            <div className="flex min-w-0 items-center gap-4">
+      <header className="relative z-40 bg-background">
+        {/* Row 1 — Utility Strip with accreditation tag, direct hotline & global search */}
+        <div className="border-b border-border/60 bg-muted/40 py-1.5 text-xs text-muted-foreground">
+          <Container className="flex items-center justify-between gap-3 sm:gap-6">
+            {/* Left: Hotline & Status */}
+            <div className="flex shrink-0 items-center gap-3 sm:gap-4">
+              {/* <div className="hidden lg:flex items-center gap-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-0.5 text-[11px] font-medium text-emerald-700 dark:text-emerald-400">
+                <span className="size-1.5 rounded-full bg-emerald-500 animate-pulse" aria-hidden="true" />
+                ISO 17025 Accredited Lab
+              </div> */}
+
               <a
                 href={`tel:${settings.phone}`}
-                className="flex items-center gap-1.5 text-muted-foreground transition-colors hover:text-primary"
+                className="flex items-center gap-1.5 text-foreground/80 font-medium transition-colors hover:text-primary"
+                aria-label={`Call ${settings.phone}`}
               >
-                <Phone className="size-3.5 shrink-0" aria-hidden="true" />
+                <Phone
+                  className="size-3.5 shrink-0 text-primary"
+                  aria-hidden="true"
+                />
                 <span className="truncate">{settings.phone}</span>
               </a>
 
               <a
                 href={`mailto:${settings.email}`}
-                className="hidden items-center gap-1.5 text-muted-foreground transition-colors hover:text-primary sm:flex"
+                className="hidden xl:flex items-center gap-1.5 transition-colors hover:text-primary"
+                aria-label={`Email ${settings.email}`}
               >
                 <Mail className="size-3.5 shrink-0" aria-hidden="true" />
                 <span className="truncate">{settings.email}</span>
               </a>
             </div>
-            <SearchBar className="min-w-0 max-w-lg flex-1" />
 
-            <nav aria-label="Secondary" className="hidden shrink-0 sm:block">
-              <ul className="flex items-center gap-4">
-                <li>
-                  {session ? (
-                    <AccountMenu
-                      name={session.user.name}
-                      email={session.user.email}
-                    />
-                  ) : (
-                    <Link
-                      href={"/login"}
-                      className="flex items-center gap-1.5 whitespace-nowrap text-muted-foreground transition-colors hover:text-primary border rounded-full px-6 py-2 bg-background hover:bg-muted"
-                    >
-                      <User className="size-3.5 shrink-0" aria-hidden="true" />
-                      Sign in
-                    </Link>
-                  )}
-                </li>
-              </ul>
-            </nav>
+            {/* Center: Search Bar */}
+            <SearchBar className="min-w-0 flex-1 max-w-sm sm:max-w-md lg:max-w-3xl lg:-ml-40" />
+
+            {/* Right: User Auth / Account */}
+            <div className="flex shrink-0 items-center gap-3">
+              <Link
+                href="/corporate"
+                className="hidden md:inline-block text-xs font-medium text-muted-foreground transition-colors hover:text-primary"
+              >
+                Corporate Sales
+              </Link>
+
+              <span
+                className="hidden md:inline-block h-3.5 w-px bg-border/80"
+                aria-hidden="true"
+              />
+
+              {session ? (
+                <AccountMenu
+                  name={session.user.name}
+                  email={session.user.email}
+                />
+              ) : (
+                <Link
+                  href="/login"
+                  className="inline-flex items-center gap-1.5 rounded-full border border-border/80 bg-background/90 px-3.5 py-1 text-xs font-medium text-foreground transition-all duration-150 hover:border-primary/40 hover:bg-primary/5 hover:text-primary shadow-2xs"
+                >
+                  <User className="size-3.5 shrink-0" aria-hidden="true" />
+                  <span>Sign In</span>
+                </Link>
+              )}
+            </div>
           </Container>
         </div>
 
-        {/* Row 2 — masthead and main navigation. Not sticky: once this scrolls
-            out of view, `FloatingNavbar` takes over as the condensed, pinned
-            nav rather than this whole row staying pinned underneath it. */}
-        <div className="border-b bg-[#F5F5F5]">
-          <Container className="flex items-center justify-between gap-6 py-1">
-            <Logo src={settings.logoUrl ?? undefined} className="h-16 w-auto" />
+        {/* Row 2 — Main Masthead & Navigation */}
+        <div className="border-b border-border/70 bg-background/95 backdrop-blur-md">
+          <Container className="flex items-center justify-between gap-4 py-2.5 sm:py-3">
+            {/* Logo area */}
+            <div className="flex items-center gap-3.5">
+              <Logo
+                src={settings.logoUrl ?? undefined}
+                className="h-10 sm:h-12 w-auto"
+              />
+              <div className="hidden 2xl:flex flex-col border-l border-border/60 pl-3">
+                <span className="font-bold tracking-wider text-foreground uppercase ">
+                  SIRC Engineering
+                </span>
+                <span className="text-xs text-muted-foreground">
+                  Industrial Service Provider
+                </span>
+              </div>
+            </div>
 
-            <nav
-              aria-label="Main"
-              className="hidden min-w-0 lg:block bg-white px-3 py-2 rounded-full"
-            >
+            {/* Main Navigation Links */}
+            <nav aria-label="Main" className="hidden min-w-0 lg:block">
               <AnimatedNavLinks items={mainNav} layoutId="main-nav-pill" />
             </nav>
 
-            <div className="flex items-center gap-2">
+            {/* Right Action Controls */}
+            <div className="flex items-center gap-2 sm:gap-2.5">
               <CartControls />
 
               <Button
                 asChild
-                size="lg"
-                variant={"outline"}
-                className="hidden sm:inline-flex rounded-full px-6 hover:text-primary hover:border-primary"
+                size="default"
+                className="hidden sm:inline-flex items-center gap-2 rounded-full px-5 font-semibold shadow-sm transition-all duration-200 hover:shadow-md hover:shadow-primary/20"
               >
                 <Link href="/rfq">
                   <FileText className="size-4" aria-hidden="true" />
-                  <span className="hidden md:inline">Request a quotation</span>
+                  <span className="hidden md:inline">Request Quotation</span>
                   <span className="md:hidden">Quote</span>
                 </Link>
               </Button>
@@ -121,6 +153,7 @@ export async function SiteHeader() {
         </div>
       </header>
 
+      {/* Scrolled Floating Navigation Pill */}
       <FloatingNavbar
         nav={mainNav}
         categories={categories}

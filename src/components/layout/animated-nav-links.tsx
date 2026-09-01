@@ -9,14 +9,7 @@ import { cn } from "@/lib/utils";
 import type { NavItem } from "@/config/site";
 
 /**
- * Main nav, with a highlight pill that slides between items on hover.
- *
- * One shared component for both the masthead nav and the floating scrolled
- * nav, so the interaction reads as one design decision rather than two navs
- * that happen to look similar. Each instance needs its own `layoutId` —
- * sharing one across two simultaneously-mounted navs would make Framer
- * Motion fly the pill across the page between them, which is exactly the
- * "shared layout" trick used *within* one nav and a bug used *across* two.
+ * Main nav, with a highlight pill that slides smoothly between items on hover/active.
  */
 export function AnimatedNavLinks({
   items,
@@ -36,12 +29,13 @@ export function AnimatedNavLinks({
 
   return (
     <ul
-      className={cn("flex items-center gap-0.5", className)}
+      className={cn("flex items-center gap-1", className)}
       onMouseLeave={() => setHovered(null)}
     >
       {allItems.map((item) => {
-        const active = pathname === item.href;
-        const highlighted = hovered ? hovered === item.href : active;
+        const active = item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
+        const isHovered = hovered === item.href;
+        const showPill = isHovered || (hovered === null && active);
 
         return (
           <li
@@ -49,19 +43,24 @@ export function AnimatedNavLinks({
             className="relative"
             onMouseEnter={() => setHovered(item.href)}
           >
-            {highlighted && (
+            {showPill && (
               <motion.span
                 layoutId={layoutId}
-                className="absolute inset-0 rounded-full bg-muted"
-                transition={{ type: "spring", stiffness: 420, damping: 32 }}
+                className={cn(
+                  "absolute inset-0 rounded-full",
+                  active
+                    ? "bg-background shadow-xs border border-border/60"
+                    : "bg-muted/70",
+                )}
+                transition={{ type: "spring", stiffness: 450, damping: 35 }}
               />
             )}
             <Link
               href={item.href}
               className={cn(
-                "relative z-10 inline-flex h-9 items-center whitespace-nowrap rounded-full px-6 text-sm font-medium transition-colors",
+                "relative z-10 inline-flex h-9 items-center whitespace-nowrap rounded-full px-4 text-sm font-medium transition-colors duration-150",
                 active
-                  ? "text-foreground"
+                  ? "text-primary font-semibold"
                   : "text-muted-foreground hover:text-foreground",
                 linkClassName,
               )}
