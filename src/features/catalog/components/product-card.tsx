@@ -25,31 +25,18 @@ import type { CustomerTier, Product } from "@/features/catalog/types";
 
 type ProductCardProps = {
   product: Product;
-  tier: CustomerTier;
+  tier?: CustomerTier;
   priority?: boolean;
   /** Off on the catalogue listing (products/category/brand) — on everywhere else. */
   showRating?: boolean;
 };
 
 /**
- * Product card.
- *
- * Edge-to-edge photo with the content block below it, rather than a photo
- * inset inside padding — the image is the thing being scanned, so it gets the
- * full width of the card.
- *
- * The lift on hover (`-translate-y-1` + shadow) is on the card, never on its
- * contents: scaling text or buttons on hover shifts the layout under the
- * cursor. The photo's own zoom is safe because it's clipped by the image
- * frame's `overflow-hidden` and can't push anything around it.
- *
- * Stock is shown as a dot *and* a label. Colour alone would fail for anyone
- * who can't distinguish amber from emerald, so the word carries the meaning
- * and the dot only reinforces it.
+ * Product Card — High-precision industrial instrument presentation.
  */
 export const ProductCard = ({
   product,
-  tier,
+  tier = "GUEST",
   priority = false,
   showRating = true,
 }: ProductCardProps) => {
@@ -60,16 +47,17 @@ export const ProductCard = ({
   const isOutOfStock = product.stockStatus === "OUT_OF_STOCK";
 
   return (
-    <article className="group relative flex h-full cursor-pointer flex-col overflow-hidden rounded-2xl border border-border/60 bg-card shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-primary/25 hover:shadow-lg hover:shadow-primary/10 motion-reduce:transform-none">
-      <div className="relative aspect-square overflow-hidden bg-linear-to-b from-muted/30 to-muted/60">
+    <article className="group relative flex h-full cursor-pointer flex-col overflow-hidden rounded-2xl border border-border/70 bg-card shadow-xs transition-all duration-300 hover:-translate-y-1.5 hover:border-primary/40 hover:shadow-xl hover:shadow-primary/5 hover:ring-1 hover:ring-primary/20 motion-reduce:transform-none">
+      {/* Image Container */}
+      <div className="relative aspect-square overflow-hidden bg-linear-to-b from-muted/30 to-muted/60 border-b border-border/40">
         {product.imageUrl ? (
           <Image
             src={product.imageUrl}
             alt=""
             fill
             priority={priority}
-            sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
-            className="object-cover transition-transform duration-500 group-hover:scale-105 motion-reduce:transform-none motion-reduce:transition-none"
+            sizes="(min-width: 1280px) 20vw, (min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
+            className="object-cover transition-transform duration-500 ease-out group-hover:scale-105 motion-reduce:transform-none"
           />
         ) : (
           <div className="flex h-full items-center justify-center text-muted-foreground/25">
@@ -82,96 +70,112 @@ export const ProductCard = ({
           </div>
         )}
 
-        {/* Saving, top-left. Computed from compare-at rather than stored, so it
-            can never contradict the prices shown below it. */}
+        {/* Discount Badge */}
         {discount !== null && (
-          <span className="absolute top-3 left-3 z-10 rounded-md bg-destructive px-2 py-1 text-xs font-semibold text-white shadow-sm">
+          <span className="absolute top-3 left-3 z-10 rounded-full bg-destructive px-2.5 py-0.5 text-[11px] font-bold text-white shadow-md shadow-destructive/20">
             −{discount}%
           </span>
         )}
 
+        {/* Out of Stock Scrim */}
         {isOutOfStock && (
           <div
             aria-hidden="true"
-            className="absolute inset-0 z-10 grid place-items-center bg-background/60 backdrop-blur-[1px]"
+            className="absolute inset-0 z-10 grid place-items-center bg-background/70 backdrop-blur-[2px]"
           >
-            <span className="rounded-full bg-background px-4 py-1.5 text-xs font-semibold shadow-sm">
+            <span className="rounded-full bg-background border border-border px-3.5 py-1 text-xs font-semibold shadow-sm text-muted-foreground">
               Out of stock
             </span>
           </div>
         )}
 
+        {/* Floating Actions: Wishlist & Quick View */}
         <CardActions
           product={product}
           onQuickView={() => setQuickViewOpen(true)}
         />
       </div>
 
+      {/* Details Container */}
       <div className="flex flex-1 flex-col p-4">
-        <div className="flex items-start justify-between gap-2">
-          <span className="min-w-0 truncate text-xs font-medium tracking-wide text-muted-foreground uppercase">
+        {/* Brand & Model Chip */}
+        <div className="flex items-center justify-between gap-1.5 mb-1.5">
+          <span className="min-w-0 truncate text-[11px] font-bold tracking-wider text-muted-foreground uppercase">
             {product.brand}
           </span>
 
-          {product.badge && (
-            <span
-              className={cn(
-                "shrink-0 rounded-md px-2 py-0.5 text-xs font-medium ring-1 ring-inset",
-                BADGE_CLASS[product.badge],
-              )}
-            >
-              {BADGE_LABEL[product.badge]}
-            </span>
-          )}
+          <div className="flex items-center gap-1.5">
+            {product.modelNumber && (
+              <span className="shrink-0 rounded bg-muted/80 px-1.5 py-0.5 text-[10px] font-mono font-medium text-foreground/80 border border-border/50">
+                {product.modelNumber}
+              </span>
+            )}
+
+            {product.badge && (
+              <span
+                className={cn(
+                  "shrink-0 rounded-full px-2 py-0.5 text-[10px] font-semibold ring-1 ring-inset",
+                  BADGE_CLASS[product.badge],
+                )}
+              >
+                {BADGE_LABEL[product.badge]}
+              </span>
+            )}
+          </div>
         </div>
 
-        <h3 className="text-base leading-snug font-semibold my-1">
-          {/* Stretched link: the whole card is clickable, one entry in the a11y tree */}
+        {/* Product Title */}
+        <h3 className="text-sm font-semibold leading-snug text-balance">
           <Link
             href={`/product/${product.slug}`}
             className="after:absolute after:inset-0 after:rounded-2xl focus-visible:underline focus-visible:outline-none"
           >
-            <span className="text-sm line-clamp-2 transition-colors duration-200 group-hover:text-primary">
+            <span className="line-clamp-2 text-foreground transition-colors duration-200 group-hover:text-primary">
               {product.name}
             </span>
           </Link>
         </h3>
 
-        <p className="text-xs text-muted-foreground">{product.categoryName}</p>
+        <p className="mt-1 text-xs text-muted-foreground">{product.categoryName}</p>
 
+        {/* Rating */}
         {showRating && product.rating !== null && (
-          <div className="mt-1 flex items-center gap-1.5 text-xs text-muted-foreground">
+          <div className="mt-1.5 flex items-center gap-1.5 text-xs text-muted-foreground">
             <StarRating rating={product.rating} />
-            {product.reviewCount > 0 && <span>({product.reviewCount})</span>}
+            <span className="text-[11px] font-medium text-foreground/80">{product.rating.toFixed(1)}</span>
+            {product.reviewCount > 0 && <span className="text-[11px]">({product.reviewCount})</span>}
           </div>
         )}
 
-        {/* mt-auto pins price + button to the bottom so cards in a row align */}
-        <div className="mt-auto pt-2">
-          <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+        {/* Price & Action Button Container */}
+        <div className="mt-auto pt-3 border-t border-border/50">
+          {/* Stock Availability */}
+          <div className="flex items-center gap-1.5 text-xs text-muted-foreground mb-1.5">
             <span
               className={cn(
-                "size-1.5 shrink-0 rounded-full",
+                "size-2 shrink-0 rounded-full",
                 STOCK_DOT[product.stockStatus],
+                product.stockStatus === "IN_STOCK" && "ring-2 ring-emerald-500/20",
               )}
               aria-hidden="true"
             />
-            {STOCK_LABEL[product.stockStatus]}
+            <span className="text-[11px] font-medium">{STOCK_LABEL[product.stockStatus]}</span>
           </div>
 
-          <div className="my-1 flex min-h-8 flex-wrap items-baseline gap-x-2">
+          {/* Pricing Display */}
+          <div className="mb-2.5 flex min-h-7 flex-wrap items-baseline gap-x-2">
             {price.kind === "price" && (
               <>
-                <span className="text-md font-semibold tracking-tight">
+                <span className="text-base font-bold tracking-tight text-foreground">
                   {formatBDT(price.amount)}
                 </span>
                 {price.compareAt !== null && (
-                  <span className="text-sm text-muted-foreground line-through">
+                  <span className="text-xs text-muted-foreground line-through">
                     {formatBDT(price.compareAt)}
                   </span>
                 )}
                 {price.note && (
-                  <span className="w-full text-xs text-emerald-600 dark:text-emerald-400">
+                  <span className="w-full text-[11px] font-medium text-emerald-600 dark:text-emerald-400">
                     {price.note}
                   </span>
                 )}
@@ -179,18 +183,19 @@ export const ProductCard = ({
             )}
 
             {price.kind === "range" && (
-              <span className="text-md font-semibold tracking-tight">
+              <span className="text-sm font-bold tracking-tight text-foreground">
                 {formatBDT(price.min)} – {formatBDT(price.max)}
               </span>
             )}
 
             {price.kind === "quote" && (
-              <span className="text-md text-base font-medium text-muted-foreground">
+              <span className="text-sm font-semibold text-primary">
                 Price on request
               </span>
             )}
           </div>
 
+          {/* Add to Cart / RFQ Button */}
           <AddToCartButton
             productId={product.id}
             productName={product.name}

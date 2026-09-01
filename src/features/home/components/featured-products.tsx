@@ -10,10 +10,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
-import type {
-  CustomerTier,
-  Product,
-} from "@/features/catalog/types";
+import type { CustomerTier, Product } from "@/features/catalog/types";
 
 /**
  * A titled band of full product cards, paged as a carousel.
@@ -32,7 +29,8 @@ const PER_PAGE = 8;
 
 function chunk<T>(items: T[], size: number): T[][] {
   const pages: T[][] = [];
-  for (let i = 0; i < items.length; i += size) pages.push(items.slice(i, i + size));
+  for (let i = 0; i < items.length; i += size)
+    pages.push(items.slice(i, i + size));
   return pages;
 }
 
@@ -59,7 +57,10 @@ export function FeaturedProducts({
 
   return (
     <section aria-labelledby={headingId}>
-      <Carousel opts={{ align: "start", loop: multiPage }} className="w-full">
+      <Carousel
+        opts={{ align: "start", loop: multiPage }}
+        className="w-full border"
+      >
         <SectionHeading
           id={headingId}
           align="start"

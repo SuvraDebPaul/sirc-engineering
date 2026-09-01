@@ -45,43 +45,41 @@ export const utilityNav: NavItem[] = [
   { label: "Contact us", href: "/contact" },
 ];
 
-/** Footer columns. Same rule as `mainNav`: nothing here may 404. */
+/**
+ * Footer columns — balanced height across all sections (5-6 items per column).
+ */
 export const footerNav: { title: string; items: NavItem[] }[] = [
   {
-    title: "Shop",
+    title: "Shop & Catalog",
     items: [
-      { label: "All products", href: "/products" },
-      { label: "Search catalogue", href: "/search" },
-      { label: "Special offers", href: "/products?highlight=sale" },
-      { label: "New arrivals", href: "/products?highlight=new" },
-      { label: "In stock now", href: "/products?stock=IN_STOCK" },
-      { label: "Brands", href: "/brands" },
+      { label: "All Products", href: "/products" },
+      { label: "Partner Brands", href: "/brands" },
+      { label: "Special Offers", href: "/products?highlight=sale" },
+      { label: "New Arrivals", href: "/products?highlight=new" },
+      { label: "In Stock Now", href: "/products?stock=IN_STOCK" },
+      { label: "Search Catalogue", href: "/search" },
     ],
   },
   {
-    title: "Categories",
+    title: "Laboratory & Services",
     items: [
-      { label: "Calibration", href: "/category/calibration" },
-      { label: "Electrical Tools", href: "/category/electrical-tools" },
-      { label: "Temperature", href: "/category/temperature" },
-      { label: "Energy", href: "/category/energy" },
-      { label: "Fault Testing", href: "/category/fault-testing" },
+      { label: "All Services", href: "/services" },
+      { label: "Calibration Facilities", href: "/services/electrical-calibration" },
+      { label: "Industries Served", href: "/industries" },
+      { label: "Corporate Supply", href: "/corporate" },
+      { label: "Request a Quotation", href: "/rfq" },
+      { label: "Knowledge Base", href: "/blog" },
     ],
   },
   {
-    title: "Services",
+    title: "Company & Support",
     items: [
-      { label: "All services", href: "/services" },
-      { label: "Industries", href: "/industries" },
-      { label: "Corporate supply", href: "/corporate" },
-      { label: "Request a quotation", href: "/rfq" },
-      { label: "About us", href: "/about" },
-      { label: "Contact us", href: "/contact" },
-      { label: "Blog", href: "/blog" },
-      { label: "Terms of service", href: "/terms" },
-      { label: "Return & refund policy", href: "/returns" },
-      { label: "Privacy policy", href: "/privacy" },
-      { label: "Image credits", href: "/credits" },
+      { label: "About SIRC", href: "/about" },
+      { label: "Contact Us", href: "/contact" },
+      { label: "Terms of Service", href: "/terms" },
+      { label: "Privacy Policy", href: "/privacy" },
+      { label: "Return & Refund Policy", href: "/returns" },
+      { label: "Image Credits", href: "/credits" },
     ],
   },
 ];
