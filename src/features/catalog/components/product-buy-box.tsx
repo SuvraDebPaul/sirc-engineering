@@ -3,7 +3,16 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Check, FileText, Heart, Link2, Minus, Plus, Share2, ShoppingBag } from "lucide-react";
+import {
+  Check,
+  FileText,
+  Heart,
+  Link2,
+  Minus,
+  Plus,
+  Share2,
+  ShoppingBag,
+} from "lucide-react";
 
 import { useCart } from "@/features/cart/components/cart-provider";
 import { Button } from "@/components/ui/button";
@@ -67,7 +76,11 @@ export function ProductBuyBox({
       ) : (
         <>
           <div className="flex flex-wrap items-center gap-3">
-            <div className="flex items-center rounded-lg border" role="group" aria-label="Quantity">
+            <div
+              className="flex items-center rounded-lg border"
+              role="group"
+              aria-label="Quantity"
+            >
               <button
                 type="button"
                 onClick={() => setQuantity((q) => Math.max(1, q - 1))}
@@ -90,7 +103,9 @@ export function ProductBuyBox({
                   // Guard the typed path as well as the buttons — the spinner
                   // and a paste both land here, and neither is clamped for us.
                   if (Number.isFinite(next)) {
-                    setQuantity(Math.min(MAX_QUANTITY, Math.max(1, Math.floor(next))));
+                    setQuantity(
+                      Math.min(MAX_QUANTITY, Math.max(1, Math.floor(next))),
+                    );
                   }
                 }}
                 className="h-11 w-14 border-x bg-transparent text-center text-sm font-medium tabular-nums outline-none focus-visible:bg-muted [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
@@ -98,7 +113,9 @@ export function ProductBuyBox({
 
               <button
                 type="button"
-                onClick={() => setQuantity((q) => Math.min(MAX_QUANTITY, q + 1))}
+                onClick={() =>
+                  setQuantity((q) => Math.min(MAX_QUANTITY, q + 1))
+                }
                 disabled={quantity >= MAX_QUANTITY || outOfStock}
                 aria-label="Increase quantity"
                 className="grid size-11 place-items-center rounded-r-lg text-muted-foreground transition-colors hover:bg-muted hover:text-foreground disabled:pointer-events-none disabled:opacity-40"
@@ -120,7 +137,11 @@ export function ProductBuyBox({
               ) : (
                 <ShoppingBag className="size-4" aria-hidden="true" />
               )}
-              {outOfStock ? "Out of stock" : added ? "Added to cart" : "Add to cart"}
+              {outOfStock
+                ? "Out of stock"
+                : added
+                  ? "Added to cart"
+                  : "Add to cart"}
             </Button>
           </div>
 
@@ -136,13 +157,19 @@ export function ProductBuyBox({
             ) : (
               // Adds the chosen quantity, then goes straight to checkout —
               // which is what "buy now" means everywhere else.
-              <button type="button" onClick={buyNow}>Buy now</button>
+              <button className="border" type="button" onClick={buyNow}>
+                Buy now
+              </button>
             )}
           </Button>
         </>
       )}
 
-      <ActionRow productId={productId} productName={productName} model={model} />
+      <ActionRow
+        productId={productId}
+        productName={productName}
+        model={model}
+      />
     </div>
   );
 }
@@ -160,12 +187,12 @@ function ActionRow({
   const saved = isWishlisted(productId);
 
   return (
-    <div className="flex flex-wrap items-center gap-x-6 gap-y-3 border-y py-3 text-sm">
+    <div className="flex flex-wrap items-center gap-x-4 gap-y-1 border-y py-1 text-sm">
       <button
         type="button"
         onClick={() => toggleWishlist(productId)}
         aria-pressed={saved}
-        className="inline-flex items-center gap-2 text-muted-foreground transition-colors hover:text-foreground"
+        className="inline-flex items-center gap-2 rounded-lg px-2 py-2.5 text-muted-foreground transition-colors hover:text-foreground"
       >
         <Heart
           className={cn("size-4", saved && "fill-red-500 text-red-500")}
@@ -178,7 +205,7 @@ function ActionRow({
         // /contact does not exist yet; the quotation form is the working
         // route to a human, and it carries the model across.
         href={`/rfq?type=other&sku=${encodeURIComponent(model)}`}
-        className="inline-flex items-center gap-2 text-muted-foreground transition-colors hover:text-foreground"
+        className="inline-flex items-center gap-2 rounded-lg px-2 py-2.5 text-muted-foreground transition-colors hover:text-foreground"
       >
         <FileText className="size-4" aria-hidden="true" />
         Ask us
@@ -223,9 +250,13 @@ function ShareButton({ productName }: { productName: string }) {
     <button
       type="button"
       onClick={share}
-      className="inline-flex items-center gap-2 text-muted-foreground transition-colors hover:text-foreground"
+      className="inline-flex items-center gap-2 rounded-lg px-2 py-2.5 text-muted-foreground transition-colors hover:text-foreground"
     >
-      {copied ? <Link2 className="size-4" aria-hidden="true" /> : <Share2 className="size-4" aria-hidden="true" />}
+      {copied ? (
+        <Link2 className="size-4" aria-hidden="true" />
+      ) : (
+        <Share2 className="size-4" aria-hidden="true" />
+      )}
       {copied ? "Link copied" : "Share"}
     </button>
   );

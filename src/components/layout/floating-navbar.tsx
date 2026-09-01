@@ -1,6 +1,11 @@
 "use client";
 
-import { AnimatePresence, motion, useMotionValueEvent, useScroll } from "framer-motion";
+import {
+  AnimatePresence,
+  motion,
+  useMotionValueEvent,
+  useScroll,
+} from "framer-motion";
 import { useState } from "react";
 
 import { AnimatedNavLinks } from "@/components/layout/animated-nav-links";
@@ -50,16 +55,29 @@ export function FloatingNavbar({
           transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
           className="fixed inset-x-0 top-4 z-50 flex justify-center px-4"
         >
-          <div className="flex items-center gap-2 rounded-full border border-gray-200/70 bg-white/80 py-1.5 pr-2 pl-1.5 shadow-lg shadow-black/5 backdrop-blur-xl supports-backdrop-filter:bg-white/70">
+          <div className="flex items-center gap-2 rounded-full border border-gray-200/70 bg-white/80 py-1.5 px-4 shadow-lg shadow-black/5 backdrop-blur-xl supports-backdrop-filter:bg-white/70">
             <nav aria-label="Main" className="hidden lg:block">
-              <AnimatedNavLinks items={nav} layoutId="floating-nav-pill" linkClassName="h-8 px-3" />
+              <AnimatedNavLinks
+                items={nav}
+                layoutId="floating-nav-pill"
+                linkClassName="h-8 px-4"
+              />
             </nav>
 
             <div className="lg:hidden">
-              <MobileNav nav={nav} categories={categories} counts={counts} phone={phone} logoUrl={logoUrl} />
+              <MobileNav
+                nav={nav}
+                categories={categories}
+                counts={counts}
+                phone={phone}
+                logoUrl={logoUrl}
+              />
             </div>
 
-            <div className="hidden h-6 w-px bg-border lg:block" aria-hidden="true" />
+            <div
+              className="hidden h-6 w-px bg-border lg:block"
+              aria-hidden="true"
+            />
 
             <CartControls />
           </div>

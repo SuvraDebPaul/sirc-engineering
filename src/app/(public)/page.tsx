@@ -5,6 +5,7 @@ import { HeroCarousel } from "@/features/home/components/hero-carousel";
 import { LatestPosts } from "@/features/home/components/latest-posts";
 import { PromoBanner } from "@/features/home/components/promo-banner";
 import { ServicesBand } from "@/features/home/components/services-band";
+import { StatsBand } from "@/features/home/components/stats-band";
 import { Testimonial } from "@/features/home/components/testimonial";
 import { TrendingProducts } from "@/features/home/components/trending-products";
 import { TrustStrip } from "@/features/home/components/trust-strip";
@@ -73,7 +74,7 @@ export default async function HomePage() {
       <div className="space-y-14 py-6 sm:space-y-20 sm:py-10">
         <Reveal>
           <Container>
-            <BrandSlider brands={brands.slice(0, 6)} />
+            <BrandSlider brands={brands} />
           </Container>
         </Reveal>
 
@@ -81,6 +82,20 @@ export default async function HomePage() {
           <Container>
             <CategoryCarousel categories={categories} />
           </Container>
+        </Reveal>
+
+        {/* Full-bleed on purpose — breaks the contained-card rhythm around it
+            for the one section on the page that argues scale rather than
+            showing products. Not inside `Container`, unlike everything else. */}
+        <Reveal>
+          <StatsBand
+            stats={[
+              { value: products.length, label: "Instruments listed" },
+              { value: brands.length, label: "Brands supplied" },
+              { value: categories.length, label: "Measurement disciplines" },
+              { value: services.length, label: "Laboratory services" },
+            ]}
+          />
         </Reveal>
 
         <Reveal>

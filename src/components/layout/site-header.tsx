@@ -52,7 +52,7 @@ export async function SiteHeader() {
                 <span className="truncate">{settings.email}</span>
               </a>
             </div>
-            <SearchBar className="w-full max-w-lg" />
+            <SearchBar className="min-w-0 max-w-lg flex-1" />
 
             <nav aria-label="Secondary" className="hidden shrink-0 sm:block">
               <ul className="flex items-center gap-4">

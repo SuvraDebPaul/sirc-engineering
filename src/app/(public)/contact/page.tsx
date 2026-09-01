@@ -45,7 +45,7 @@ export default async function ContactPage() {
 
       <Container className="pb-20">
         <div className="grid gap-6 lg:grid-cols-2">
-          <div className="min-h-96 overflow-hidden rounded-2xl border bg-muted">
+          <div className="min-h-96 overflow-hidden rounded-2xl border border-border/60 bg-muted shadow-sm">
             <iframe
               src={MAP_SRC}
               title="Map of Dhaka, Bangladesh"
@@ -60,8 +60,11 @@ export default async function ContactPage() {
 
         <ul className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {TILES.map(({ icon: Icon, label, value, href }) => (
-            <li key={label} className="flex items-start gap-4 rounded-2xl bg-muted/40 p-5">
-              <span className="grid size-11 shrink-0 place-items-center rounded-full bg-background text-primary shadow-sm">
+            <li
+              key={label}
+              className="flex items-start gap-4 rounded-2xl border border-border/60 bg-card p-5 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-primary/25 hover:shadow-lg hover:shadow-primary/10"
+            >
+              <span className="grid size-11 shrink-0 place-items-center rounded-full bg-primary/10 text-primary">
                 <Icon className="size-5" strokeWidth={1.75} aria-hidden="true" />
               </span>
 

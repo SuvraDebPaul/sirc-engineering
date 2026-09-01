@@ -29,7 +29,7 @@ export async function Footer() {
   const settings = await getSiteSettings();
 
   return (
-    <footer className="mt-20 border-t bg-linear-to-b from-muted/50 to-muted/20">
+    <footer className="bg-background border-t bg-linear-to-b from-muted/50 to-muted/20">
       <Container className="py-14">
         <div className="grid gap-10 lg:grid-cols-[1.4fr_repeat(3,1fr)_1.3fr]">
           <div>
@@ -64,7 +64,10 @@ export async function Footer() {
 
               {/* Short brand rule under each column head — gives the four
                   columns a shared visual anchor line across the footer. */}
-              <span aria-hidden="true" className="mt-2 block h-0.5 w-8 rounded-full bg-primary/60" />
+              <span
+                aria-hidden="true"
+                className="mt-2 block h-0.5 w-8 rounded-full bg-primary/60"
+              />
 
               <ul className="mt-4 space-y-3">
                 {column.items.map((item) => (
@@ -89,7 +92,10 @@ export async function Footer() {
               Talk to an engineer
             </h2>
 
-            <span aria-hidden="true" className="mt-2 block h-0.5 w-8 rounded-full bg-primary/60" />
+            <span
+              aria-hidden="true"
+              className="mt-2 block h-0.5 w-8 rounded-full bg-primary/60"
+            />
 
             <ul className="mt-4 space-y-3 text-sm">
               <li className="flex items-start gap-2.5">
@@ -137,9 +143,7 @@ export async function Footer() {
                   strokeWidth={1.75}
                   aria-hidden="true"
                 />
-                <span className="text-muted-foreground">
-                  {settings.hours}
-                </span>
+                <span className="text-muted-foreground">{settings.hours}</span>
               </li>
             </ul>
 

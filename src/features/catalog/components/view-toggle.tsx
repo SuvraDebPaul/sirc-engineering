@@ -29,7 +29,11 @@ export function ViewToggle({
   const show = typeof params.show === "string" ? params.show : null;
 
   return (
-    <div className="flex items-center gap-1 rounded-lg border p-1" role="group" aria-label="Result layout">
+    <div
+      className="flex items-center gap-1 rounded-full border border-border/60 bg-muted/40 p-1"
+      role="group"
+      aria-label="Result layout"
+    >
       {VIEWS.map(({ value, label, icon: Icon }) => {
         const active = view === value;
 
@@ -42,10 +46,10 @@ export function ViewToggle({
             aria-label={label}
             title={label}
             className={cn(
-              "grid size-8 place-items-center rounded-md transition-colors",
+              "grid size-8 place-items-center rounded-full transition-all duration-200",
               active
-                ? "bg-primary text-primary-foreground"
-                : "text-muted-foreground hover:bg-muted hover:text-foreground",
+                ? "bg-primary text-primary-foreground shadow-sm"
+                : "text-muted-foreground hover:text-foreground",
             )}
           >
             <Icon className="size-4" aria-hidden="true" />

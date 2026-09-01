@@ -52,15 +52,20 @@ export default async function CorporatePage({ searchParams }: PageProps<"/corpor
       <Container className="pb-20">
         <div className="mb-12 grid gap-4 sm:grid-cols-3">
           {STEPS.map(({ icon: Icon, title, body }) => (
-            <div key={title} className="rounded-2xl border p-5">
-              <Icon className="size-5 text-primary" strokeWidth={1.75} aria-hidden="true" />
+            <div
+              key={title}
+              className="rounded-2xl border border-border/60 bg-card p-5 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-primary/25 hover:shadow-lg hover:shadow-primary/10"
+            >
+              <span className="grid size-10 place-items-center rounded-full bg-primary/10 text-primary">
+                <Icon className="size-5" strokeWidth={1.75} aria-hidden="true" />
+              </span>
               <p className="mt-3 text-sm font-semibold">{title}</p>
               <p className="mt-1 text-sm text-muted-foreground">{body}</p>
             </div>
           ))}
         </div>
 
-        <div className="mb-10 flex flex-wrap items-center justify-between gap-4 rounded-2xl border bg-muted/30 p-6">
+        <div className="mb-10 flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-border/60 bg-linear-to-b from-muted/50 to-muted/20 p-6 shadow-sm">
           <div>
             <p className="font-semibold">Sourcing something not listed here?</p>
             <p className="mt-1 text-sm text-muted-foreground">

@@ -14,7 +14,10 @@ import { ProductDescription } from "@/features/catalog/components/product-descri
 import { ProductDocuments } from "@/features/catalog/components/product-documents";
 import { ProductGallery } from "@/features/catalog/components/product-gallery";
 import { ProductQuestions } from "@/features/catalog/components/product-questions";
-import { ProductSpecs, ProductShipping } from "@/features/catalog/components/product-info-panels";
+import {
+  ProductSpecs,
+  ProductShipping,
+} from "@/features/catalog/components/product-info-panels";
 import { ProductReviews } from "@/features/catalog/components/product-reviews";
 import { ProductTabs } from "@/features/catalog/components/product-tabs";
 import { StarRating } from "@/features/catalog/components/star-rating";
@@ -38,12 +41,14 @@ import {
 } from "@/features/reviews/services/review";
 import { getSiteSettings } from "@/features/settings/services/settings";
 import { formatBDT } from "@/lib/format";
-import { STOCK_LABEL, discountPercent, resolvePriceDisplay } from "@/features/catalog/services/product";
+import {
+  STOCK_DOT,
+  STOCK_LABEL,
+  discountPercent,
+  resolvePriceDisplay,
+} from "@/features/catalog/services/product";
 import { cn } from "@/lib/utils";
-import type {
-  PriceDisplay,
-  StockStatus,
-} from "@/features/catalog/types";
+import type { PriceDisplay } from "@/features/catalog/types";
 
 /** Anchors the sticky bar: it appears once this element scrolls out of view. */
 const BUY_BOX_ID = "buy-box";
@@ -68,7 +73,9 @@ export async function generateStaticParams() {
   return products.map((product) => ({ slug: product.slug }));
 }
 
-export async function generateMetadata({ params }: PageProps<"/product/[slug]">): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: PageProps<"/product/[slug]">): Promise<Metadata> {
   const { slug } = await params;
   const result = await getProductDetail(slug);
 
@@ -88,17 +95,11 @@ export async function generateMetadata({ params }: PageProps<"/product/[slug]">)
   };
 }
 
-const STOCK_CLASS: Record<StockStatus, string> = {
-  IN_STOCK: "bg-emerald-50 text-emerald-700 ring-emerald-200 dark:bg-emerald-950 dark:text-emerald-300 dark:ring-emerald-900",
-  LOW_STOCK: "bg-amber-50 text-amber-700 ring-amber-200 dark:bg-amber-950 dark:text-amber-300 dark:ring-amber-900",
-  MADE_TO_ORDER: "bg-sky-50 text-sky-700 ring-sky-200 dark:bg-sky-950 dark:text-sky-300 dark:ring-sky-900",
-  OUT_OF_STOCK: "bg-muted text-muted-foreground ring-border",
-};
-
 /** One string for the sticky bar, which has no room for a strikethrough. */
 const priceLabel = (price: PriceDisplay): string => {
   if (price.kind === "price") return formatBDT(price.amount);
-  if (price.kind === "range") return `${formatBDT(price.min)} – ${formatBDT(price.max)}`;
+  if (price.kind === "range")
+    return `${formatBDT(price.min)} – ${formatBDT(price.max)}`;
   return "Price on request";
 };
 
@@ -111,12 +112,18 @@ export default async function ProductPage({
   const { slug } = await params;
   const query = await searchParams;
 
-  const reviewSortRaw = Array.isArray(query.reviewSort) ? query.reviewSort[0] : query.reviewSort;
-  const reviewSort: ReviewSort = REVIEW_SORTS.includes(reviewSortRaw as ReviewSort)
+  const reviewSortRaw = Array.isArray(query.reviewSort)
+    ? query.reviewSort[0]
+    : query.reviewSort;
+  const reviewSort: ReviewSort = REVIEW_SORTS.includes(
+    reviewSortRaw as ReviewSort,
+  )
     ? (reviewSortRaw as ReviewSort)
     : "recent";
 
-  const shownRaw = Array.isArray(query.reviewsShown) ? query.reviewsShown[0] : query.reviewsShown;
+  const shownRaw = Array.isArray(query.reviewsShown)
+    ? query.reviewsShown[0]
+    : query.reviewsShown;
   const shownParsed = Number(shownRaw);
   const reviewsShown =
     Number.isFinite(shownParsed) && shownParsed >= REVIEW_PAGE_SIZE
@@ -133,14 +140,21 @@ export default async function ProductPage({
 
   const { product, detail } = result;
 
-  const [reviewSummary, reviewList, existingReview, answeredQuestions, bundleItems] =
-    await Promise.all([
-      getReviewSummary(product.id),
-      listReviews(product.id, reviewSort, reviewsShown),
-      session ? getUserReviewForProduct(session.user.id, product.id) : Promise.resolve(null),
-      listAnsweredQuestions(product.id),
-      getFrequentlyBoughtTogether(product.id),
-    ]);
+  const [
+    reviewSummary,
+    reviewList,
+    existingReview,
+    answeredQuestions,
+    bundleItems,
+  ] = await Promise.all([
+    getReviewSummary(product.id),
+    listReviews(product.id, reviewSort, reviewsShown),
+    session
+      ? getUserReviewForProduct(session.user.id, product.id)
+      : Promise.resolve(null),
+    listAnsweredQuestions(product.id),
+    getFrequentlyBoughtTogether(product.id),
+  ]);
 
   const price = resolvePriceDisplay(product, "GUEST");
   const discount = discountPercent(product);
@@ -181,7 +195,10 @@ export default async function ProductPage({
             <div>
               <p className="text-sm text-muted-foreground">
                 Brand:{" "}
-                <Link href={`/products?brand=${encodeURIComponent(product.brand)}`} className="font-medium text-foreground hover:text-primary">
+                <Link
+                  href={`/products?brand=${encodeURIComponent(product.brand)}`}
+                  className="font-medium text-foreground hover:text-primary"
+                >
                   {product.brand}
                 </Link>
               </p>
@@ -190,7 +207,9 @@ export default async function ProductPage({
                 {product.name}
               </h1>
 
-              <p className="mt-1 text-sm text-muted-foreground">Model {product.modelNumber}</p>
+              <p className="mt-1 text-sm text-muted-foreground">
+                Model {product.modelNumber}
+              </p>
             </div>
 
             <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
@@ -227,21 +246,29 @@ export default async function ProductPage({
               {product.rating !== null && (
                 <span className="flex items-center gap-2">
                   <StarRating rating={product.rating} />
-                  <a href="#reviews" className="text-sm text-muted-foreground hover:text-foreground">
-                    ({product.reviewCount} {product.reviewCount === 1 ? "review" : "reviews"})
+                  <a
+                    href="#reviews"
+                    className="text-sm text-muted-foreground hover:text-foreground"
+                  >
+                    ({product.reviewCount}{" "}
+                    {product.reviewCount === 1 ? "review" : "reviews"})
                   </a>
                 </span>
               )}
             </div>
 
-            <p className="text-sm leading-relaxed text-muted-foreground">{product.description}</p>
+            <p className="text-sm leading-relaxed text-muted-foreground">
+              {product.description}
+            </p>
 
-            <span
-              className={cn(
-                "w-fit rounded-md px-2.5 py-1 text-xs font-medium ring-1 ring-inset",
-                STOCK_CLASS[product.stockStatus],
-              )}
-            >
+            <span className="inline-flex w-fit items-center gap-1.5 rounded-full bg-muted/60 px-3 py-1.5 text-xs font-medium">
+              <span
+                className={cn(
+                  "size-1.5 shrink-0 rounded-full",
+                  STOCK_DOT[product.stockStatus],
+                )}
+                aria-hidden="true"
+              />
               {STOCK_LABEL[product.stockStatus]}
             </span>
 
@@ -267,19 +294,35 @@ export default async function ProductPage({
 
             <ul className="space-y-2.5 text-sm text-muted-foreground">
               <li className="flex items-center gap-2.5">
-                <CalendarClock className="size-4 shrink-0 text-primary" strokeWidth={1.75} aria-hidden="true" />
+                <CalendarClock
+                  className="size-4 shrink-0 text-primary"
+                  strokeWidth={1.75}
+                  aria-hidden="true"
+                />
                 Dispatched in {detail.leadTimeDays} working days
               </li>
               <li className="flex items-center gap-2.5">
-                <Truck className="size-4 shrink-0 text-primary" strokeWidth={1.75} aria-hidden="true" />
+                <Truck
+                  className="size-4 shrink-0 text-primary"
+                  strokeWidth={1.75}
+                  aria-hidden="true"
+                />
                 Delivered nationwide · 7-day returns on unused stock
               </li>
               <li className="flex items-center gap-2.5">
-                <ShieldCheck className="size-4 shrink-0 text-primary" strokeWidth={1.75} aria-hidden="true" />
+                <ShieldCheck
+                  className="size-4 shrink-0 text-primary"
+                  strokeWidth={1.75}
+                  aria-hidden="true"
+                />
                 {detail.warrantyMonths}-month warranty, serviced locally
               </li>
               <li className="flex items-center gap-2.5">
-                <PackageCheck className="size-4 shrink-0 text-primary" strokeWidth={1.75} aria-hidden="true" />
+                <PackageCheck
+                  className="size-4 shrink-0 text-primary"
+                  strokeWidth={1.75}
+                  aria-hidden="true"
+                />
                 Traceable calibration certificate supplied
               </li>
             </ul>
@@ -297,7 +340,9 @@ export default async function ProductPage({
 
         <div className="mt-16" id="reviews">
           <ProductTabs
-            defaultValue={query.reviewSort || query.reviewsShown ? "reviews" : undefined}
+            defaultValue={
+              query.reviewSort || query.reviewsShown ? "reviews" : undefined
+            }
             tabs={[
               {
                 value: "description",

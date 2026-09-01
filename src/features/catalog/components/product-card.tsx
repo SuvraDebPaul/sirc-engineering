@@ -4,7 +4,10 @@ import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
-import { CardActions, AddToCartButton } from "@/features/catalog/components/product-card-actions";
+import {
+  CardActions,
+  AddToCartButton,
+} from "@/features/catalog/components/product-card-actions";
 import { QuickViewDialog } from "@/features/catalog/components/quick-view-dialog";
 import { StarRating } from "@/features/catalog/components/star-rating";
 import { Icon } from "@/components/shared/icon";
@@ -18,15 +21,14 @@ import {
   STOCK_LABEL,
 } from "@/features/catalog/services/product";
 import { cn } from "@/lib/utils";
-import type {
-  CustomerTier,
-  Product,
-} from "@/features/catalog/types";
+import type { CustomerTier, Product } from "@/features/catalog/types";
 
 type ProductCardProps = {
   product: Product;
   tier: CustomerTier;
   priority?: boolean;
+  /** Off on the catalogue listing (products/category/brand) — on everywhere else. */
+  showRating?: boolean;
 };
 
 /**
@@ -45,7 +47,12 @@ type ProductCardProps = {
  * who can't distinguish amber from emerald, so the word carries the meaning
  * and the dot only reinforces it.
  */
-export const ProductCard = ({ product, tier, priority = false }: ProductCardProps) => {
+export const ProductCard = ({
+  product,
+  tier,
+  priority = false,
+  showRating = true,
+}: ProductCardProps) => {
   const [quickViewOpen, setQuickViewOpen] = useState(false);
 
   const price = resolvePriceDisplay(product, tier);
@@ -66,7 +73,12 @@ export const ProductCard = ({ product, tier, priority = false }: ProductCardProp
           />
         ) : (
           <div className="flex h-full items-center justify-center text-muted-foreground/25">
-            <Icon name={product.categoryIcon} className="size-16" strokeWidth={1} aria-hidden="true" />
+            <Icon
+              name={product.categoryIcon}
+              className="size-16"
+              strokeWidth={1}
+              aria-hidden="true"
+            />
           </div>
         )}
 
@@ -89,7 +101,10 @@ export const ProductCard = ({ product, tier, priority = false }: ProductCardProp
           </div>
         )}
 
-        <CardActions product={product} onQuickView={() => setQuickViewOpen(true)} />
+        <CardActions
+          product={product}
+          onQuickView={() => setQuickViewOpen(true)}
+        />
       </div>
 
       <div className="flex flex-1 flex-col p-4">
@@ -110,44 +125,39 @@ export const ProductCard = ({ product, tier, priority = false }: ProductCardProp
           )}
         </div>
 
-        <h3 className="mt-1.5 text-base leading-snug font-semibold">
+        <h3 className="text-base leading-snug font-semibold my-1">
           {/* Stretched link: the whole card is clickable, one entry in the a11y tree */}
           <Link
             href={`/product/${product.slug}`}
             className="after:absolute after:inset-0 after:rounded-2xl focus-visible:underline focus-visible:outline-none"
           >
-            <span className="line-clamp-2 transition-colors duration-200 group-hover:text-primary">
+            <span className="text-sm line-clamp-2 transition-colors duration-200 group-hover:text-primary">
               {product.name}
             </span>
           </Link>
         </h3>
 
-        <p className="mt-1 text-xs text-muted-foreground">{product.categoryName}</p>
-
-        {product.rating !== null && (
-          <div className="mt-2.5 flex items-center gap-1.5">
-            <StarRating rating={product.rating} />
-            <span className="text-xs font-medium">{product.rating.toFixed(1)}</span>
-            <span className="min-w-0 truncate text-xs text-muted-foreground">
-              ({product.reviewCount})
-            </span>
-          </div>
-        )}
+        <p className="text-xs text-muted-foreground">{product.categoryName}</p>
 
         {/* mt-auto pins price + button to the bottom so cards in a row align */}
-        <div className="mt-auto pt-4">
+        <div className="mt-auto pt-2">
           <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
             <span
-              className={cn("size-1.5 shrink-0 rounded-full", STOCK_DOT[product.stockStatus])}
+              className={cn(
+                "size-1.5 shrink-0 rounded-full",
+                STOCK_DOT[product.stockStatus],
+              )}
               aria-hidden="true"
             />
             {STOCK_LABEL[product.stockStatus]}
           </div>
 
-          <div className="mt-1.5 flex min-h-8 flex-wrap items-baseline gap-x-2">
+          <div className="my-1 flex min-h-8 flex-wrap items-baseline gap-x-2">
             {price.kind === "price" && (
               <>
-                <span className="text-xl font-semibold tracking-tight">{formatBDT(price.amount)}</span>
+                <span className="text-md font-semibold tracking-tight">
+                  {formatBDT(price.amount)}
+                </span>
                 {price.compareAt !== null && (
                   <span className="text-sm text-muted-foreground line-through">
                     {formatBDT(price.compareAt)}
@@ -162,13 +172,15 @@ export const ProductCard = ({ product, tier, priority = false }: ProductCardProp
             )}
 
             {price.kind === "range" && (
-              <span className="text-xl font-semibold tracking-tight">
+              <span className="text-md font-semibold tracking-tight">
                 {formatBDT(price.min)} – {formatBDT(price.max)}
               </span>
             )}
 
             {price.kind === "quote" && (
-              <span className="text-base font-medium text-muted-foreground">Price on request</span>
+              <span className="text-md text-base font-medium text-muted-foreground">
+                Price on request
+              </span>
             )}
           </div>
 

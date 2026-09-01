@@ -92,7 +92,9 @@ export const WishlistButton = ({
       onClick={() => toggleWishlist(productId)}
       aria-pressed={saved}
       aria-label={
-        saved ? `Remove ${productName} from wishlist` : `Save ${productName} to wishlist`
+        saved
+          ? `Remove ${productName} from wishlist`
+          : `Save ${productName} to wishlist`
       }
       title={saved ? "Saved to wishlist" : "Save to wishlist"}
       data-product-id={productId}
@@ -140,8 +142,15 @@ export const AddToCartButton = ({
 
   if (mode === "quote") {
     return (
-      <Button asChild variant="outline" className="relative z-10 mt-3 h-11 w-full rounded-xl">
-        <Link href={`/rfq?sku=${encodeURIComponent(model)}`} aria-label={`Ask for price: ${productName}`}>
+      <Button
+        asChild
+        variant="outline"
+        className="relative z-10 h-8 w-full rounded-full"
+      >
+        <Link
+          href={`/rfq?sku=${encodeURIComponent(model)}`}
+          aria-label={`Ask for price: ${productName}`}
+        >
           <FileText className="size-4" aria-hidden="true" />
           Ask for price
         </Link>
@@ -158,7 +167,7 @@ export const AddToCartButton = ({
   return (
     <Button
       type="button"
-      className="relative z-10 mt-3 h-11 w-full rounded-xl"
+      className="relative z-10 h-8 w-full rounded-full"
       disabled={disabled}
       onClick={handleClick}
       aria-label={`Add to cart: ${productName}`}

@@ -135,8 +135,11 @@ export function Testimonial({
           </figure>
 
           {count > 1 && (
-            <div className="flex gap-2" role="tablist" aria-label="Choose a testimonial">
+            <div className="flex gap-1" role="tablist" aria-label="Choose a testimonial">
               {testimonials.map((testimonial, i) => (
+                // The visible dot stays small — the button padding around it
+                // is what gives a touchscreen a real target to land on,
+                // rather than the 10px dot itself.
                 <button
                   key={testimonial.id}
                   type="button"
@@ -144,11 +147,15 @@ export function Testimonial({
                   aria-selected={i === index}
                   aria-label={`Testimonial ${i + 1} of ${count}: ${testimonial.authorName}`}
                   onClick={() => goTo(i)}
-                  className={cn(
-                    "size-2.5 rounded-full transition-all duration-300",
-                    i === index ? "w-6 bg-primary" : "bg-muted-foreground/30 hover:bg-muted-foreground/60",
-                  )}
-                />
+                  className="group grid size-6 place-items-center"
+                >
+                  <span
+                    className={cn(
+                      "size-2.5 rounded-full transition-all duration-300",
+                      i === index ? "w-6 bg-primary" : "bg-muted-foreground/30 group-hover:bg-muted-foreground/60",
+                    )}
+                  />
+                </button>
               ))}
             </div>
           )}

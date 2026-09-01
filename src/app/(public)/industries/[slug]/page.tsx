@@ -119,7 +119,7 @@ export default async function IndustryPage({ params }: PageProps<"/industries/[s
                     <li key={service.id}>
                       <Link
                         href={`/services/${service.id}`}
-                        className="group flex h-full flex-col rounded-xl border bg-card p-5 transition-colors hover:border-primary/40 hover:bg-muted/40"
+                        className="group flex h-full cursor-pointer flex-col rounded-2xl border border-border/60 bg-card p-5 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-primary/25 hover:shadow-lg hover:shadow-primary/10"
                       >
                         <Icon
                           name={service.icon}
@@ -146,8 +146,10 @@ export default async function IndustryPage({ params }: PageProps<"/industries/[s
           </div>
 
           <aside className="space-y-5">
-            <section className="rounded-2xl border bg-card p-6">
-              <h2 className="text-sm font-semibold tracking-tight">Talk to an engineer</h2>
+            <section className="rounded-2xl border border-border/60 bg-card p-6 shadow-sm">
+              <h2 className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">
+                Talk to an engineer
+              </h2>
 
               <p className="mt-2 text-sm text-muted-foreground">
                 Tell us the plant, the standard you answer to and the deadline. We will tell you
@@ -166,8 +168,10 @@ export default async function IndustryPage({ params }: PageProps<"/industries/[s
               />
             </section>
 
-            <section className="rounded-2xl border bg-muted/30 p-6">
-              <h2 className="text-sm font-semibold tracking-tight">Other industries</h2>
+            <section className="rounded-2xl border border-border/60 bg-muted/40 p-6">
+              <h2 className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">
+                Other industries
+              </h2>
 
               <ul className="mt-4 space-y-1">
                 {(await getIndustries())
@@ -176,7 +180,7 @@ export default async function IndustryPage({ params }: PageProps<"/industries/[s
                     <li key={entry.slug}>
                       <Link
                         href={`/industries/${entry.slug}`}
-                        className="flex items-center gap-2.5 rounded-md p-2 text-sm transition-colors hover:bg-background"
+                        className="flex items-center gap-2.5 rounded-lg p-2 text-sm transition-colors duration-200 hover:bg-background"
                       >
                         <Icon
                           name={entry.icon}

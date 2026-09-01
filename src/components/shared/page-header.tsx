@@ -19,11 +19,11 @@ export function PageHeader({
   breadcrumbs?: Crumb[];
 }) {
   return (
-    <div className="mb-10 border-y bg-muted/40 py-10">
+    <div className="mb-10 border-b border-border/60 bg-linear-to-b from-muted/60 to-muted/15 py-12 sm:py-14">
       <div className="flex flex-col items-center gap-3 text-center">
         <Breadcrumbs items={breadcrumbs} className="justify-center" />
 
-        <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">{title}</h1>
+        <h1 className="text-3xl font-bold tracking-tight uppercase sm:text-4xl">{title}</h1>
 
         {description && (
           <p className="max-w-2xl text-balance text-sm text-muted-foreground sm:text-base">

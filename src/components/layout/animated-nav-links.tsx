@@ -35,13 +35,20 @@ export function AnimatedNavLinks({
   const allItems: NavItem[] = [{ label: "Home", href: "/" }, ...items];
 
   return (
-    <ul className={cn("flex items-center gap-0.5", className)} onMouseLeave={() => setHovered(null)}>
+    <ul
+      className={cn("flex items-center gap-0.5", className)}
+      onMouseLeave={() => setHovered(null)}
+    >
       {allItems.map((item) => {
         const active = pathname === item.href;
         const highlighted = hovered ? hovered === item.href : active;
 
         return (
-          <li key={item.href} className="relative" onMouseEnter={() => setHovered(item.href)}>
+          <li
+            key={item.href}
+            className="relative"
+            onMouseEnter={() => setHovered(item.href)}
+          >
             {highlighted && (
               <motion.span
                 layoutId={layoutId}
@@ -52,8 +59,10 @@ export function AnimatedNavLinks({
             <Link
               href={item.href}
               className={cn(
-                "relative z-10 inline-flex h-9 items-center whitespace-nowrap rounded-full px-4 text-sm font-medium transition-colors",
-                active ? "text-foreground" : "text-muted-foreground hover:text-foreground",
+                "relative z-10 inline-flex h-9 items-center whitespace-nowrap rounded-full px-6 text-sm font-medium transition-colors",
+                active
+                  ? "text-foreground"
+                  : "text-muted-foreground hover:text-foreground",
                 linkClassName,
               )}
             >

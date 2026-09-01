@@ -166,7 +166,7 @@ async function EmptyCategory({
               <li key={entry.id}>
                 <Link
                   href={`/category/${entry.slug}`}
-                  className="flex items-center gap-3 rounded-xl border bg-card p-4 text-sm transition-colors hover:border-primary/40 hover:bg-muted/50"
+                  className="flex items-center gap-3 rounded-2xl border border-border/60 bg-card p-4 text-sm shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-primary/25 hover:shadow-lg hover:shadow-primary/10"
                 >
                   <Icon
                     name={entry.icon}

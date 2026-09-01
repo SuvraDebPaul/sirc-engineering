@@ -19,10 +19,12 @@ const BADGES = [
 export function ProductAssurance() {
   return (
     <div className="space-y-4">
-      <ul className="grid gap-3 rounded-xl border bg-muted/30 p-4 sm:grid-cols-3">
+      <ul className="grid gap-4 rounded-2xl border border-border/60 bg-muted/40 p-4 sm:grid-cols-3">
         {BADGES.map(({ icon: Icon, label, note }) => (
           <li key={label} className="flex items-start gap-2.5">
-            <Icon className="mt-0.5 size-5 shrink-0 text-primary" strokeWidth={1.75} aria-hidden="true" />
+            <span className="grid size-8 shrink-0 place-items-center rounded-full bg-primary/10 text-primary">
+              <Icon className="size-4" strokeWidth={1.75} aria-hidden="true" />
+            </span>
             <span className="min-w-0">
               <span className="block text-sm font-medium leading-tight">{label}</span>
               <span className="block text-xs text-muted-foreground">{note}</span>
@@ -31,7 +33,7 @@ export function ProductAssurance() {
         ))}
       </ul>
 
-      <div className="rounded-xl border p-4 text-center">
+      <div className="rounded-2xl border border-border/60 p-4 text-center">
         <p className="text-sm font-medium">Guaranteed safe and secure checkout</p>
         <p className="mt-1 text-xs text-muted-foreground">
           Accepted payment methods are confirmed at checkout. Purchase orders welcome from

@@ -48,7 +48,7 @@ export default async function BrandsPage() {
               <li key={brand.id}>
                 <Link
                   href={`/brands/${brand.id}`}
-                  className="group flex h-full flex-col items-center gap-4 rounded-2xl border bg-card p-6 text-center transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/40 hover:shadow-md motion-reduce:transform-none"
+                  className="group flex h-full cursor-pointer flex-col items-center gap-4 rounded-2xl border border-border/60 bg-card p-6 text-center shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-primary/25 hover:shadow-lg hover:shadow-primary/10 motion-reduce:transform-none"
                 >
                   <div className="relative h-10 w-full">
                     <Image

@@ -154,8 +154,10 @@ export default async function ServicePage({ params }: PageProps<"/services/[slug
           </div>
 
           <aside className="space-y-5">
-            <section className="rounded-2xl border bg-card p-6">
-              <h2 className="text-sm font-semibold tracking-tight">At a glance</h2>
+            <section className="rounded-2xl border border-border/60 bg-card p-6 shadow-sm">
+              <h2 className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">
+                At a glance
+              </h2>
 
               <ul className="mt-4 space-y-3 text-sm">
                 <li className="flex items-start gap-2.5">
@@ -189,15 +191,17 @@ export default async function ServicePage({ params }: PageProps<"/services/[slug
             </section>
 
             {others.length > 0 && (
-              <section className="rounded-2xl border bg-muted/30 p-6">
-                <h2 className="text-sm font-semibold tracking-tight">Other services</h2>
+              <section className="rounded-2xl border border-border/60 bg-muted/40 p-6">
+                <h2 className="text-xs font-semibold tracking-wide text-muted-foreground uppercase">
+                  Other services
+                </h2>
 
                 <ul className="mt-4 space-y-1">
                   {others.map((entry) => (
                     <li key={entry.id}>
                       <Link
                         href={`/services/${entry.id}`}
-                        className="flex items-center gap-2.5 rounded-md p-2 text-sm transition-colors hover:bg-background"
+                        className="flex items-center gap-2.5 rounded-lg p-2 text-sm transition-colors duration-200 hover:bg-background"
                       >
                         <Icon
                           name={entry.icon}

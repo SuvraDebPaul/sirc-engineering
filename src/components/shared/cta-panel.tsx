@@ -24,16 +24,21 @@ export function CtaPanel({
   className?: string;
 }) {
   return (
-    <section className={cn("rounded-2xl border bg-muted/30 p-8 text-center sm:p-12", className)}>
-      <h2 className="text-xl font-semibold tracking-tight">{title}</h2>
+    <section
+      className={cn(
+        "rounded-3xl border border-border/60 bg-linear-to-b from-muted/50 to-muted/20 p-8 text-center shadow-sm sm:p-12",
+        className,
+      )}
+    >
+      <h2 className="text-xl font-bold tracking-tight uppercase sm:text-2xl">{title}</h2>
 
       {description && (
-        <p className="mx-auto mt-2 max-w-xl text-sm leading-relaxed text-muted-foreground">
+        <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-muted-foreground">
           {description}
         </p>
       )}
 
-      <div className="mt-6 flex flex-wrap items-center justify-center gap-3">{actions}</div>
+      <div className="mt-7 flex flex-wrap items-center justify-center gap-3">{actions}</div>
     </section>
   );
 }

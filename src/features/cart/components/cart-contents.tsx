@@ -110,7 +110,7 @@ export function CartContents() {
                         <button
                           type="button"
                           onClick={() => toggleWishlist(line.product.id)}
-                          className="mt-1 inline-flex items-center gap-1.5 text-xs text-muted-foreground transition-colors hover:text-primary"
+                          className="mt-1 -ml-1.5 inline-flex items-center gap-1.5 rounded-lg px-1.5 py-2 text-xs text-muted-foreground transition-colors hover:text-primary"
                         >
                           <Heart
                             className={
@@ -162,11 +162,13 @@ export function CartContents() {
           </table>
         </div>
 
-        <ul className="mt-8 grid gap-4 rounded-2xl bg-muted/40 p-6 sm:grid-cols-3">
+        <ul className="mt-8 grid gap-4 rounded-2xl border border-border/60 bg-linear-to-b from-muted/50 to-muted/20 p-6 sm:grid-cols-3">
           {ASSURANCES.map(({ icon: Icon, title, body }) => (
             <li key={title} className="text-center">
-              <Icon className="mx-auto size-6 text-primary" strokeWidth={1.5} aria-hidden="true" />
-              <p className="mt-2 text-sm font-semibold uppercase tracking-wide">{title}</p>
+              <span className="grid size-10 mx-auto place-items-center rounded-full bg-primary/10 text-primary">
+                <Icon className="size-5" strokeWidth={1.5} aria-hidden="true" />
+              </span>
+              <p className="mt-2.5 text-sm font-semibold uppercase tracking-wide">{title}</p>
               <p className="mt-1 text-xs text-muted-foreground">{body}</p>
             </li>
           ))}
@@ -174,7 +176,7 @@ export function CartContents() {
       </div>
 
       <aside className="space-y-5">
-        <div className="rounded-2xl bg-muted/40 p-6">
+        <div className="rounded-2xl border border-border/60 bg-card p-6 shadow-sm">
           <h2 className="text-lg font-bold uppercase tracking-tight">Cart totals</h2>
 
           <dl className="mt-5 space-y-3 text-sm">
