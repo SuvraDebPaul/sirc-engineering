@@ -50,9 +50,9 @@ export function FloatingNavbar({
         >
           <div className="pointer-events-auto flex items-center gap-3 rounded-full border border-border/80 bg-background/90 py-1.5 pl-3 pr-2 shadow-xl shadow-black/10 backdrop-blur-2xl ring-1 ring-black/5">
             {/* Mini Logo */}
-            <Link href="/" className="shrink-0 flex items-center pr-1" aria-label="SIRC Home">
+            <div className="shrink-0 flex items-center pr-1" aria-label="SIRC Home">
               <Logo src={logoUrl} className="h-8 w-auto" />
-            </Link>
+            </div>
 
             <div className="hidden h-5 w-px bg-border/80 lg:block" aria-hidden="true" />
 
