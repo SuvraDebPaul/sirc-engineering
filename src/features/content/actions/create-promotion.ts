@@ -2,6 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
+import { revalidatePublicData } from "@/lib/cache";
 import { z } from "zod";
 
 import {
@@ -41,6 +42,6 @@ export async function createPromotionAction(
   }
 
   revalidatePath("/admin/promotions");
-  revalidatePath("/", "layout");
+  revalidatePublicData();
   redirect("/admin/promotions");
 }

@@ -2,8 +2,8 @@
 
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
-import { revalidatePath } from "next/cache";
 
+import { revalidatePublicData } from "@/lib/cache";
 import { auth } from "@/lib/db/auth";
 import { uploadImage } from "@/lib/cloudinary";
 import {
@@ -57,6 +57,6 @@ export async function updateSiteSettings(
     };
   }
 
-  revalidatePath("/", "layout");
+  revalidatePublicData();
   return { status: "success", errors: {} };
 }

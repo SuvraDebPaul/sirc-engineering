@@ -1,3 +1,7 @@
+import { cache } from "react";
+import { unstable_cache } from "next/cache";
+
+import { CACHE_DURATION_SECONDS, CACHE_TAGS } from "@/lib/cache";
 import { prisma } from "@/lib/db/prisma";
 import type { IconName } from "@/lib/icons";
 import type { Category, Product } from "@/features/catalog/types";
@@ -20,10 +24,16 @@ const toCategory = (row: {
   parentId: row.parentId,
 });
 
-export async function getCategories(): Promise<Category[]> {
-  const rows = await prisma.category.findMany({ orderBy: { name: "asc" } });
-  return rows.map(toCategory);
-}
+const readCategories = unstable_cache(
+  async (): Promise<Category[]> => {
+    const rows = await prisma.category.findMany({ orderBy: { name: "asc" } });
+    return rows.map(toCategory);
+  },
+  ["categories-list"],
+  { tags: [CACHE_TAGS.catalog], revalidate: CACHE_DURATION_SECONDS },
+);
+
+export const getCategories = cache((): Promise<Category[]> => readCategories());
 
 export async function getCategoryBySlug(slug: string): Promise<Category | null> {
   const row = await prisma.category.findUnique({ where: { slug } });
@@ -81,12 +91,32 @@ export async function getProductsByCategory(category: Category): Promise<Product
 
 const normaliseName = (value: string): string => value.toLowerCase().replace(/\s+/g, " ").trim();
 
+const readCategoryCounts = unstable_cache(
+  async (): Promise<Record<string, number>> => {
+    // `groupBy` on the indexed `categoryId` foreign key, rather than pulling
+    // every product row into memory to tally them in JS. The header renders
+    // these counts on every page, so the difference is one small aggregate
+    // against a full table scan of the catalogue.
+    const [grouped, categories] = await Promise.all([
+      prisma.product.groupBy({ by: ["categoryId"], _count: true }),
+      readCategories(),
+    ]);
+
+    const nameById = new Map(categories.map((category) => [category.id, category.name]));
+    const counts: Record<string, number> = {};
+
+    for (const row of grouped) {
+      const name = nameById.get(row.categoryId);
+      if (name) counts[name] = row._count;
+    }
+
+    return counts;
+  },
+  ["category-counts"],
+  { tags: [CACHE_TAGS.catalog], revalidate: CACHE_DURATION_SECONDS },
+);
+
 /** How many products each category holds, keyed by category name. */
-export async function getCategoryCounts(): Promise<Record<string, number>> {
-  const products = await getProducts();
-  const counts: Record<string, number> = {};
-  for (const product of products) {
-    counts[product.categoryName] = (counts[product.categoryName] ?? 0) + 1;
-  }
-  return counts;
-}
+export const getCategoryCounts = cache(
+  (): Promise<Record<string, number>> => readCategoryCounts(),
+);

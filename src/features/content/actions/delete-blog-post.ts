@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { revalidatePublicData } from "@/lib/cache";
 
 import { deleteBlogPost } from "@/features/content/services/blog-admin";
 import { logUnexpectedError } from "@/lib/log-unexpected-error";
@@ -16,5 +17,5 @@ export async function deleteBlogPostAction(id: string): Promise<{ error?: string
   }
 
   revalidatePath("/admin/blog");
-  revalidatePath("/", "layout");
+  revalidatePublicData();
 }

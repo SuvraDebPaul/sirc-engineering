@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { revalidatePublicData } from "@/lib/cache";
 
 import { deleteService } from "@/features/content/services/service-admin";
 import { logUnexpectedError } from "@/lib/log-unexpected-error";
@@ -16,5 +17,5 @@ export async function deleteServiceAction(id: string): Promise<{ error?: string 
   }
 
   revalidatePath("/admin/services");
-  revalidatePath("/", "layout");
+  revalidatePublicData();
 }

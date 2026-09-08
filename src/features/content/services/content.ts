@@ -1,4 +1,8 @@
+import { cache } from "react";
+import { unstable_cache } from "next/cache";
+
 import { type Industry, type ServiceDetail } from "@/data";
+import { CACHE_DURATION_SECONDS, CACHE_TAGS } from "@/lib/cache";
 import { prisma } from "@/lib/db/prisma";
 import type { IconName } from "@/lib/icons";
 import type { Product } from "@/features/catalog/types";
@@ -22,6 +26,23 @@ import { getProducts } from "@/features/catalog/services/products";
  * customer quotes from `/admin/promotions`, `/admin/features` and
  * `/admin/testimonials`.
  */
+
+/**
+ * Every list below is admin-authored marketing copy read by public pages —
+ * the same rows for every visitor, changing a few times a week at most.
+ * `cached()` keeps them out of the database between requests; the admin
+ * actions that edit them call `revalidatePublicData()`, so a change is live
+ * on the next request. React's `cache()` on top collapses repeat calls
+ * within one render (the home page reads several of these, and the layout
+ * reads some of them again).
+ */
+const cached = <T>(key: string, read: () => Promise<T>): (() => Promise<T>) => {
+  const entry = unstable_cache(read, [key], {
+    tags: [CACHE_TAGS.content],
+    revalidate: CACHE_DURATION_SECONDS,
+  });
+  return cache((): Promise<T> => entry());
+};
 
 // ---------------------------------------------------------------------------
 // Promotions — hero slides and banner tiles share one model (one `placement`
@@ -51,13 +72,13 @@ const toPromotion = (row: PromotionRow): Promotion => ({
   tone: row.tone as Promotion["tone"],
 });
 
-export async function getHeroSlides(): Promise<Promotion[]> {
+export const getHeroSlides = cached("hero-slides", async (): Promise<Promotion[]> => {
   const rows = await prisma.promotion.findMany({
     where: { placement: "hero" },
     orderBy: { sortOrder: "asc" },
   });
   return rows.map(toPromotion);
-}
+});
 
 /**
  * Banner tiles, in display order.
@@ -66,15 +87,15 @@ export async function getHeroSlides(): Promise<Promotion[]> {
  * tile, two more paired tiles) positionally from this list, so reordering a
  * promotion's `sortOrder` in the admin reorders the page.
  */
-export async function getPromotions(): Promise<Promotion[]> {
+export const getPromotions = cached("promotions", async (): Promise<Promotion[]> => {
   const rows = await prisma.promotion.findMany({
     where: { placement: "banner" },
     orderBy: { sortOrder: "asc" },
   });
   return rows.map(toPromotion);
-}
+});
 
-export async function getFeatures(): Promise<Feature[]> {
+export const getFeatures = cached("features", async (): Promise<Feature[]> => {
   const rows = await prisma.feature.findMany({ orderBy: { sortOrder: "asc" } });
   return rows.map((row) => ({
     id: row.id,
@@ -82,9 +103,9 @@ export async function getFeatures(): Promise<Feature[]> {
     title: row.title,
     description: row.description,
   }));
-}
+});
 
-export async function getTestimonials(): Promise<Testimonial[]> {
+export const getTestimonials = cached("testimonials", async (): Promise<Testimonial[]> => {
   const rows = await prisma.testimonial.findMany({ orderBy: { sortOrder: "asc" } });
   return rows.map((row) => ({
     id: row.id,
@@ -95,7 +116,7 @@ export async function getTestimonials(): Promise<Testimonial[]> {
     company: row.company,
     imageUrl: row.imageUrl ?? undefined,
   }));
-}
+});
 
 // ---------------------------------------------------------------------------
 // Services — real rows, admin-authored.
@@ -136,10 +157,10 @@ const toServiceDetail = (row: ServiceRow): ServiceDetail => ({
   faqs: (row.faqs as { question: string; answer: string }[] | null) ?? [],
 });
 
-export async function getServices(): Promise<ServiceHighlight[]> {
+export const getServices = cached("services", async (): Promise<ServiceHighlight[]> => {
   const rows = await prisma.service.findMany({ orderBy: { title: "asc" } });
   return rows.map(toServiceHighlight);
-}
+});
 
 export async function getServiceBySlug(slug: string): Promise<ServiceHighlight | null> {
   const row = await prisma.service.findUnique({ where: { slug } });
@@ -184,10 +205,10 @@ const toIndustry = (row: IndustryRow): Industry => ({
   serviceIds: (row.serviceSlugs as string[] | null) ?? [],
 });
 
-export async function getIndustries(): Promise<Industry[]> {
+export const getIndustries = cached("industries", async (): Promise<Industry[]> => {
   const rows = await prisma.industry.findMany({ orderBy: { name: "asc" } });
   return rows.map(toIndustry);
-}
+});
 
 export async function getIndustryBySlug(slug: string): Promise<Industry | null> {
   const row = await prisma.industry.findUnique({ where: { slug } });
@@ -260,13 +281,13 @@ const toPost = (row: BlogPostRow): Post => ({
 });
 
 /** All published posts, newest first. */
-export async function getPosts(): Promise<Post[]> {
+export const getPosts = cached("posts", async (): Promise<Post[]> => {
   const rows = await prisma.blogPost.findMany({
     where: { status: "PUBLISHED" },
     orderBy: { publishedAt: "desc" },
   });
   return rows.map(toPost);
-}
+});
 
 export async function getLatestPosts(limit = 3): Promise<Post[]> {
   const posts = await getPosts();

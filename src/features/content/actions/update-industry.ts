@@ -2,6 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
+import { revalidatePublicData } from "@/lib/cache";
 import { z } from "zod";
 
 import { Prisma } from "@/lib/db/prisma";
@@ -56,7 +57,7 @@ export async function updateIndustryAction(
   }
 
   revalidatePath("/admin/industries");
-  revalidatePath("/", "layout");
+  revalidatePublicData();
   if (existingSlug) revalidatePath(`/industries/${existingSlug}`);
   if (existingSlug !== result.data.slug) revalidatePath(`/industries/${result.data.slug}`);
   redirect("/admin/industries");

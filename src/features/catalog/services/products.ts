@@ -1,3 +1,7 @@
+import { cache } from "react";
+import { unstable_cache } from "next/cache";
+
+import { CACHE_DURATION_SECONDS, CACHE_TAGS } from "@/lib/cache";
 import { prisma } from "@/lib/db/prisma";
 import type { IconName } from "@/lib/icons";
 import type {
@@ -24,16 +28,53 @@ import type {
  */
 const include = { category: true, brand: true } as const;
 
-async function fetchProductRows() {
+/**
+ * The columns a listing actually renders.
+ *
+ * `Product` carries seven JSON blob columns — `overview`, `highlights`,
+ * `sections`, `specs`, `images`, `documents`, `shipping` — that only the
+ * single-product detail page ever reads. A bare `findMany` fetched all of
+ * them for every product, and this query runs on every public page (the
+ * cart, the header, the home page). Naming the columns keeps the row small;
+ * `fetchProductRows` below still selects everything for the detail page.
+ */
+export const listSelect = {
+  id: true,
+  name: true,
+  slug: true,
+  description: true,
+  modelNumber: true,
+  imageUrl: true,
+  subCategoryName: true,
+  badge: true,
+  retailPrice: true,
+  compareAtPrice: true,
+  priceMin: true,
+  priceMax: true,
+  stockStatus: true,
+  isQuoteOnly: true,
+  rating: true,
+  reviewCount: true,
+  category: { select: { name: true, icon: true } },
+  brand: { select: { name: true } },
+} as const;
+
+async function fetchProductListRows() {
   return prisma.product.findMany({
-    include,
+    select: listSelect,
     orderBy: { createdAt: "desc" },
   });
 }
 
-type ProductRow = Awaited<ReturnType<typeof fetchProductRows>>[number];
+/** The one place that genuinely needs every column, blobs included. */
+async function fetchProductDetailRow(slug: string) {
+  return prisma.product.findUnique({ where: { slug }, include });
+}
 
-const toProduct = (row: ProductRow): Product => ({
+type ProductRow = Awaited<ReturnType<typeof fetchProductListRows>>[number];
+type DetailRow = NonNullable<Awaited<ReturnType<typeof fetchProductDetailRow>>>;
+
+export const toProduct = (row: ProductRow): Product => ({
   id: row.id,
   name: row.name,
   slug: row.slug,
@@ -58,7 +99,7 @@ const toProduct = (row: ProductRow): Product => ({
   reviewCount: row.reviewCount,
 });
 
-const toProductDetail = (row: ProductRow): ProductDetail => ({
+const toProductDetail = (row: DetailRow): ProductDetail => ({
   slug: row.slug,
   images: row.images as unknown as ProductImage[],
   overview: row.overview as string[],
@@ -73,10 +114,25 @@ const toProductDetail = (row: ProductRow): ProductDetail => ({
   warrantyMonths: row.warrantyMonths,
 });
 
-export async function getProducts(): Promise<Product[]> {
-  const rows = await fetchProductRows();
-  return rows.map(toProduct);
-}
+const readProducts = unstable_cache(
+  async (): Promise<Product[]> => {
+    const rows = await fetchProductListRows();
+    return rows.map(toProduct);
+  },
+  ["products-list"],
+  { tags: [CACHE_TAGS.catalog], revalidate: CACHE_DURATION_SECONDS },
+);
+
+/**
+ * The whole catalogue, as the listings and the cart need it.
+ *
+ * This has more call sites than anything else in the app — the public
+ * layout, the header, the home page, every listing, and the merchandising
+ * ranks — so it gets both layers: `unstable_cache` keeps it out of the
+ * database between requests, and React's `cache()` collapses the repeat
+ * calls within a single render into one.
+ */
+export const getProducts = cache((): Promise<Product[]> => readProducts());
 
 export async function getFeaturedProducts(limit = 8): Promise<Product[]> {
   const products = await getProducts();
@@ -95,7 +151,7 @@ export async function getQuoteOnlyProducts(): Promise<Product[]> {
 }
 
 export async function getProductBySlug(slug: string): Promise<Product | null> {
-  const row = await prisma.product.findUnique({ where: { slug }, include });
+  const row = await fetchProductDetailRow(slug);
   return row ? toProduct(row) : null;
 }
 
@@ -107,7 +163,7 @@ export async function getProductBySlug(slug: string): Promise<Product | null> {
  * a join between two data sources.
  */
 export async function getProductDetail(slug: string): Promise<ProductWithDetail | null> {
-  const row = await prisma.product.findUnique({ where: { slug }, include });
+  const row = await fetchProductDetailRow(slug);
   if (!row) return null;
 
   return { product: toProduct(row), detail: toProductDetail(row) };

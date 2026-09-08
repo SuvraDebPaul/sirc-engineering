@@ -3,6 +3,7 @@
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
+import { revalidatePublicData } from "@/lib/cache";
 import { Prisma, prisma } from "@/lib/db/prisma";
 import {
   categorySchema,
@@ -65,6 +66,6 @@ export async function updateCategoryAction(
   }
 
   revalidatePath("/admin/categories");
-  revalidatePath("/", "layout");
+  revalidatePublicData();
   redirect("/admin/categories");
 }

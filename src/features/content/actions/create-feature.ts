@@ -2,6 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
+import { revalidatePublicData } from "@/lib/cache";
 import { z } from "zod";
 
 import {
@@ -32,6 +33,6 @@ export async function createFeatureAction(data: FeatureInput): Promise<FeatureFo
   }
 
   revalidatePath("/admin/features");
-  revalidatePath("/", "layout");
+  revalidatePublicData();
   redirect("/admin/features");
 }

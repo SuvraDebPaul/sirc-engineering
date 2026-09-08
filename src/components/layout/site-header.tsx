@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { headers } from "next/headers";
 import { FileText, Mail, Phone, User } from "lucide-react";
 
 import { AccountMenu } from "@/features/account/components/account-menu";
@@ -11,23 +10,22 @@ import Logo from "@/components/layout/logo";
 import { MobileNav } from "@/components/layout/mobile-nav";
 import { Button } from "@/components/ui/button";
 import { mainNav } from "@/config/site";
-import { getCategories, getProducts } from "@/features/catalog/services";
+import { getCategories, getCategoryCounts } from "@/features/catalog/services";
 import { getSiteSettings } from "@/features/settings/services/settings";
-import { auth } from "@/lib/db/auth";
+import { getCurrentSession } from "@/lib/db/session";
 import { SearchBar } from "@/components/layout/search-bar";
 
 export async function SiteHeader() {
-  const [categories, products, settings, session] = await Promise.all([
+  // The header only ever needed a count per category, never the products
+  // themselves — but it used to fetch the entire catalogue to tally them in
+  // JS, on every page of the site. `getCategoryCounts()` is a cached
+  // aggregate over the indexed foreign key instead.
+  const [categories, counts, settings, session] = await Promise.all([
     getCategories(),
-    getProducts(),
+    getCategoryCounts(),
     getSiteSettings(),
-    auth.api.getSession({ headers: await headers() }),
+    getCurrentSession(),
   ]);
-
-  const counts: Record<string, number> = {};
-  for (const product of products) {
-    counts[product.categoryName] = (counts[product.categoryName] ?? 0) + 1;
-  }
 
   return (
     <>

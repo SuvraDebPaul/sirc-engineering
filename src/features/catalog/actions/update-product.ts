@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
+import { revalidatePublicData } from "@/lib/cache";
 import { Prisma, prisma } from "@/lib/db/prisma";
 import {
   productSchema,
@@ -81,6 +82,6 @@ export async function updateProductAction(
   }
 
   revalidatePath("/admin/products");
-  revalidatePath("/", "layout");
+  revalidatePublicData();
   redirect("/admin/products");
 }

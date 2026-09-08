@@ -2,6 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
+import { revalidatePublicData } from "@/lib/cache";
 import { z } from "zod";
 
 import { Prisma } from "@/lib/db/prisma";
@@ -48,6 +49,6 @@ export async function createServiceAction(
   }
 
   revalidatePath("/admin/services");
-  revalidatePath("/", "layout");
+  revalidatePublicData();
   redirect("/admin/services");
 }

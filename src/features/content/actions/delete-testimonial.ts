@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { revalidatePublicData } from "@/lib/cache";
 
 import { deleteTestimonial } from "@/features/content/services/testimonial-admin";
 import { logUnexpectedError } from "@/lib/log-unexpected-error";
@@ -16,5 +17,5 @@ export async function deleteTestimonialAction(id: string): Promise<{ error?: str
   }
 
   revalidatePath("/admin/testimonials");
-  revalidatePath("/", "layout");
+  revalidatePublicData();
 }

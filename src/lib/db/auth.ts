@@ -21,6 +21,22 @@ export const auth = betterAuth({
   },
   session: {
     expiresIn: 60 * 60 * 24 * 30,
+    /**
+     * Without this, every `getSession()` is two database queries — the
+     * session row and then the user row — on every request to every page,
+     * for every signed-in visitor. The cookie cache keeps a signed copy of
+     * the session in the cookie itself and only re-reads the database when
+     * it expires, which takes the common case to zero queries.
+     *
+     * Five minutes is the trade: a role change or a sign-out elsewhere takes
+     * up to that long to be noticed. Better Auth refreshes the cookie on
+     * sign-in and sign-out directly, so the window only matters for changes
+     * made out of band (an admin promoting someone in the dashboard).
+     */
+    cookieCache: {
+      enabled: true,
+      maxAge: 60 * 5,
+    },
   },
   user: {
     additionalFields: {

@@ -1,5 +1,7 @@
 import { cache } from "react";
+import { unstable_cache } from "next/cache";
 
+import { CACHE_DURATION_SECONDS, CACHE_TAGS } from "@/lib/cache";
 import { prisma } from "@/lib/db/prisma";
 import { siteConfig, contactInfo, socialLinks as defaultSocialLinks } from "@/config/site";
 import { SOCIAL_ICON_NAMES } from "@/components/shared/social-icon";
@@ -142,42 +144,48 @@ function toSiteSettingsData(row: {
 }
 
 /**
- * Read the sitewide settings, creating the singleton row on first read.
+ * What the site shows before an admin has ever opened the settings form.
  *
- * Seeded from the previous hardcoded values in `config/site.ts` so the first
- * deploy after this feature ships looks identical — an admin then edits from
- * there, rather than the site going blank until someone fills in a form.
- *
- * Wrapped in React's `cache()` so every Server Component that needs a piece
- * of this (header, footer, contact page, ...) can call it directly without
- * threading it through props, and Next dedupes the DB round trip within one
- * request.
+ * Previously the read path created this row with an `upsert`. That meant a
+ * write transaction on literally every request to every page, forever, to
+ * seed a row exactly once — the single most expensive thing this app did.
+ * Falling back to the same values in memory is indistinguishable to a
+ * visitor, and `saveSiteSettings` below still upserts, so the row appears
+ * the first time an admin saves.
  */
-export const getSiteSettings = cache(async (): Promise<SiteSettingsData> => {
-  // `cache()` only dedupes calls within one request — separate concurrent
-  // requests (a prefetch alongside a navigation, two tabs on first load)
-  // each start cold and would otherwise race a find-then-create on the same
-  // row. `upsert` makes the seed atomic at the database instead: the empty
-  // `update` means "leave it alone if it already exists."
-  const row = await prisma.siteSettings.upsert({
-    where: { id: SETTINGS_ID },
-    create: {
-      id: SETTINGS_ID,
-      name: siteConfig.name,
-      shortDescription: siteConfig.shortDescription,
-      description: siteConfig.description,
-      phone: contactInfo.phone,
-      whatsapp: contactInfo.whatsapp,
-      email: contactInfo.email,
-      address: contactInfo.address,
-      hours: contactInfo.hours,
-      socialLinks: defaultSocialLinks as unknown as object,
-    },
-    update: {},
-  });
+const DEFAULT_SETTINGS: SiteSettingsData = {
+  name: siteConfig.name,
+  shortDescription: siteConfig.shortDescription,
+  description: siteConfig.description,
+  logoUrl: null,
+  phone: contactInfo.phone,
+  whatsapp: contactInfo.whatsapp,
+  email: contactInfo.email,
+  address: contactInfo.address,
+  hours: contactInfo.hours,
+  socialLinks: defaultSocialLinks as unknown as SocialLink[],
+};
 
-  return toSiteSettingsData(row);
-});
+const readSiteSettings = unstable_cache(
+  async (): Promise<SiteSettingsData> => {
+    const row = await prisma.siteSettings.findUnique({ where: { id: SETTINGS_ID } });
+    return row ? toSiteSettingsData(row) : DEFAULT_SETTINGS;
+  },
+  ["site-settings"],
+  { tags: [CACHE_TAGS.settings], revalidate: CACHE_DURATION_SECONDS },
+);
+
+/**
+ * Read the sitewide settings.
+ *
+ * Two layers, doing different jobs: `unstable_cache` keeps the row out of the
+ * database across requests (it is read by the root layout's metadata, the
+ * header, the footer and the contact page — on every page of the site), and
+ * React's `cache()` collapses those four call sites into one within a single
+ * render. `saveSiteSettings` invalidates the tag, so an admin edit is live on
+ * the next request rather than after a timeout.
+ */
+export const getSiteSettings = cache((): Promise<SiteSettingsData> => readSiteSettings());
 
 export async function saveSiteSettings(data: SiteSettingsData): Promise<void> {
   await prisma.siteSettings.upsert({

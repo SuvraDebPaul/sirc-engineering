@@ -2,6 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
+import { revalidatePublicData } from "@/lib/cache";
 import { z } from "zod";
 
 import { Prisma } from "@/lib/db/prisma";
@@ -60,7 +61,7 @@ export async function updateBlogPostAction(
   }
 
   revalidatePath("/admin/blog");
-  revalidatePath("/", "layout");
+  revalidatePublicData();
   if (existingSlug) revalidatePath(`/blog/${existingSlug}`);
   if (existingSlug !== result.data.slug) revalidatePath(`/blog/${result.data.slug}`);
   redirect("/admin/blog");

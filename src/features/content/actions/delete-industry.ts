@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { revalidatePublicData } from "@/lib/cache";
 
 import { deleteIndustry } from "@/features/content/services/industry-admin";
 import { logUnexpectedError } from "@/lib/log-unexpected-error";
@@ -16,5 +17,5 @@ export async function deleteIndustryAction(id: string): Promise<{ error?: string
   }
 
   revalidatePath("/admin/industries");
-  revalidatePath("/", "layout");
+  revalidatePublicData();
 }

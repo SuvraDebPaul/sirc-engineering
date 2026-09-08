@@ -2,6 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
+import { revalidatePublicData } from "@/lib/cache";
 import { z } from "zod";
 
 import { Prisma } from "@/lib/db/prisma";
@@ -52,6 +53,6 @@ export async function createBlogPostAction(
   }
 
   revalidatePath("/admin/blog");
-  revalidatePath("/", "layout");
+  revalidatePublicData();
   redirect("/admin/blog");
 }

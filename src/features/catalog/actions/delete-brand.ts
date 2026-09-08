@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 
+import { revalidatePublicData } from "@/lib/cache";
 import { Prisma } from "@/lib/db/prisma";
 import { deleteBrand, deleteBrandCascade } from "@/features/catalog/services/brand-admin";
 import { logUnexpectedError } from "@/lib/log-unexpected-error";
@@ -28,7 +29,7 @@ export async function deleteBrandAction(
   }
 
   revalidatePath("/admin/brands");
-  revalidatePath("/", "layout");
+  revalidatePublicData();
 }
 
 /**
@@ -52,5 +53,5 @@ export async function deleteBrandCascadeAction(
 
   revalidatePath("/admin/brands");
   revalidatePath("/admin/products");
-  revalidatePath("/", "layout");
+  revalidatePublicData();
 }

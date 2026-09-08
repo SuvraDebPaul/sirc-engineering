@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 
+import { revalidatePublicData } from "@/lib/cache";
 import { deleteProduct } from "@/features/catalog/services/product-admin";
 import { logUnexpectedError } from "@/lib/log-unexpected-error";
 import { requireStaffSession } from "@/lib/require-staff";
@@ -18,5 +19,5 @@ export async function deleteProductAction(
   }
 
   revalidatePath("/admin/products");
-  revalidatePath("/", "layout");
+  revalidatePublicData();
 }

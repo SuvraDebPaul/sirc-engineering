@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { revalidatePublicData } from "@/lib/cache";
 
 import { deletePromotion } from "@/features/content/services/promotion-admin";
 import { logUnexpectedError } from "@/lib/log-unexpected-error";
@@ -16,5 +17,5 @@ export async function deletePromotionAction(id: string): Promise<{ error?: strin
   }
 
   revalidatePath("/admin/promotions");
-  revalidatePath("/", "layout");
+  revalidatePublicData();
 }

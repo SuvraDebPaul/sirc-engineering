@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { revalidatePublicData } from "@/lib/cache";
 
 import { deleteFeature } from "@/features/content/services/feature-admin";
 import { logUnexpectedError } from "@/lib/log-unexpected-error";
@@ -16,5 +17,5 @@ export async function deleteFeatureAction(id: string): Promise<{ error?: string 
   }
 
   revalidatePath("/admin/features");
-  revalidatePath("/", "layout");
+  revalidatePublicData();
 }

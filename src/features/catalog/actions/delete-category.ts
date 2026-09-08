@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { revalidatePublicData } from "@/lib/cache";
 import { Prisma } from "@/lib/db/prisma";
 import { deleteCategory } from "@/features/catalog/services/category-admin";
 import { logUnexpectedError } from "@/lib/log-unexpected-error";
@@ -26,5 +27,5 @@ export async function deleteCategoryAction(
   }
 
   revalidatePath("/admin/categories");
-  revalidatePath("/", "layout");
+  revalidatePublicData();
 }
